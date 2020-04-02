@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="project" default="build">
+	
+	
+	
+	<property name="jdks.dir" value="C:${file.separator}Java${file.separator}Zulu${file.separator}"/>
+	<property name="current.platform" value="zulu11.37.19-ca-fx-jdk11.0.6-win_x64"/>
+	<property name="targets.dir" value="${basedir}${file.separator}targets${file.separator}"/>
+	<property name="build.dir" value="${basedir}${file.separator}build"/>
+
+	<!--	########################################### -->
+	<property name="major" 		value="00" />
+	<property name="minor" 		value="01" />
+	<!--	########################################### -->
+
+	<property name="versions.dir" value="E:${file.separator}Workspace${file.separator}versions${file.separator}" />
+	<property name="versions.file" value="${versions.dir}${file.separator}build.properties" />
+	<property file="${versions.file}"/>
+
+	
+	<target name="build" description="build">
+
+		
+		<antcall target="compile"/>
+		
+		<antcall target="build-image">
+			<param name="target" value="windows-64"/>
+			<param name="source" value="zulu11.29.3-ca-fx-jdk11.0.2-win_x64"/>
+		</antcall>
+	
+		<!--
+		<antcall target="build-image">
+			<param name="target" value="arm-hf-32"/>
+			<param name="source" value="zulu11.1.8-ca-jdk11-c2-linux_aarch32hf"/>
+		</antcall>
+		
+		<antcall target="build-image">
+			<param name="target" value="linux-64"/>
+			<param name="source" value="zulu11.31.11-ca-jdk11.0.3-linux_x64"/>
+		</antcall>
+		-->
+		<delete dir="${build.dir}"/>
+		
+		<propertyfile file="${versions.file}" comment="Build properties.Don't edit manual">
+			<entry key="build" type="int" default="000" operation="+" pattern="000" />
+		</propertyfile>
+
+		<echo message="***************************************************************************************************" />
+		<echo message="CURRENT VERSION IS ${major}.${minor}.${build} DON'T FORGET CHANGE THIS IN BUILD.XML " />
+		<echo message="AND DELETE FILE ${versions.file}" />
+		<echo message="****************************************************************************************************" />
+
+		
+		
+		
+	</target>
+
+	
+	<target name="compile">
+		
+		<delete dir="${build.dir}"/>
+		<mkdir dir="${build.dir}${file.separator}output" />
+
+		<javac compiler="javac10+" destdir="${build.dir}${file.separator}output"  nowarn="on" verbose="no" debug="on" debuglevel="lines,vars,source" includeantruntime="false" createMissingPackageInfoClass="false" target="11" source="11" >
+			<src path="${basedir}${file.separator}src${file.separator}java" />
+			<src path="${basedir}${file.separator}src${file.separator}resources" />
+			<compilerarg value="--add-exports=javafx.controls/com.sun.javafx.scene.control.behavior=com.rafael.med"/>
+			<compilerarg value="--add-exports=javafx.controls/com.sun.javafx.scene.control=com.rafael.med"/>
+			<compilerarg value="--add-exports=javafx.base/com.sun.javafx.binding=com.rafael.med"/>
+			<compilerarg value="--add-exports=javafx.base/com.sun.javafx.event=com.rafael.med"/>
+			<compilerarg value="--add-exports=javafx.graphics/com.sun.javafx.stage=com.rafael.med"/>
+			<compilerarg value="--add-exports=javafx.graphics/com.sun.javafx.geom=com.rafael.med"/>
+			<compilerarg value="--add-exports=javafx.graphics/com.sun.javafx.scene.text=com.rafael.med"/>
+			<compilerarg value="--add-exports=javafx.graphics/com.sun.javafx.util=com.rafael.med"/>
+			<compilerarg value="--add-exports=javafx.graphics/com.sun.javafx.scene.traversal=com.rafael.med"/>
+			<compilerarg value="--add-exports=javafx.controls/com.sun.javafx.scene.control.inputmap=com.rafael.med"/>
+			<compilerarg value="--add-exports=javafx.graphics/com.sun.javafx.scene=com.rafael.med"/>
+			<compilerarg value="--add-exports=javafx.graphics/com.sun.javafx.scene.traversal=com.rafael.med"/>
+			<compilerarg value="--add-exports=javafx.controls/com.sun.javafx.scene.control.inputmap=com.rafael.med"/>
+		</javac>
+
+		<copy todir="${build.dir}${file.separator}output" includeemptydirs="false">
+			<fileset dir="${basedir}${file.separator}src${file.separator}resources" />
+		</copy>
+	</target>
+
+	<target name="build-image">
+		
+		<delete dir="${targets.dir}"/>
+		
+		<tstamp>
+			<format property="build.time" pattern="dd-MM-yyyy_HH-mm-ss" />
+		</tstamp>
+		
+		<exec executable="${jdks.dir}${current.platform}${file.separator}bin${file.separator}jlink.exe">
+			<arg value="--module-path"/>
+			<arg value="${jdks.dir}${source}${file.separator}jmods;${build.dir}${file.separator}output"/>
+			<arg value="--add-modules=com.rafael.med"/>
+			<arg value="--output"/>
+			<arg value="${targets.dir}${target}"/>
+			<arg value="--no-header-files"/>
+			<arg value="--no-man-pages"/>
+			<arg value="--strip-debug"/>
+			<arg value="--release-info=add:date=${build.time}:version=${major}.${minor}.${build}"/>
+		</exec> 
+		
+		
+		
+		<copy todir="${targets.dir}${target}${file.separator}conf" includeemptydirs="false">
+			<fileset dir="${basedir}${file.separator}src${file.separator}resources" includes="log4j2.xml,med-config.xml" />
+		</copy>
+		<propertyfile file="${targets.dir}${target}${file.separator}conf${file.separator}version.properties">
+			<entry key="version" value="${major}.${minor}.${build}"/>
+		</propertyfile>
+		
+		<move file="${targets.dir}${target}${file.separator}release" todir="${targets.dir}${target}${file.separator}conf"></move>
+		
+		<copy todir="${targets.dir}${target}" includeemptydirs="false">
+			<fileset dir="${basedir}${file.separator}src${file.separator}resources" includes="med-run.bat" />
+		</copy>
+		
+		<zip destfile="${targets.dir}${target}${file.separator}at-${major}.${minor}.${build}-${target}.zip">
+			<fileset dir="${targets.dir}${target}"/>
+		</zip>
+
+		<copy todir="${versions.dir}" file="${targets.dir}${target}${file.separator}med-${major}.${minor}.${build}-${target}.zip"/>
+		
+		
+	</target>
+	
+</project>

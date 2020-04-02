@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
+		<attributes>
+			<attribute name="module" value="true"/>
+			<attribute name="add-exports" value="javafx.controls/com.sun.javafx.scene.control.behavior=com.rafael.med:javafx.controls/com.sun.javafx.scene.control=com.rafael.med:javafx.base/com.sun.javafx.binding=com.rafael.med:javafx.base/com.sun.javafx.event=com.rafael.med:javafx.graphics/com.sun.javafx.stage=com.rafael.med:javafx.graphics/com.sun.javafx.geom=com.rafael.med:javafx.graphics/com.sun.javafx.scene.text=com.rafael.med:javafx.graphics/com.sun.javafx.util=com.rafael.med:javafx.graphics/com.sun.javafx.scene.traversal=com.rafael.med:javafx.controls/com.sun.javafx.scene.control.inputmap=com.rafael.med:javafx.graphics/com.sun.javafx.scene=com.rafael.med"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" path="src/java"/>
+	<classpathentry kind="src" path="src/resources"/>
+	<classpathentry kind="output" path="output"/>
+</classpath>
