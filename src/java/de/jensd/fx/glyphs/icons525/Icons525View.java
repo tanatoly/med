@@ -28,7 +28,7 @@ import javafx.scene.text.Font;
  */
 public class Icons525View extends GlyphIcon<Icons525> {
 
-    public final static String TTF_PATH = "/com/rafael/at/fonts/525icons.ttf";
+    public final static String TTF_PATH = "/com/rafael/med/fonts/525icons.ttf";
 
     static {
         try {

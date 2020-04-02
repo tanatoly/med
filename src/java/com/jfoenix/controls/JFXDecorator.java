@@ -34,6 +34,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -321,6 +322,7 @@ public class JFXDecorator extends VBox {
         text = new Text();
         text.getStyleClass().addAll("jfx-decorator-text", "title", "jfx-decorator-title");
         text.setFill(Color.WHITE);
+        text.setFont(Font.font(22));
         text.textProperty().bind(title); //binds the Text's text to title
         title.bind(primaryStage.titleProperty()); //binds title to the primaryStage's title
 
@@ -328,6 +330,7 @@ public class JFXDecorator extends VBox {
         graphicContainer.setPickOnBounds(false);
         graphicContainer.setAlignment(Pos.CENTER_LEFT);
         graphicContainer.getChildren().setAll(text);
+        HBox.setHgrow(graphicContainer, Priority.ALWAYS);
 
         HBox graphicTextContainer = new HBox(graphicContainer, text);
         graphicTextContainer.getStyleClass().add("jfx-decorator-title-container");

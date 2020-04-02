@@ -27,7 +27,7 @@ public class FontAwesomeIconView extends GlyphIcon<FontAwesomeIcon> {
 
    // public final static String TTF_PATH = "/de/jensd/fx/glyphs/fontawesome/fontawesome-webfont.ttf";
     
-    public final static String TTF_PATH = "/com/rafael/at/fonts/fontawesome-webfont.ttf";
+    public final static String TTF_PATH = "/com/rafael/med/fonts/fontawesome-webfont.ttf";
 
 //    static {
 //        try {

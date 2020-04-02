@@ -25,7 +25,7 @@ import javafx.scene.text.Font;
  */
 public class MaterialDesignIconView extends GlyphIcon<MaterialDesignIcon> {
 
-    public final static String TTF_PATH = "/com/rafael/at/fonts/materialdesignicons-webfont.ttf";
+    public final static String TTF_PATH = "/com/rafael/med/fonts/materialdesignicons-webfont.ttf";
 
     static {
         try {

@@ -73,9 +73,6 @@ public class AppManager
 		}
 
 		
-		appsPane.add(createShelfApp("wireshark", 		"wireshark.png", 				"WiresharkPortable.exe"), 	0, 0);
-		appsPane.add(createShelfApp("winscp", 			"winscp.png", 					"WinSCP.exe")			,	1, 0);
-		appsPane.add(createShelfApp("putty", 			"putty.png", 					"PuTTYPortable.exe")	,	2, 0);
 		
 
 		int row 			= 0;
@@ -164,53 +161,6 @@ public class AppManager
 	}
 	
 	
-	private Button createShelfApp(String zipName, String imageNameWithsuffix, String exeNameWithSuffix)
-	{
-		Button button = new Button(null, ViewUtils.imageView("com/rafael/at/images/" + imageNameWithsuffix, 50, 50));
-		button.setTooltip(new Tooltip(zipName));
-				
-		button.setOnAction(e -> 
-		{
-			try
-			{
-				String command = findOrCreate(zipName).getAbsolutePath() + File.separator + exeNameWithSuffix;
-				Runtime.getRuntime().exec(command);
-				rightDrawer.close();
-			}
-			catch (Exception ex)
-			{
-				log.error("ON ACTION ERROR : ",ex);
-			}
-		});
-		
-		GridPane.setHalignment(button, HPos.CENTER);
-		return button;
-	}
-	
-	private File findOrCreate(String appName) throws Exception
-	{
-		File appDir = new File(BIN_DIR + File.separator + appName);
-		if(appDir == null || !appDir.exists() || !appDir.isDirectory())
-		{
-			File libDir = new File(LIB_DIR);
-			if(libDir == null || !libDir.exists() || !libDir.isDirectory())
-			{
-				throw new IllegalStateException("Not found directory " + LIB_DIR);
-			}
-			String[] files = libDir.list();
-			for (int i = 0; i < files.length; i++)
-			{
-				if(files[i].equalsIgnoreCase(appName + ".zip"))
-				{
-					File zipFile = new File(libDir,appName + ".zip");
-					Utilities.extractZipStream(zipFile, BIN_DIR);
-					return appDir;
-				}
-			}
-			throw new IllegalStateException("Not found zip file '" + appName + ".zip in dir = " + LIB_DIR);
-		}
-		return appDir;
-	}
 	
 	
 	public void showError(Class<? extends AppBase> clazz, Logger log, String message, Throwable throwable)

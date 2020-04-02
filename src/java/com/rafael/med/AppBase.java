@@ -160,7 +160,4 @@ public abstract class AppBase
 	public abstract Parent init(Configuration configuration, Stage stage, List<String> args);
 
 
-
-
-	
 }

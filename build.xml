@@ -120,7 +120,7 @@
 			<fileset dir="${basedir}${file.separator}src${file.separator}resources" includes="med-run.bat" />
 		</copy>
 		
-		<zip destfile="${targets.dir}${target}${file.separator}at-${major}.${minor}.${build}-${target}.zip">
+		<zip destfile="${targets.dir}${target}${file.separator}med-${major}.${minor}.${build}-${target}.zip">
 			<fileset dir="${targets.dir}${target}"/>
 		</zip>
 

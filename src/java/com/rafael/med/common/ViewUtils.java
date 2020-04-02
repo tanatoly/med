@@ -8,6 +8,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.ByteBuffer;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -47,6 +48,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBoxTreeItem;
+import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.control.Labeled;
 import javafx.scene.control.ScrollBar;
@@ -139,11 +141,7 @@ public class ViewUtils
 	
 	public static final Image image(String imageName,double width,double height)
 	{
-		StringBuilder builder = new StringBuilder();
-		builder.append(imageName).append(DELIMETER);
-		builder.append(width).append(DELIMETER).append(height);
-		String imageId = builder.toString();
-		Image image = images.get(imageId);
+		Image image = images.get(imageName);
 		if(image == null)
 		{
 			synchronized (images)
@@ -161,7 +159,7 @@ public class ViewUtils
 						{
 							image = new Image(systemResourceAsStream,width,height,false,false);
 						}
-						images.put(imageId, image);
+						images.put(imageName, image);
 					}
 				}
 			}
@@ -183,26 +181,16 @@ public class ViewUtils
 	public static JFXButton jfxbutton(String text, GlyphIcons glyphIcon, double width, double height, Color backgroundColor, Color fillColor, Color pressColor, String tooltip , int depth)
 	{
 		JFXButton button = jfxbutton(width, height, backgroundColor, pressColor, tooltip, depth);
-		
-		Text buttonText = null;
 		if(text != null)
 		{
-			buttonText = new Text(text);
-			buttonText.setFont(new Font(height/3));
-		}
-		else if(glyphIcon != null)
-		{
-			buttonText = glyphIcon(glyphIcon, String.valueOf(height * 0.7));	
+			button.setContentDisplay(ContentDisplay.TOP);
+			button.setText(text);
+			button.setFont(Font.font("Roboto-Bold",FontWeight.SEMI_BOLD, 9));
 		}
 		
-		if(buttonText != null)
-		{	
-			if(fillColor != null)
-			{
-				buttonText.setFill(fillColor);
-			}
-			button.setGraphic(buttonText);
-		}
+		Text icon = glyphIcon(glyphIcon, String.valueOf(height * 0.4));
+		icon.setFill(Color.WHITE);
+		button.setGraphic(icon);
 		return button;
 	}
 	
