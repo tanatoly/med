@@ -29,7 +29,7 @@ import javafx.scene.text.Font;
  */
 public class OctIconView extends GlyphIcon<OctIcon> {
 
-    public final static String TTF_PATH = "/com/rafael/at/fonts/octicons.ttf";
+    public final static String TTF_PATH = "/com/rafael/med/fonts/octicons.ttf";
 
     static {
         try {
