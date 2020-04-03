@@ -1,7 +1,12 @@
 package com.rafael.med;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import com.jfoenix.controls.JFXDialog;
 import com.rafael.med.MedData.Bed;
+import com.rafael.med.MedData.Device;
 import com.rafael.med.common.Constants;
 import com.rafael.med.common.ViewUtils;
 
@@ -26,8 +31,46 @@ import javafx.scene.text.Text;
 
 public class DetailsView extends JFXDialog
 {
+	public static final class DeviceView extends GridPane
+	{
+		public DeviceView()
+		{
+			setGridLinesVisible(true);
+			
+			setBackground(Constants.BACKGOUND_20);
+			
+			RowConstraints r1 = new RowConstraints();
+			r1.setPercentHeight(8);
+			RowConstraints r2 = new RowConstraints();
+			r2.setPercentHeight(2);
+			RowConstraints r3 = new RowConstraints();
+			r3.setPercentHeight(9);
+			getRowConstraints().addAll(r1,r2,  r3,r3,r3,r3,r3 ,r3,r3,r3,r3,r3);
+			
+			ColumnConstraints c = new ColumnConstraints();
+			c.setPercentWidth(25);
+			getColumnConstraints().addAll(c,c,c,c);
+			
+			
+			
+			
+			GridPane.setMargin(this, new Insets(3));
+			setBorder(new Border(new BorderStroke(Color.GHOSTWHITE, BorderStrokeStyle.SOLID, new CornerRadii(2.0), BorderWidths.DEFAULT)));
+
+		}
+
+		public void update(Device device) 
+		{
+			
+			
+		}
+	}
 	
 	
+	private Text bedNumber;
+	private Text name;
+	private Text id;
+	private final List<DeviceView> deviceViews = new ArrayList<>(8);
 	
 	
 	public DetailsView(BorderPane mainPane, StackPane center)
@@ -63,15 +106,15 @@ public class DetailsView extends JFXDialog
 		
 		
 		
-		Text bedNumber = new Text("007");
+		bedNumber = new Text("007");
 		bedNumber.setFill(Color.AQUA);
 		bedNumber.setFont(Font.font(32));
 		
-		Text name = new Text("משה כהן");
+		name = new Text("משה כהן");
 		name.setFill(Color.WHITE);
 		name.setFont(Font.font(32));
 		
-		Text id = new Text("0856");
+		id = new Text("0856");
 		id.setFill(Constants.COLOR_95);
 		id.setFont(Font.font(32));
 		
@@ -92,7 +135,7 @@ public class DetailsView extends JFXDialog
 		{
 			for (int j = 2; j <= 3; j++)
 			{
-				Pane deviceView = createDeviceView();
+				Pane deviceView = new DeviceView();
 				GridPane.setConstraints(deviceView, 				i, j, 1, 1, HPos.CENTER, VPos.CENTER);
 				content.getChildren().add(deviceView);
 			}
@@ -106,38 +149,24 @@ public class DetailsView extends JFXDialog
 		return content;
 	}
 	
-	private Pane createDeviceView()
-	{
-		GridPane pane = new GridPane();
-		pane.setGridLinesVisible(true);
-		
-		pane.setBackground(Constants.BACKGOUND_20);
-		
-		RowConstraints r1 = new RowConstraints();
-		r1.setPercentHeight(8);
-		RowConstraints r2 = new RowConstraints();
-		r2.setPercentHeight(2);
-		RowConstraints r3 = new RowConstraints();
-		r3.setPercentHeight(9);
-		pane.getRowConstraints().addAll(r1,r2,  r3,r3,r3,r3,r3 ,r3,r3,r3,r3,r3);
-		
-		ColumnConstraints c = new ColumnConstraints();
-		c.setPercentWidth(25);
-		pane.getColumnConstraints().addAll(c,c,c,c);
-		
-		
-		
-		
-		GridPane.setMargin(pane, new Insets(3));
-		pane.setBorder(new Border(new BorderStroke(Color.GHOSTWHITE, BorderStrokeStyle.SOLID, new CornerRadii(2.0), BorderWidths.DEFAULT)));
-		
-		return pane;
-	}
-
+	
 	public void update(Bed bed) 
 	{
-	
+		bedNumber.setText(bed.number);
+		name.setText(bed.patientName);
+		id.setText(bed.patientId);
 		
-		
+		int index = 0;
+		for (Map.Entry<String, Device> entry : bed.devices.entrySet())
+		{
+			String serial = entry.getKey();
+			Device device = entry.getValue();
+			DeviceView deviceView = deviceViews.get(index);
+			if(deviceView == null)
+			{
+				throw new IllegalStateException("NOT FOUND DEVICEVIEW FOR INDEX = " +index);
+			}
+			deviceView.update(device);
+		}
 	}
 }

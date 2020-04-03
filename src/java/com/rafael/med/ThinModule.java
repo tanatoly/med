@@ -1,5 +1,6 @@
 package com.rafael.med;
 
+import com.rafael.med.MedData.Bed;
 import com.rafael.med.common.ViewUtils;
 
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
@@ -14,6 +15,8 @@ import javafx.scene.text.Text;
 
 public class ThinModule extends GridPane
 {
+	private Bed bed;
+
 	public ThinModule()
 	{
 		setGridLinesVisible(true);
@@ -50,5 +53,15 @@ public class ThinModule extends GridPane
 		GridPane.setConstraints(fullView, 				3, 0, 1, 1, HPos.CENTER, VPos.CENTER);
 		
 		getChildren().addAll(bedNumber, fullView, alarm);
+	}
+	
+	public void setBed(Bed bed)
+	{
+		this.bed = bed;
+	}
+	
+	public void onTimeClick()
+	{
+		
 	}
 }

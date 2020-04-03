@@ -85,10 +85,15 @@ public class MedStartup extends Application
 		Screen primaryScreen = Screen.getPrimary();
 		double screenWidth  = primaryScreen.getBounds().getWidth();
 		double screenHeight = primaryScreen.getBounds().getHeight();
-		BorderPane mainPane = new BorderPane();
 		
-		JFXDecorator decorator = new JFXDecorator(primaryStage, mainPane, false, true, true);
-		decorator.setUserData(mainPane);
+		Text centeTitle = new Text("ROOM 1");
+		centeTitle.setFill(Color.WHITE);
+		centeTitle.setFont(Font.font(22));
+		
+		MainView mainView = new MainView(centeTitle);
+		
+		JFXDecorator decorator = new JFXDecorator(primaryStage, mainView, false, true, true);
+		decorator.setUserData(mainView);
 		decorator.setOnCloseButtonAction(() -> 
 		{
 			System.exit(0);
@@ -99,9 +104,7 @@ public class MedStartup extends Application
 		Text text = new Text("  Medical monitor");
 		text.setFill(Constants.COLOR_95);
 		text.setFont(Font.font(20));
-		Text centeTitle = new Text("ROOM 1");
-		centeTitle.setFill(Color.WHITE);
-		centeTitle.setFont(Font.font(22));
+		
 		Text createTimeLabel = ViewUtils.createTimeLabel("");
 		createTimeLabel.setFill(Constants.COLOR_95);
 		createTimeLabel.setFont(Font.font(20));
@@ -118,7 +121,7 @@ public class MedStartup extends Application
 		primaryStage.centerOnScreen();
 		primaryStage.setMaximized(true);
 		
-		MedManager.INSTANCE.init(mainPane, centeTitle);
+		MedManager.INSTANCE.init(mainView);
 		
 		primaryStage.show();
 		

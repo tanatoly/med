@@ -1,20 +1,142 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<at>
-	<apps>
-		<app class="com.rafael.med.ans.AppAns" 					title="ans" 				icon="COMPRESS"				isLanNeeded="true"/>
-		<app class="com.rafael.med.deploy.AppDeploy" 			title="deploy" 				icon="GAVEL"				isLanNeeded="true"/>
-		<app class="com.rafael.med.transfer.AppTransfer" 		title="transfer" 			icon="HANDSHAKE_ALT"		isLanNeeded="true">
-			<chunkSize>1300</chunkSize>
-			<txDelayMs>5</txDelayMs>
-			<speedControlK>480</speedControlK>
-			<rxDurationSec>1</rxDurationSec>
-		</app>
-		<app class="com.rafael.med.debrief.AppDebrief" 			title="debrief" 			icon="HEADPHONES"			isLanNeeded="false"/>
-		<app class="com.rafael.med.pcapplayer.AppPcapPlayer" 	title="pcap player" 		icon="BULLHORN"				isLanNeeded="false"/>
-		<app class="com.rafael.med.excel.AppExcel" 				title="excel" 				icon="FILE_EXCEL_ALT"		isLanNeeded="false"/>
-		<app class="com.rafael.med.wave.AppWave" 				title="wave" 				icon="LINE_CHART"			isLanNeeded="false"/>
-		<app class="com.rafael.med.spect.AppSpect" 				title="Spectrogram" 		icon="SELLSY"				isLanNeeded="true"/>
-		<app class="com.rafael.med.nco.AppNco" 					title="nco" 				icon="FIGHTER_JET"			isLanNeeded="true"/>
-	</apps>
-
-</at>
+<config>
+	<devices>
+		<device type="10" name="VelaBox ventilator" serial="00123456">
+		 	<param id="0" name="FiO2" type="2" presision="0" units="%" min="100" max="200"/>
+		 	<param id="1" name="Peep" type="2" presision="0" units="TBD"/>
+		 	<param id="2" name="PO2" type="2" presision="0" units="TBD"/>
+		 	<param id="3" name="Ppeak" type="2" presision="0" units="TBD"/>
+		 	<param id="4" name="Rate" type="2" presision="0" units="bpm"/>
+		 	<param id="5" name="VTe" type="1" presision="0" units="TBD"/>
+		 	<param id="6" name="VTi" type="1" presision="0" units="TBD"/>
+		 	<param id="7" name="IE" type="3" presision="0" units="TBD"/>
+		</device> 
+	</devices>
+	<beds>
+		<department id="מחלקה 1">
+			<room id="1">
+				<bed id="1001" number="1"  patientName="מושה כהן" patientId="025346121"/>
+				<bed id="1002" number="2"  patientName="חיים כהן" patientId="312859623"/>
+				<bed id="1003" number="3"  patientName="אלי כהן" patientId="024364585"/>
+				<bed id="1004" number="4"  patientName="מיקי כהן" patientId="024368585"/>
+				<bed id="1005" number="5"  patientName="יוסי כהן" patientId="035364585"/>
+			</room>	
+			<room id="2">
+				<bed id="1006" number="1"  patientName="מושה כהן" patientId="025346121"/>
+				<bed id="1007" number="2"  patientName="חיים כהן" patientId="312859623"/>
+				<bed id="1008" number="3"  patientName="אלי כהן" patientId="024364585"/>
+				<bed id="1009" number="4"  patientName="מיקי כהן" patientId="024368585"/>
+				<bed id="1010" number="5"  patientName="יוסי כהן" patientId="035364585"/>
+			</room>	
+			<room id="3">
+				<bed id="1011" number="1"  patientName="מושה כהן" patientId="025346121"/>
+				<bed id="1012" number="2"  patientName="חיים כהן" patientId="312859623"/>
+				<bed id="1013" number="3"  patientName="אלי כהן" patientId="024364585"/>
+				<bed id="1014" number="4"  patientName="מיקי כהן" patientId="024368585"/>
+				<bed id="1015" number="5"  patientName="יוסי כהן" patientId="035364585"/>
+			</room>
+			<room id="4">
+				<bed id="1016" number="1"  patientName="מושה כהן" patientId="025346121"/>
+				<bed id="1017" number="2"  patientName="חיים כהן" patientId="312859623"/>
+				<bed id="1018" number="3"  patientName="אלי כהן" patientId="024364585"/>
+				<bed id="1019" number="4"  patientName="מיקי כהן" patientId="024368585"/>
+				<bed id="1020" number="5"  patientName="יוסי כהן" patientId="035364585"/>
+				<bed id="1021" number="6"  patientName="ישראל אשראלי" patientId="035364500"/>
+			</room>	
+		</department>
+		
+		<department id="מחלקה 2">
+			<room id="1">
+				<bed id="2001" number="1"  patientName="מושה כהן" patientId="025346121"/>
+				<bed id="2002" number="2"  patientName="חיים כהן" patientId="312859623"/>
+				<bed id="2003" number="3"  patientName="אלי כהן" patientId="024364585"/>
+				<bed id="2004" number="4"  patientName="מיקי כהן" patientId="024368585"/>
+				<bed id="2005" number="5"  patientName="יוסי כהן" patientId="035364585"/>
+			</room>	
+			<room id="2">
+				<bed id="2006" number="1"  patientName="מושה כהן" patientId="025346121"/>
+				<bed id="2007" number="2"  patientName="חיים כהן" patientId="312859623"/>
+				<bed id="2008" number="3"  patientName="אלי כהן" patientId="024364585"/>
+				<bed id="2009" number="4"  patientName="מיקי כהן" patientId="024368585"/>
+				<bed id="2010" number="5"  patientName="יוסי כהן" patientId="035364585"/>
+			</room>	
+			<room id="3">
+				<bed id="2011" number="1"  patientName="מושה כהן" patientId="025346121"/>
+				<bed id="2012" number="2"  patientName="חיים כהן" patientId="312859623"/>
+				<bed id="2013" number="3"  patientName="אלי כהן" patientId="024364585"/>
+				<bed id="2014" number="4"  patientName="מיקי כהן" patientId="024368585"/>
+				<bed id="2015" number="5"  patientName="יוסי כהן" patientId="035364585"/>
+			</room>
+			<room id="4">
+				<bed id="2016" number="1"  patientName="מושה כהן" patientId="025346121"/>
+				<bed id="2017" number="2"  patientName="חיים כהן" patientId="312859623"/>
+				<bed id="2018" number="3"  patientName="אלי כהן" patientId="024364585"/>
+				<bed id="2019" number="4"  patientName="מיקי כהן" patientId="024368585"/>
+				<bed id="2020" number="5"  patientName="יוסי כהן" patientId="035364585"/>
+				<bed id="2021" number="6"  patientName="ישראל אשראלי" patientId="035364500"/>
+			</room>	
+		</department>
+		<department id="מחלקה 3">
+			<room id="1">
+				<bed id="3001" number="1"  patientName="מושה כהן" patientId="025346121"/>
+				<bed id="3002" number="2"  patientName="חיים כהן" patientId="312859623"/>
+				<bed id="3003" number="3"  patientName="אלי כהן" patientId="024364585"/>
+				<bed id="3004" number="4"  patientName="מיקי כהן" patientId="024368585"/>
+				<bed id="3005" number="5"  patientName="יוסי כהן" patientId="035364585"/>
+			</room>	
+			<room id="2">
+				<bed id="3006" number="1"  patientName="מושה כהן" patientId="025346121"/>
+				<bed id="3007" number="2"  patientName="חיים כהן" patientId="312859623"/>
+				<bed id="3008" number="3"  patientName="אלי כהן" patientId="024364585"/>
+				<bed id="3009" number="4"  patientName="מיקי כהן" patientId="024368585"/>
+				<bed id="3010" number="5"  patientName="יוסי כהן" patientId="035364585"/>
+			</room>	
+			<room id="3">
+				<bed id="3011" number="1"  patientName="מושה כהן" patientId="025346121"/>
+				<bed id="3012" number="2"  patientName="חיים כהן" patientId="312859623"/>
+				<bed id="3013" number="3"  patientName="אלי כהן" patientId="024364585"/>
+				<bed id="3014" number="4"  patientName="מיקי כהן" patientId="024368585"/>
+				<bed id="3015" number="5"  patientName="יוסי כהן" patientId="035364585"/>
+			</room>
+			<room id="4">
+				<bed id="3016" number="1"  patientName="מושה כהן" patientId="025346121"/>
+				<bed id="3017" number="2"  patientName="חיים כהן" patientId="312859623"/>
+				<bed id="3018" number="3"  patientName="אלי כהן" patientId="024364585"/>
+				<bed id="3019" number="4"  patientName="מיקי כהן" patientId="024368585"/>
+				<bed id="3020" number="5"  patientName="יוסי כהן" patientId="035364585"/>
+				<bed id="3021" number="6"  patientName="ישראל אשראלי" patientId="035364500"/>
+			</room>	
+		</department>
+		<department id="מחלקה 4">
+			<room id="1">
+				<bed id="4001" number="1"  patientName="מושה כהן" patientId="025346121"/>
+				<bed id="4002" number="2"  patientName="חיים כהן" patientId="312859623"/>
+				<bed id="4003" number="3"  patientName="אלי כהן" patientId="024364585"/>
+				<bed id="4004" number="4"  patientName="מיקי כהן" patientId="024368585"/>
+				<bed id="4005" number="5"  patientName="יוסי כהן" patientId="035364585"/>
+			</room>	
+			<room id="2">
+				<bed id="4006" number="1"  patientName="מושה כהן" patientId="025346121"/>
+				<bed id="4007" number="2"  patientName="חיים כהן" patientId="312859623"/>
+				<bed id="4008" number="3"  patientName="אלי כהן" patientId="024364585"/>
+				<bed id="4009" number="4"  patientName="מיקי כהן" patientId="024368585"/>
+				<bed id="4010" number="5"  patientName="יוסי כהן" patientId="035364585"/>
+			</room>	
+			<room id="3">
+				<bed id="4011" number="1"  patientName="מושה כהן" patientId="025346121"/>
+				<bed id="4012" number="2"  patientName="חיים כהן" patientId="312859623"/>
+				<bed id="4013" number="3"  patientName="אלי כהן" patientId="024364585"/>
+				<bed id="4014" number="4"  patientName="מיקי כהן" patientId="024368585"/>
+				<bed id="4015" number="5"  patientName="יוסי כהן" patientId="035364585"/>
+			</room>
+			<room id="4">
+				<bed id="4016" number="1"  patientName="מושה כהן" patientId="025346121"/>
+				<bed id="4017" number="2"  patientName="חיים כהן" patientId="312859623"/>
+				<bed id="4018" number="3"  patientName="אלי כהן" patientId="024364585"/>
+				<bed id="4019" number="4"  patientName="מיקי כהן" patientId="024368585"/>
+				<bed id="4020" number="5"  patientName="יוסי כהן" patientId="035364585"/>
+				<bed id="4021" number="6"  patientName="ישראל אשראלי" patientId="035364500"/>
+			</room>	
+		</department>
+	</beds>
+</config>
