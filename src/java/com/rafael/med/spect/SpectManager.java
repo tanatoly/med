@@ -14,11 +14,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.rafael.med.AppManager;
 import com.rafael.med.common.BitByteUtils;
 import com.rafael.med.common.Datagram;
-import com.rafael.med.common.Utilities;
 import com.rafael.med.common.Datagram.Listener;
+import com.rafael.med.common.Utilities;
 
 import javafx.concurrent.ScheduledService;
 import javafx.concurrent.Task;
@@ -98,7 +97,7 @@ public class SpectManager
 							}
 							catch (Throwable e) 
 							{
-								AppManager.INSTANCE.showError(AppSpect.class,log,"ON ACTION FAILED : ",e);
+								//AppManager.INSTANCE.showError(AppSpect.class,log,"ON ACTION FAILED : ",e);
 							}
 							return null;
 						}
@@ -196,7 +195,7 @@ public class SpectManager
 								}
 								catch (Throwable e) 
 								{
-									AppManager.INSTANCE.showError(AppSpect.class,log,"ON ACTION FAILED : ",e);
+									//AppManager.INSTANCE.showError(AppSpect.class,log,"ON ACTION FAILED : ",e);
 								}
 							}
 						}
@@ -212,7 +211,7 @@ public class SpectManager
 		} 
 		catch (Exception e) 
 		{
-			AppManager.INSTANCE.showError(AppSpect.class,log,"ON ACTION FAILED : ",e);
+			//AppManager.INSTANCE.showError(AppSpect.class,log,"ON ACTION FAILED : ",e);
 		}
 	}
 }

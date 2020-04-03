@@ -17,8 +17,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.jfoenix.controls.JFXButton;
-import com.rafael.med.AppBase;
-import com.rafael.med.AppManager;
 import com.rafael.med.common.ViewUtils;
 
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
@@ -40,7 +38,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-public class AppSpect extends AppBase
+public class AppSpect 
 {
 	private static final Logger log = LogManager.getLogger();
 	
@@ -59,7 +57,7 @@ public class AppSpect extends AppBase
 private JFXButton addButton;
 private Map<String, NetworkInterface> inMap;
 	
-	@Override
+
 	public Parent init(Configuration configuration, Stage stage, List<String> args) 
 	{
 		main = new BorderPane();
@@ -197,7 +195,7 @@ private Map<String, NetworkInterface> inMap;
 			}
 			catch (Exception ex)
 			{
-				AppManager.INSTANCE.showError(AppSpect.class,log,"ON ACTION FAILED : ",ex);
+				//AppManager.INSTANCE.showError(AppSpect.class,log,"ON ACTION FAILED : ",ex);
 			}
 		});
 			

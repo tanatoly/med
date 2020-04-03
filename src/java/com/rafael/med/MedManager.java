@@ -1,8 +1,5 @@
 package com.rafael.med;
 
-import com.jfoenix.controls.JFXDialog;
-import com.jfoenix.controls.JFXDialog.DialogTransition;
-import com.jfoenix.controls.JFXDialogLayout;
 import com.rafael.med.MedData.Bed;
 import com.rafael.med.common.Constants;
 import com.rafael.med.common.ViewUtils;

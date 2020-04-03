@@ -4,7 +4,6 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.TreeSet;
 
@@ -15,10 +14,7 @@ import javax.sound.sampled.AudioSystem;
 
 import org.apache.logging.log4j.Logger;
 
-import com.rafael.med.AppBase;
 import com.rafael.med.common.bnet.ChannelType;
-import com.rafael.med.debrief.AppDebrief;
-import com.rafael.med.debrief.ChannelResult;
 
 public class ChannelUtils 
 {	
