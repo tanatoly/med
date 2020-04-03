@@ -28,8 +28,5 @@ module com.rafael.med
 	opens com.rafael.med.images;
 	opens com.rafael.med.fonts;
 	opens com.rafael.med.common;
-	opens com.rafael.med.common.entity;
-	opens com.rafael.med.common.bnet;
-	
 	
 }
