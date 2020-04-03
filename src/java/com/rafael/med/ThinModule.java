@@ -33,6 +33,7 @@ public class ThinModule extends GridPane
 		Text fullView = ViewUtils.glyphIcon(FontAwesomeIcon.ID_CARD, 30, Color.WHITE);
 		fullView.setOnMouseClicked(e ->
 		{
+
 			MedManager.INSTANCE.showDetails(null);
 		});
 		Text bedNumber = new Text("007");
