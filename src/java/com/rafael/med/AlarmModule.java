@@ -33,15 +33,15 @@ public class AlarmModule extends GridPane
 		c.setPercentWidth(25);
 		getColumnConstraints().addAll(c,c,c,c);
 		
-		Text fullView = ViewUtils.glyphIcon(FontAwesomeIcon.ID_CARD, 30, Color.WHITE);
+		Text fullView = ViewUtils.glyphIcon(FontAwesomeIcon.ID_CARD, 30, Color.TRANSPARENT);
 		fullView.setOnMouseClicked(e ->
 		{
 			MedManager.INSTANCE.showDetails(null);
 		});
-		Text bedNumber = new Text("007");
+		Text bedNumber = new Text("");
 		bedNumber.setFill(Color.AQUA);
 		bedNumber.setFont(Font.font(24));
-		Text alarm = ViewUtils.glyphIcon(FontAwesomeIcon.WARNING, 30, Color.RED);
+		Text alarm = ViewUtils.glyphIcon(FontAwesomeIcon.WARNING, 30, Color.TRANSPARENT);
 		alarm.setOnMouseClicked(e ->
 		{
 			

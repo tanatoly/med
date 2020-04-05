@@ -1,5 +1,11 @@
 package com.rafael.med;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.rafael.med.MedData.Bed;
+import com.rafael.med.MedData.Department;
+import com.rafael.med.MedData.Room;
 import com.rafael.med.common.Constants;
 import com.rafael.med.common.ViewUtils;
 
@@ -22,16 +28,23 @@ import javafx.scene.text.Text;
 public class MainView extends BorderPane
 {
 	
-	private DetailsView detailsView;
 	public final StackPane center;
+	private Text title;
+	
+	public final List<ThinModule> thinModules = new ArrayList<>();
 	
 	public MainView(Text title)
 	{
+		this.title = title;
 		setBackground(Constants.BACKGOUND_10);
 		center = new StackPane();
 		BorderPane.setMargin(center, new Insets(5));
 		center.setBackground(Constants.BACKGOUND_90);
-		
+	}
+	
+	
+	public void buildView(MedData data)
+	{
 		VBox pane = new VBox(40);
 		BorderPane.setMargin(pane, new Insets(5));
 		pane.setBackground(Constants.BACKGOUND_60);
@@ -53,28 +66,29 @@ public class MainView extends BorderPane
 			}
 		});
 		
-		for (int i = 1; i <= 6; i++) 
+		
+		for (Department department : data.departments.values())
 		{
-			
-			String str = "מרכז בקרה " + i;
-			Button button = ViewUtils.jfxbutton(str, FontAwesomeIcon.BUILDING, 70, 70, Constants.COLOR_20, Color.GHOSTWHITE, Color.AQUA, "",2);
-			pane.getChildren().add(button);
-			GridPane gridPane = createPane();
-			center.getChildren().add(gridPane);
-			
-			button.setOnAction(e ->
+			if(department != null)
 			{
-				title.setText(str);
-				ObservableList<Node> children = center.getChildren();
-				for (Node node : children)
+				Button button = ViewUtils.jfxbutton(department.id, FontAwesomeIcon.BUILDING, 70, 70, Constants.COLOR_20, Color.GHOSTWHITE, Color.AQUA, "",2);
+				pane.getChildren().add(button);
+				GridPane gridPane = createPane(department.rooms);
+				gridPane.setVisible(false);
+				center.getChildren().add(gridPane);
+				
+				button.setOnAction(e ->
 				{
-					node.setVisible(node == gridPane);
-				}
-			});
-			
+					title.setText(department.id);
+					ObservableList<Node> children = center.getChildren();
+					for (Node node : children)
+					{
+						node.setVisible(node == gridPane);
+					}
+				});
+			}
 		}
-		
-		
+			
 		pane.getChildren().add(ViewUtils.vspace());
 		Button button = ViewUtils.jfxbutton("הגדרות", FontAwesomeIcon.COG, 70, 70, Constants.COLOR_20, Color.GHOSTWHITE, Color.AQUA, "",2);
 		pane.getChildren().add(button);		
@@ -85,10 +99,20 @@ public class MainView extends BorderPane
 		
 		setRight(pane);
 		setCenter(center);
+		
 	}
 	
-	private GridPane createPane()
+	
+	
+	private GridPane createPane(List<Room> rooms)
 	{
+		List<Bed> beds = new ArrayList<>();
+		for (Room room : rooms) 
+		{
+			beds.addAll(room.beds);
+		}
+		
+		
 		GridPane pane = new GridPane();
 		//pane.setGridLinesVisible(true);
 		int rows = 3;
@@ -110,17 +134,25 @@ public class MainView extends BorderPane
 			pane.getColumnConstraints().add(columnConstraints);
 		}
 		
+		int bedIndex = 0;
 		for (int j = 0; j < rows; j++)
 		{
 			for (int i = 0; i < columns; i++)
 			{
-				ThinModule thinModule = new ThinModule();
-				thinModule.setBackground(Constants.BACKGOUND_10);
-				GridPane.setMargin(thinModule, new Insets(1));
-				pane.add(thinModule,i,j);
+				
+				Bed bed = beds.get(bedIndex);
+				if(bed != null)
+				{
+					ThinModule thinModule = new ThinModule();
+					thinModule.setBed(bed);
+					thinModule.setBackground(Constants.BACKGOUND_10);
+					GridPane.setMargin(thinModule, new Insets(1));
+					pane.add(thinModule,i,j);
+					thinModules.add(thinModule);
+				}
+				bedIndex++;
 			}
 		}
-		
 		return pane;
 	}
 	
@@ -158,7 +190,6 @@ public class MainView extends BorderPane
 				pane.add(alarmModule,i,j);
 			}
 		}
-		
 		return pane;
 	}
 }

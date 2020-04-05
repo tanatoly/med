@@ -38,9 +38,11 @@ public class MedManager
 
 	public void init(MainView mainView) throws Exception 
 	{
+		this.data 			= new MedData();
 		this.mainView 		= mainView;
+		mainView.buildView(data);
 		this.detailsView 	= new DetailsView(mainView, mainView.center);
-		this.data = new MedData();
+		
 		
 		scheduledService = new ScheduledService<Void>() 
 		{
@@ -55,11 +57,15 @@ public class MedManager
 						readLock.lock();
 						try
 						{
-								
+							for (ThinModule module : mainView.thinModules)
+							{
+								module.onTimeClick();
+							}
+							detailsView.onTimeClick();
 						}
 						catch (Throwable e) 
 						{
-								//AppManager.INSTANCE.showError(AppSpect.class,log,"ON ACTION FAILED : ",e);
+							log.error("FAILED PERIODIC ACTION - ",e);
 						}
 						finally
 						{
@@ -77,7 +83,7 @@ public class MedManager
 			@Override
 			public void onIncomingMessage(ByteBuffer buffer, InetSocketAddress source)
 			{
-				log.debug("RECEIVED MESSAGE FROM {} , BUFFER = {}", source, buffer);
+				//log.debug("RECEIVED MESSAGE FROM {} , BUFFER = {}", source, buffer);
 				int bedId = 0;
 				
 				writeLock.lock();
@@ -98,7 +104,7 @@ public class MedManager
 		});
 		receiver.open();
 		scheduledService.setDelay(Duration.seconds(1));
-		scheduledService.setPeriod(Duration.seconds(1));
+		scheduledService.setPeriod(Duration.seconds(2));
 		scheduledService.start();
 	}
 	
@@ -110,5 +116,11 @@ public class MedManager
 			detailsView.update(bed);
 			detailsView.show();
 		}
+	}
+
+
+	public void addAlarmBed(Bed bed) 
+	{
+		
 	}
 }
