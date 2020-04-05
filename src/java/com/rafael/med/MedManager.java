@@ -38,9 +38,11 @@ public class MedManager
 
 	public void init(MainView mainView) throws Exception 
 	{
+		this.data 			= new MedData();
 		this.mainView 		= mainView;
+		mainView.buildView(data);
 		this.detailsView 	= new DetailsView(mainView, mainView.center);
-		this.data = new MedData();
+		
 		
 		scheduledService = new ScheduledService<Void>() 
 		{

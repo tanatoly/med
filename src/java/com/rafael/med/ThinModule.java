@@ -16,6 +16,7 @@ import javafx.scene.text.Text;
 public class ThinModule extends GridPane
 {
 	private Bed bed;
+	private Text bedNumber;
 
 	public ThinModule()
 	{
@@ -39,9 +40,9 @@ public class ThinModule extends GridPane
 
 			MedManager.INSTANCE.showDetails(null);
 		});
-		Text bedNumber = new Text("007");
+		bedNumber = new Text("007");
 		bedNumber.setFill(Color.AQUA);
-		bedNumber.setFont(Font.font(24));
+		bedNumber.setFont(Font.font(18));
 		Text alarm = ViewUtils.glyphIcon(FontAwesomeIcon.WARNING, 30, Color.RED);
 		alarm.setOnMouseClicked(e ->
 		{
@@ -58,6 +59,7 @@ public class ThinModule extends GridPane
 	public void setBed(Bed bed)
 	{
 		this.bed = bed;
+		this.bedNumber.setText("חדר " + bed.room + "  מיטה " + bed.number);
 	}
 	
 	public void onTimeClick()

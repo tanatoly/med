@@ -133,16 +133,20 @@ public class MedData
 	public static final class Bed
 	{
 		
-		public final Map<String,Device> devices = new HashMap<>(8);
+		public final Map<String,Device> devices = new HashMap<>();
 		
 		public String number;
 		public String patientName;
 		public String patientId;
 		public final int id;
+		private Map<String, Device> allDevices;
+
+		public String room;
 		
-		public Bed(String id)
+		public Bed(String id, Map<String, Device> allDevices)
 		{
 			this.id = Integer.parseInt(id);
+			this.allDevices = allDevices;
 		}
 		public void handleMessage(ByteBuffer buffer) throws Exception
 		{
@@ -155,7 +159,13 @@ public class MedData
 			Device device = devices.get(serial);
 			if(device == null)
 			{
-				throw new Exception("NOT FOUND DEVICE FOR SERIAL = " + serial);
+				device = allDevices.get(serial);
+				if(device == null)
+				{
+					throw new Exception("NOT FOUND DEVICE WITH SERIAL = " + serial);
+				}
+				
+				devices.put(serial, device);
 			}
 			device.handleMessage(deviceType,buffer);
 		}
@@ -306,10 +316,11 @@ public class MedData
 										Element bedElement = (Element) bedNode;
 										
 										String bedId 		= bedElement.getAttribute("id");
-										Bed bed 			= new Bed(bedId);
+										Bed bed 			= new Bed(bedId,allDevices);
 										bed.number 			= bedElement.getAttribute("number");
 										bed.patientName 	= bedElement.getAttribute("patientName");
 										bed.patientId 		= bedElement.getAttribute("patientId");
+										bed.room			= roomId;
 										
 										allBeds.put(bed.id, bed);
 										room.addBed(bed);
