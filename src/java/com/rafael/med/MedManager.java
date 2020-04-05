@@ -2,6 +2,8 @@ package com.rafael.med;
 
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -34,7 +36,7 @@ public class MedManager
 
 
 	private DetailsView detailsView;
-	
+	private final List<AlarmModule> alarmModules = new ArrayList<>();
 
 	public void init(MainView mainView) throws Exception 
 	{
@@ -113,7 +115,7 @@ public class MedManager
 	{
 		if(bed != null)
 		{
-			detailsView.update(bed);
+			detailsView.setBed(bed);
 			detailsView.show();
 		}
 	}
@@ -121,6 +123,11 @@ public class MedManager
 
 	public void addAlarmBed(Bed bed) 
 	{
+		if(!data.emergencyBeds.contains(bed))
+		{
+			data.emergencyBeds.add(0, bed);
+		}
+		
 		
 	}
 }

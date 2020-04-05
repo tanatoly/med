@@ -8,7 +8,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import com.jfoenix.controls.JFXDialog;
 import com.rafael.med.MedData.Bed;
 import com.rafael.med.MedData.Device;
-import com.rafael.med.MedData.Param;
 import com.rafael.med.common.Constants;
 import com.rafael.med.common.ViewUtils;
 
@@ -35,109 +34,10 @@ import javafx.scene.text.Text;
 
 public class DetailsView extends JFXDialog
 {
-	public static final class DeviceView extends GridPane
-	{
-		
-		private static final int ROWS = 12;
-		
-		private RowText[] params;
-		private Text deviceType;
-		private Text deviceSerial;
-		
-		public DeviceView()
-		{
-			//setGridLinesVisible(true);
-			
-			setBackground(Constants.BACKGOUND_20);
-			setPadding(new Insets(5, 15, 5, 15));
-			
-			RowConstraints r1 = new RowConstraints();
-			r1.setPercentHeight(8);
-			RowConstraints r2 = new RowConstraints();
-			r2.setPercentHeight(2);
-			RowConstraints r3 = new RowConstraints();
-			r3.setPercentHeight((100 - 8 - 2)/ ROWS);
-			getRowConstraints().addAll(r1,r2);
-			
-			for (int i = 0; i < ROWS; i++)
-			{
-				getRowConstraints().add(r3);
-			}
-			
-			ColumnConstraints c = new ColumnConstraints();
-			c.setPercentWidth(25);
-			getColumnConstraints().addAll(c,c,c,c);
-			
-		
-			GridPane.setMargin(this, new Insets(3));
-			setBorder(new Border(new BorderStroke(Color.GHOSTWHITE, BorderStrokeStyle.SOLID, new CornerRadii(2.0), BorderWidths.DEFAULT)));
-			
-			deviceType 		= new Text();
-			deviceType.setFill(Color.GREENYELLOW);
-			deviceType.setFont(Font.font(22));
-			deviceSerial	= new Text();
-			deviceSerial.setFill(Constants.COLOR_95);
-			deviceSerial.setFont(Font.font(22));
-
-		
-			GridPane.setConstraints(deviceType, 				0, 0, 2, 1, HPos.CENTER, VPos.CENTER);
-			GridPane.setConstraints(deviceSerial, 				2, 0, 2, 1, HPos.CENTER, VPos.CENTER);
-			
-			getChildren().addAll(deviceType, deviceSerial);
-			
-			
-			params = new RowText[ROWS];
-			
-			for (int i = 0; i < params.length; i++) 
-			{
-				params[i] = new RowText();
-				GridPane.setConstraints(params[i].name, 	0, i + 2, 2, 1, HPos.LEFT, VPos.CENTER);
-				GridPane.setConstraints(params[i].value, 	2, i + 2, 1, 1, HPos.CENTER, VPos.CENTER);
-				GridPane.setConstraints(params[i].units, 	3, i + 2, 1, 1, HPos.RIGHT, VPos.CENTER);
-				
-				getChildren().addAll(params[i].name, params[i].value, params[i].units );
-			}
-
-		}
-
-		public void update(Device device) 
-		{
-			
-			deviceType.setText(device.name);
-			deviceSerial.setText(device.serial);
-			int count = 0;
-			for (Param param : device.params.values())
-			{
-				if(count < params.length)
-				{
-					RowText rowText = params[count];
-					//System.out.println(count);
-					String name = param.name;
-					rowText.name.setText(name);
-					String value = param.getValue();
-					rowText.value.setText(value);
-					String units = param.units;
-					rowText.units.setText(units);
-
-					if(param.isWarning)
-					{
-						rowText.setColor(Color.RED);
-					}
-					else
-					{
-						rowText.setColor(Color.WHITE);
-					}
-				}
-				count++;
-			}
-		}
-	}
-	
-	
 	private Text bedNumber;
 	private Text name;
 	private Text id;
-	private final List<DeviceView> deviceViews = new ArrayList<>(8);
+	private final List<DeviceModule> deviceViews = new ArrayList<>(8);
 	private Bed bed;
 	
 	
@@ -203,7 +103,7 @@ public class DetailsView extends JFXDialog
 		{
 			for (int j = 2; j <= 3; j++)
 			{
-				DeviceView deviceView = new DeviceView();
+				DeviceModule deviceView = new DeviceModule();
 				GridPane.setConstraints(deviceView, 				i, j, 1, 1, HPos.CENTER, VPos.CENTER);
 				content.getChildren().add(deviceView);
 				deviceViews.add(deviceView);
@@ -219,7 +119,7 @@ public class DetailsView extends JFXDialog
 	}
 	
 	
-	public void update(Bed bed) 
+	public void setBed(Bed bed) 
 	{
 		this.bed = bed;
 		onTimeClick();
@@ -236,7 +136,7 @@ public class DetailsView extends JFXDialog
 		{
 			String serial = entry.getKey();
 			Device device = entry.getValue();
-			DeviceView deviceView = deviceViews.get(index);
+			DeviceModule deviceView = deviceViews.get(index);
 			if(deviceView == null)
 			{
 				throw new IllegalStateException("NOT FOUND DEVICEVIEW FOR INDEX = " +index);
