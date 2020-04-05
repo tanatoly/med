@@ -227,7 +227,7 @@ public class DetailsView extends JFXDialog
 
 	public void onTimeClick()
 	{
-		this.bedNumber.setText("çãø " + bed.room + "  îéèä " + bed.number);
+		this.bedNumber.setText("×—×“×¨ " + bed.room + "  ××™×˜×” " + bed.number);
 		name.setText(bed.patientName);
 		id.setText(bed.patientId);
 		

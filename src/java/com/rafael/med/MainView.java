@@ -30,8 +30,8 @@ public class MainView extends BorderPane
 	
 	public final StackPane center;
 	private Text title;
-	
 	public final List<ThinModule> thinModules = new ArrayList<>();
+
 	
 	public MainView(Text title)
 	{
@@ -51,14 +51,14 @@ public class MainView extends BorderPane
 		pane.setAlignment(Pos.TOP_CENTER);
 		pane.getChildren().add(ViewUtils.vspace(10));
 		
-		Button buttonw = ViewUtils.jfxbutton("μΰ ϊχιπιν", FontAwesomeIcon.WARNING, 70, 70, Constants.COLOR_20, Color.GHOSTWHITE, Color.AQUA, "",2);
+		Button buttonw = ViewUtils.jfxbutton("ΧΧ ΧªΧ§Χ™Χ Χ™Χ", FontAwesomeIcon.WARNING, 70, 70, Constants.COLOR_20, Color.GHOSTWHITE, Color.AQUA, "",2);
 		pane.getChildren().add(buttonw);		
 		pane.getChildren().add(ViewUtils.vspace());
 		GridPane warningPane = createWarningPane();
 		center.getChildren().add(warningPane);
 		buttonw.setOnAction(e ->
 		{
-			title.setText("μΰ ϊχιπιν");
+			title.setText("ΧΧ ΧªΧ§Χ™Χ Χ™Χ");
 			ObservableList<Node> children = center.getChildren();
 			for (Node node : children)
 			{
@@ -90,7 +90,7 @@ public class MainView extends BorderPane
 		}
 			
 		pane.getChildren().add(ViewUtils.vspace());
-		Button button = ViewUtils.jfxbutton("δβγψεϊ", FontAwesomeIcon.COG, 70, 70, Constants.COLOR_20, Color.GHOSTWHITE, Color.AQUA, "",2);
+		Button button = ViewUtils.jfxbutton("Χ”Χ’Χ“Χ¨Χ•Χª", FontAwesomeIcon.COG, 70, 70, Constants.COLOR_20, Color.GHOSTWHITE, Color.AQUA, "",2);
 		pane.getChildren().add(button);		
 		pane.getChildren().add(ViewUtils.vspace(10));
 		pane.setMaxWidth(110);

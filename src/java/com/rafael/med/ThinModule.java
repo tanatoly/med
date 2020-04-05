@@ -26,7 +26,6 @@ public class ThinModule extends GridPane
 	private RowText[] params;
 	private Text alarm;
 
-	
 	public ThinModule()
 	{
 		setGridLinesVisible(true);
@@ -84,7 +83,7 @@ public class ThinModule extends GridPane
 	public void setBed(Bed bed)
 	{
 		this.bed = bed;
-		this.bedNumber.setText("çãø " + bed.room + "  îéèä " + bed.number);	
+		this.bedNumber.setText("×—×“×¨ " + bed.room + "  ×ž×™×˜×” " + bed.number);	
 	}
 	
 	public void onTimeClick()
