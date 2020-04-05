@@ -30,8 +30,8 @@ public class MainView extends BorderPane
 	
 	public final StackPane center;
 	private Text title;
-	
 	public final List<ThinModule> thinModules = new ArrayList<>();
+
 	
 	public MainView(Text title)
 	{

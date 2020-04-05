@@ -26,7 +26,6 @@ public class ThinModule extends GridPane
 	private RowText[] params;
 	private Text alarm;
 
-	
 	public ThinModule()
 	{
 		setGridLinesVisible(true);
