@@ -59,7 +59,7 @@ public class MedManager
 						readLock.lock();
 						try
 						{
-							for (ThinModule module : mainView.thinModules)
+							for (RegularModule module : mainView.thinModules)
 							{
 								module.onTimeClick();
 							}

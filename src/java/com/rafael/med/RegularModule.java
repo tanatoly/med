@@ -19,14 +19,14 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
-public class ThinModule extends GridPane
+public class RegularModule extends GridPane
 {
 	private Bed bed;
 	private Text bedNumber;
 	private RowText[] params;
 	private Text alarm;
 
-	public ThinModule()
+	public RegularModule()
 	{
 		setGridLinesVisible(true);
 		

@@ -30,7 +30,7 @@ public class MainView extends BorderPane
 	
 	public final StackPane center;
 	private Text title;
-	public final List<ThinModule> thinModules = new ArrayList<>();
+	public final List<RegularModule> thinModules = new ArrayList<>();
 
 	
 	public MainView(Text title)
@@ -143,7 +143,7 @@ public class MainView extends BorderPane
 				Bed bed = beds.get(bedIndex);
 				if(bed != null)
 				{
-					ThinModule thinModule = new ThinModule();
+					RegularModule thinModule = new RegularModule();
 					thinModule.setBed(bed);
 					thinModule.setBackground(Constants.BACKGOUND_10);
 					GridPane.setMargin(thinModule, new Insets(1));
