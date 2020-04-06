@@ -2,7 +2,6 @@ package com.rafael.med;
 
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
-import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -12,21 +11,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.rafael.med.Datagram.Listener;
-import com.rafael.med.common.Constants;
-import com.rafael.med.common.ViewUtils;
 
-import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.collections.ObservableList;
-import javafx.concurrent.ScheduledService;
-import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.Node;
-import javafx.scene.control.Button;
-import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
 public class MedManager 
@@ -54,7 +44,6 @@ public class MedManager
 		this.mainView 		= mainView;
 		mainView.buildView(data);
 		this.detailsView 	= new DetailsView(mainView, mainView.center);
-		
 		Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(2),new EventHandler<ActionEvent>()
 		{
 			public void handle(ActionEvent ae)
@@ -83,8 +72,8 @@ public class MedManager
 								}
 							}
 						}
+
 					}
-					
 					for (Department department : data.departments.values())
 					{
 						department.view.update();
@@ -143,16 +132,8 @@ public class MedManager
 		}
 	}
 
-
 	public void addToEmergency(Bed bed) 
 	{
 		mainView.emergencyView.addBed(bed);
-	}
-
-
-	public void removeFromEmergency(Bed bed)
-	{
-		//mainView.emergencyView.removeBed(bed);
-		
 	}
 }

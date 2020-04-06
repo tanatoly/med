@@ -28,17 +28,14 @@ public class Device
 		this.name 	= prototype.name;
 		this.serial = serial;
 		
+
 		for (Map.Entry<Integer, Param> entry : prototype.params.entrySet()) 
 		{
 			Integer key = entry.getKey();
 			Param value = entry.getValue();
 			
 			params.put(key, new Param(value));
-			
-			
 		}
-		
-		
 	}
 	
 

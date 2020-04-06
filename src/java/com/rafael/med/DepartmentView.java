@@ -2,8 +2,8 @@ package com.rafael.med;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.atomic.AtomicBoolean;
+
 
 import com.rafael.med.common.Constants;
 import com.rafael.med.common.ViewUtils;
@@ -14,12 +14,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.layout.Border;
-import javafx.scene.layout.BorderStroke;
-import javafx.scene.layout.BorderStrokeStyle;
-import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
@@ -125,7 +120,6 @@ public class DepartmentView extends ScrollPane
 			else
 			{
 				alarm.setFill(Color.TRANSPARENT);
-				MedManager.INSTANCE.removeFromEmergency(bed);
 			}
 		}
 	}
