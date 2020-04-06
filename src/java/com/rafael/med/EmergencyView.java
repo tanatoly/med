@@ -1,5 +1,6 @@
 package com.rafael.med;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentSkipListMap;
 
@@ -115,7 +116,7 @@ public class EmergencyView extends ScrollPane
 	
 	
 	
-	private final Map<Bed, EmergencyModule> map = new ConcurrentSkipListMap<>((bed1, bed2) -> (int) (bed1.firstTime.get() - bed2.firstTime.get()));
+	private final Map<Bed, EmergencyModule> map = new HashMap<>();
 	private FlowPane flowPane;
 	
 	private double moduleWidth = 0;
@@ -133,11 +134,11 @@ public class EmergencyView extends ScrollPane
 	
 	public void addBed(Bed bed)
 	{
+		
 		if(moduleWidth == 0)
 		{
 			moduleWidth = (getWidth() - 22) / 6  - 4;
 		}
-		
 		if(!map.containsKey(bed))
 		{
 			EmergencyModule module = new EmergencyModule(bed,this);

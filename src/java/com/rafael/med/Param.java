@@ -28,7 +28,6 @@ public class Param
 	public boolean isAlarm;
 	
 	public AtomicBoolean isWarning = new AtomicBoolean(false);
-	public long firstTimeWarning;
 	
 	public Param(String id, String name, String valueType, String presision, String units, String min, String max, String regular, String alarm)
 	{
@@ -108,11 +107,6 @@ public class Param
 			buffer.get(bytes);
 			valueString = new String(bytes);
 		}
-		
-		if(isWarning.compareAndSet(!isNowWarning, isNowWarning))
-		{
-			long time = (isNowWarning) ? System.currentTimeMillis() : 0;
-			firstTimeWarning = time;
-		}
+		isWarning.compareAndSet(!isNowWarning, isNowWarning);
 	}	
 }
