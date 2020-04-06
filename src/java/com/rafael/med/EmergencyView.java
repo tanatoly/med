@@ -95,6 +95,10 @@ public class EmergencyView extends ScrollPane
 			{
 				if(device != null)
 				{
+					boolean isDeviceNotTransmit = false;
+					long delta = System.currentTimeMillis() - device.lastMessageTime;
+					isDeviceNotTransmit = delta > 10_000; // 10 seconds
+					
 					for (Param param : device.params.values())
 					{
 						if(param !=null && param.isAlarm && count < rows.length)
@@ -106,6 +110,11 @@ public class EmergencyView extends ScrollPane
 								
 							Color color = param.isWarning.get() ? Color.RED : Color.WHITE;
 							row.setColor(color);
+							
+							if(isDeviceNotTransmit)
+							{
+								row.setColor(Constants.COLOR_95);
+							}
 							count++;
 						}
 					}

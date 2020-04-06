@@ -73,6 +73,8 @@ public class MedData
 								String min = paramElement.getAttribute("min");
 								String max = paramElement.getAttribute("max");
 								
+								
+								
 								String regular = paramElement.getAttribute("regular");
 								String alarm = paramElement.getAttribute("alarm");
 								

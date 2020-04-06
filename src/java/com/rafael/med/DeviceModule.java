@@ -78,6 +78,12 @@ public final class DeviceModule extends GridPane
 
 	public void update(Device device) 
 	{
+		
+		boolean isDeviceNotTransmit = false;
+		long delta = System.currentTimeMillis() - device.lastMessageTime;
+		isDeviceNotTransmit = delta > 10_000; // 10 seconds
+		
+		
 		deviceType.setText(device.name);
 		deviceSerial.setText(device.serial);
 		int count = 0;
@@ -96,6 +102,10 @@ public final class DeviceModule extends GridPane
 				else
 				{
 					rowText.setColor(Color.WHITE);
+				}
+				if(isDeviceNotTransmit)
+				{
+					rowText.setColor(Constants.COLOR_95);
 				}
 			}
 			count++;

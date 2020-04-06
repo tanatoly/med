@@ -36,11 +36,11 @@ public class Param
 		this.valueType		= Integer.parseInt(valueType);
 		this.presision		= Integer.parseInt(presision);
 		this.units			= units;
-		if(StringUtils.isNumeric(min))
+		if(StringUtils.isNotBlank(min))
 		{
 			minValue = Double.parseDouble(min);
 		}
-		if(StringUtils.isNumeric(max))
+		if(StringUtils.isNotBlank(max))
 		{
 			maxValue = Double.parseDouble(max);
 		}
@@ -98,7 +98,7 @@ public class Param
 		else if(valueType == TYPE_INT)
 		{
 			valueInt = buffer.getInt();
-			isNowWarning = valueFloat < minValue || valueFloat > maxValue;
+			isNowWarning = valueInt < minValue || valueInt > maxValue;
 		}
 		else if(valueType == TYPE_STRING)
 		{

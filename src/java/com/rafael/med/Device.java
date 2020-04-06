@@ -11,7 +11,7 @@ public class Device
 	public String serial;
 	public String error;
 	public boolean isWorking;
-	
+	public long lastMessageTime = 0;
 	
 	public final Map<Integer, Param> params = new LinkedHashMap<>();
 
@@ -52,6 +52,7 @@ public class Device
 			}
 			param.handleMessage(buffer);
 		}
+		lastMessageTime = System.currentTimeMillis();
 	}
 
 

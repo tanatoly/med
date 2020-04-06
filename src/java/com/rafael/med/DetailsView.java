@@ -128,6 +128,7 @@ public class DetailsView extends JFXDialog
 			int index = 0;
 			for (Device device : bed.devices.values())
 			{
+				
 				if(index < deviceViews.size())
 				{
 				

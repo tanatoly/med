@@ -87,6 +87,10 @@ public class DepartmentView extends ScrollPane
 			{
 				if(device != null)
 				{
+					boolean isDeviceNotTransmit = false;
+					long delta = System.currentTimeMillis() - device.lastMessageTime;
+					isDeviceNotTransmit = delta > 10_000; // 10 seconds
+					
 					
 					for (Param param : device.params.values())
 					{
@@ -97,6 +101,7 @@ public class DepartmentView extends ScrollPane
 							row.value.setText(param.getValue());
 							row.units.setText(param.units);
 								
+							
 							if(param.isWarning.get())
 							{
 								row.setColor(Color.RED);
@@ -105,6 +110,11 @@ public class DepartmentView extends ScrollPane
 							else
 							{
 								row.setColor(Color.WHITE);
+							}
+							
+							if(isDeviceNotTransmit)
+							{
+								row.setColor(Constants.COLOR_95);
 							}
 							count++;
 						}
