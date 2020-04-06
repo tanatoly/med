@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <config>
 	<devices>
-		<device type="10" name="VelaBox ventilator" serial="00123456">
-		 	<param id="0" name="FiO2" type="2" presision="0" units="%" min="0" max="200" regular="true" alarm="true"/>
-		 	<param id="1" name="Peep" type="2" presision="0" units="TBD" min="0" max="200" regular="true" alarm="true"/>
-		 	<param id="2" name="PO2" type="2" presision="0" units="TBD" min="0" max="200" regular="true" alarm="true"/>
-		 	<param id="3" name="Ppeak" type="2" presision="0" units="TBD" min="0" max="200" regular="true" alarm="true"/>
-		 	<param id="4" name="Rate" type="2" presision="0" units="bpm" min="0" max="200" regular="true" alarm="true"/>
-		 	<param id="5" name="VTe" type="1" presision="0" units="TBD" min="0" max="2000" regular="true" alarm="true"/>
-		 	<param id="6" name="VTi" type="1" presision="0" units="TBD" min="0" max="2000" regular="true" alarm="true"/>
+		<device type="10" name="VelaBox ventilator">
+		 	<param id="0" name="FiO2" type="2" presision="0" units="%" min="0" max="100" regular="true" alarm="true"/>
+		 	<param id="1" name="Peep" type="2" presision="0" units="cmH2O" min="0" max="99" regular="true" alarm="true"/>
+		 	<param id="2" name="PO2" type="2" presision="0" units="psig" min="0" max="100" regular="true" alarm="true"/>
+		 	<param id="3" name="Ppeak" type="2" presision="0" units="cmH2O" min="0" max="140" regular="true" alarm="true"/>
+		 	<param id="4" name="Rate" type="2" presision="0" units="bpm" min="0" max="250" regular="true" alarm="true"/>
+		 	<param id="5" name="VTe" type="1" presision="0" units="ml" min="0" max="4000" regular="true" alarm="true"/>
+		 	<param id="6" name="VTi" type="1" presision="0" units="ml" min="0" max="4000" regular="true" alarm="true"/>
 		 	<param id="7" name="IE" type="3" presision="0" units="TBD" min="0" max="200" regular="true" alarm="true"/>
 		</device> 
 	</devices>

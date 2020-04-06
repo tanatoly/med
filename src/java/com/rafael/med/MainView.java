@@ -3,9 +3,6 @@ package com.rafael.med;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.rafael.med.MedData.Bed;
-import com.rafael.med.MedData.Department;
-import com.rafael.med.MedData.Room;
 import com.rafael.med.common.Constants;
 import com.rafael.med.common.ViewUtils;
 
@@ -31,7 +28,8 @@ public class MainView extends BorderPane
 	public final StackPane center;
 	private Text title;
 	public final List<RegularModule> thinModules = new ArrayList<>();
-
+	
+	public final EmergencyView emergencyView;
 	
 	public MainView(Text title)
 	{
@@ -40,7 +38,10 @@ public class MainView extends BorderPane
 		center = new StackPane();
 		BorderPane.setMargin(center, new Insets(5));
 		center.setBackground(Constants.BACKGOUND_90);
+		emergencyView = new EmergencyView();
 	}
+	
+	
 	
 	
 	public void buildView(MedData data)
@@ -54,15 +55,15 @@ public class MainView extends BorderPane
 		Button buttonw = ViewUtils.jfxbutton("לא תקינים", FontAwesomeIcon.WARNING, 70, 70, Constants.COLOR_20, Color.GHOSTWHITE, Color.AQUA, "",2);
 		pane.getChildren().add(buttonw);		
 		pane.getChildren().add(ViewUtils.vspace());
-		GridPane warningPane = createWarningPane();
-		center.getChildren().add(warningPane);
+		//GridPane warningPane = createWarningPane();
+		center.getChildren().add(emergencyView);
 		buttonw.setOnAction(e ->
 		{
 			title.setText("לא תקינים");
 			ObservableList<Node> children = center.getChildren();
 			for (Node node : children)
 			{
-				node.setVisible(node == warningPane);
+				node.setVisible(node == emergencyView);
 			}
 		});
 		
@@ -98,6 +99,7 @@ public class MainView extends BorderPane
 		
 		
 		setRight(pane);
+		
 		setCenter(center);
 		
 	}
@@ -143,51 +145,13 @@ public class MainView extends BorderPane
 				Bed bed = beds.get(bedIndex);
 				if(bed != null)
 				{
-					RegularModule thinModule = new RegularModule();
-					thinModule.setBed(bed);
+					RegularModule thinModule = new RegularModule(bed);
 					thinModule.setBackground(Constants.BACKGOUND_10);
 					GridPane.setMargin(thinModule, new Insets(1));
 					pane.add(thinModule,i,j);
 					thinModules.add(thinModule);
 				}
 				bedIndex++;
-			}
-		}
-		return pane;
-	}
-	
-	
-	private GridPane createWarningPane()
-	{
-		GridPane pane = new GridPane();
-		//pane.setGridLinesVisible(true);
-		int rows = 6;
-		int columns = 7;
-		
-		for (int i = 0; i < rows; i++) 
-		{
-			RowConstraints rowConstraints = new RowConstraints();
-			rowConstraints.setFillHeight(true);
-			rowConstraints.setVgrow(Priority.ALWAYS);
-			pane.getRowConstraints().add(rowConstraints);
-		}
-		
-		for (int i = 0; i < columns; i++)
-		{
-			ColumnConstraints columnConstraints = new ColumnConstraints();
-			columnConstraints.setFillWidth(true);
-			columnConstraints.setHgrow(Priority.ALWAYS);
-			pane.getColumnConstraints().add(columnConstraints);
-		}
-		
-		for (int j = 0; j < rows; j++)
-		{
-			for (int i = 0; i < columns; i++)
-			{
-				AlarmModule alarmModule = new AlarmModule();
-				alarmModule.setBackground(Constants.BACKGOUND_10);
-				GridPane.setMargin(alarmModule, new Insets(1));
-				pane.add(alarmModule,i,j);
 			}
 		}
 		return pane;

@@ -2,8 +2,7 @@ package com.rafael.med;
 
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Iterator;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -12,8 +11,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.rafael.med.Datagram.Listener;
-import com.rafael.med.MedData.Bed;
 
+import javafx.application.Platform;
 import javafx.concurrent.ScheduledService;
 import javafx.concurrent.Task;
 import javafx.util.Duration;
@@ -36,7 +35,6 @@ public class MedManager
 
 
 	private DetailsView detailsView;
-	private final List<AlarmModule> alarmModules = new ArrayList<>();
 
 	public void init(MainView mainView) throws Exception 
 	{
@@ -45,6 +43,8 @@ public class MedManager
 		mainView.buildView(data);
 		this.detailsView 	= new DetailsView(mainView, mainView.center);
 		
+		
+		Iterator<Bed> it = data.allBeds.values().iterator();
 		
 		scheduledService = new ScheduledService<Void>() 
 		{
@@ -61,9 +61,25 @@ public class MedManager
 						{
 							for (RegularModule module : mainView.thinModules)
 							{
-								module.onTimeClick();
+								module.update();
 							}
-							detailsView.onTimeClick();
+							detailsView.update();
+							mainView.emergencyView.update();
+							
+//							Bed next = it.next();
+//							next.firstTime.set(System.currentTimeMillis());
+//							
+//							System.out.println(next);
+//							
+//							Platform.runLater( new Runnable() {
+//								
+//								@Override
+//								public void run() {
+//									mainView.emergencyView.addBed(next);
+//									
+//								}
+//							});
+							
 						}
 						catch (Throwable e) 
 						{
@@ -106,7 +122,7 @@ public class MedManager
 		});
 		receiver.open();
 		scheduledService.setDelay(Duration.seconds(1));
-		scheduledService.setPeriod(Duration.seconds(2));
+		scheduledService.setPeriod(Duration.seconds(1));
 		scheduledService.start();
 	}
 	
@@ -121,13 +137,8 @@ public class MedManager
 	}
 
 
-	public void addAlarmBed(Bed bed) 
+	public void addToEmergency(Bed bed) 
 	{
-		if(!data.emergencyBeds.contains(bed))
-		{
-			data.emergencyBeds.add(0, bed);
-		}
-		
 		
 	}
 }

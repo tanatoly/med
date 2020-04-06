@@ -1,7 +1,5 @@
 package com.rafael.med;
 
-import com.rafael.med.MedData.Device;
-import com.rafael.med.MedData.Param;
 import com.rafael.med.common.Constants;
 
 import javafx.geometry.HPos;
@@ -94,7 +92,7 @@ public final class DeviceModule extends GridPane
 				rowText.name.setText(param.name);
 				rowText.value.setText(param.getValue());
 				rowText.units.setText(param.units);
-				if(param.isWarning)
+				if(param.isWarning.get())
 				{
 					rowText.setColor(Color.RED);
 				}

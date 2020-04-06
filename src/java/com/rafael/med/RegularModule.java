@@ -3,9 +3,6 @@ package com.rafael.med;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import com.rafael.med.MedData.Bed;
-import com.rafael.med.MedData.Device;
-import com.rafael.med.MedData.Param;
 import com.rafael.med.common.ViewUtils;
 
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
@@ -26,9 +23,10 @@ public class RegularModule extends GridPane
 	private RowText[] params;
 	private Text alarm;
 
-	public RegularModule()
+	public RegularModule(Bed bed)
 	{
-		setGridLinesVisible(true);
+		this.bed = bed;
+		//setGridLinesVisible(true);
 		
 		
 		setPadding(new Insets(0, 10, 0, 10));
@@ -50,7 +48,7 @@ public class RegularModule extends GridPane
 
 			MedManager.INSTANCE.showDetails(bed);
 		});
-		bedNumber = new Text("007");
+		bedNumber = new Text(bed.getName());
 		bedNumber.setFill(Color.AQUA);
 		bedNumber.setFont(Font.font(18));
 		alarm = ViewUtils.glyphIcon(FontAwesomeIcon.WARNING, 30, Color.TRANSPARENT);
@@ -80,13 +78,8 @@ public class RegularModule extends GridPane
 		
 	}
 	
-	public void setBed(Bed bed)
-	{
-		this.bed = bed;
-		this.bedNumber.setText("חדר " + bed.room + "  מיטה " + bed.number);	
-	}
 	
-	public void onTimeClick()
+	public void update()
 	{
 		int count = 0;
 		for (Map.Entry<String, Device> entry : bed.devices.entrySet()) 
@@ -96,7 +89,7 @@ public class RegularModule extends GridPane
 			AtomicBoolean isWarning = new AtomicBoolean(false);
 			for (Param param : device.params.values())
 			{
-				if(param.isRegular)
+				if(param.isInRegularModule)
 				{
 					if(count < params.length)
 					{
@@ -109,7 +102,7 @@ public class RegularModule extends GridPane
 						String units = param.units;
 						rowText.units.setText(units);
 						
-						if(param.isWarning)
+						if(param.isWarning.get())
 						{
 							rowText.setColor(Color.RED);
 							isWarning.compareAndSet(false, true);
@@ -128,7 +121,7 @@ public class RegularModule extends GridPane
 			if(isWarning.get())
 			{
 				alarm.setFill(Color.RED);
-				MedManager.INSTANCE.addAlarmBed(bed);
+				MedManager.INSTANCE.addToEmergency(bed);
 			}
 			else
 			{

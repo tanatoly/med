@@ -3,11 +3,8 @@ package com.rafael.med;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.jfoenix.controls.JFXDialog;
-import com.rafael.med.MedData.Bed;
-import com.rafael.med.MedData.Device;
 import com.rafael.med.common.Constants;
 import com.rafael.med.common.ViewUtils;
 
@@ -24,11 +21,9 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Line;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
@@ -122,12 +117,15 @@ public class DetailsView extends JFXDialog
 	public void setBed(Bed bed) 
 	{
 		this.bed = bed;
-		onTimeClick();
+		update();
 	}
 
-	public void onTimeClick()
+	public void update()
 	{
-		this.bedNumber.setText("חדר " + bed.room + "  מיטה " + bed.number);
+		if(bed != null)
+		{
+		
+			bedNumber.setText(bed.getName());
 		name.setText(bed.patientName);
 		id.setText(bed.patientId);
 		
@@ -143,6 +141,7 @@ public class DetailsView extends JFXDialog
 			}
 			deviceView.update(device);
 			index++;
+		}
 		}
 		
 	}
