@@ -42,7 +42,7 @@ public final class Bed
 			}
 			device = new Device(prototype, serial);
 			devices.put(serial, device);
-		}	
+		}
 		device.handleMessage(buffer);
 	}
 	

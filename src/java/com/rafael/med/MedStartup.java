@@ -8,12 +8,10 @@ import java.net.URL;
 
 import javax.imageio.ImageIO;
 
-import org.apache.commons.configuration2.Configuration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.jfoenix.controls.JFXDecorator;
-import com.rafael.med.common.Configurator;
 import com.rafael.med.common.Constants;
 import com.rafael.med.common.Utilities;
 import com.rafael.med.common.ViewUtils;
@@ -23,7 +21,6 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.paint.Color;
