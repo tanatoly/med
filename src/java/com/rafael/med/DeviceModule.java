@@ -19,7 +19,7 @@ import javafx.scene.text.Text;
 
 public final class DeviceModule extends GridPane
 {
-	private static final int ROWS = 12;
+	private static final int ROWS = 10;
 	
 	private RowText[] params;
 	private Text deviceType;
@@ -29,27 +29,24 @@ public final class DeviceModule extends GridPane
 	{
 		//setGridLinesVisible(true);
 		
-		setBackground(Constants.BACKGOUND_20);
-		setPadding(new Insets(5, 15, 5, 15));
+		setBackground(Constants.BACKGOUND_10);
+		setPadding(new Insets(4,10,4,10));
+		
+		this.setMaxHeight(50 +  (30 * ROWS));
+		this.setMinHeight(50 +  (30 * ROWS));
+		
 		
 		RowConstraints r1 = new RowConstraints();
-		r1.setPercentHeight(8);
+		r1.setPercentHeight(10);
 		RowConstraints r2 = new RowConstraints();
-		r2.setPercentHeight(2);
-		RowConstraints r3 = new RowConstraints();
-		r3.setPercentHeight((100 - 8 - 2)/ ROWS);
-		getRowConstraints().addAll(r1,r2);
-		
-		for (int i = 0; i < ROWS; i++)
-		{
-			getRowConstraints().add(r3);
-		}
+		r2.setPercentHeight(9);
+		getRowConstraints().addAll(r1, r2, r2, r2 ,r2 , r2, r2, r2, r2 , r2, r2);
 		
 		ColumnConstraints c = new ColumnConstraints();
 		c.setPercentWidth(25);
 		getColumnConstraints().addAll(c,c,c,c);
 		
-	
+		
 		GridPane.setMargin(this, new Insets(3));
 		setBorder(new Border(new BorderStroke(Color.GHOSTWHITE, BorderStrokeStyle.SOLID, new CornerRadii(2.0), BorderWidths.DEFAULT)));
 		
@@ -70,10 +67,10 @@ public final class DeviceModule extends GridPane
 		
 		for (int i = 0; i < params.length; i++) 
 		{
-			params[i] = new RowText();
-			GridPane.setConstraints(params[i].name, 	0, i + 2, 2, 1, HPos.LEFT, VPos.CENTER);
-			GridPane.setConstraints(params[i].value, 	2, i + 2, 1, 1, HPos.CENTER, VPos.CENTER);
-			GridPane.setConstraints(params[i].units, 	3, i + 2, 1, 1, HPos.RIGHT, VPos.CENTER);
+			params[i] = new RowText(18);
+			GridPane.setConstraints(params[i].name, 	0, i + 1, 2, 1, HPos.LEFT, VPos.CENTER);
+			GridPane.setConstraints(params[i].value, 	2, i + 1, 1, 1, HPos.CENTER, VPos.CENTER);
+			GridPane.setConstraints(params[i].units, 	3, i + 1, 1, 1, HPos.RIGHT, VPos.CENTER);
 			getChildren().addAll(params[i].name, params[i].value, params[i].units );
 		}
 

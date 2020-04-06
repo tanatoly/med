@@ -19,9 +19,7 @@ public class MedData
 	public final Map<String, Department> 	departments 	= new TreeMap<>();
 	public final Map<Integer, Bed>		 	allBeds			= new TreeMap<>();
 	public final List<Bed> 					emergencyBeds 	= new ArrayList<>(42);
-	
-	
-	
+
 	
 	public MedData () throws Exception
 	{

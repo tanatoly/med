@@ -1,8 +1,5 @@
 package com.rafael.med;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.rafael.med.common.Constants;
 import com.rafael.med.common.ViewUtils;
 
@@ -13,10 +10,6 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -25,15 +18,16 @@ import javafx.scene.text.Text;
 public class MainView extends BorderPane
 {
 	
+	private static final String ENERGRNCY = "אדומים";
 	public final StackPane center;
 	private Text title;
-	public final List<RegularModule> thinModules = new ArrayList<>();
 	
 	public final EmergencyView emergencyView;
 	
 	public MainView(Text title)
 	{
 		this.title = title;
+		title.setText(ENERGRNCY);
 		setBackground(Constants.BACKGOUND_10);
 		center = new StackPane();
 		BorderPane.setMargin(center, new Insets(5));
@@ -52,14 +46,13 @@ public class MainView extends BorderPane
 		pane.setAlignment(Pos.TOP_CENTER);
 		pane.getChildren().add(ViewUtils.vspace(10));
 		
-		Button buttonw = ViewUtils.jfxbutton("לא תקינים", FontAwesomeIcon.WARNING, 70, 70, Constants.COLOR_20, Color.GHOSTWHITE, Color.AQUA, "",2);
+		Button buttonw = ViewUtils.jfxbutton(ENERGRNCY, FontAwesomeIcon.WARNING, 70, 70, Constants.COLOR_20, Color.GHOSTWHITE, Color.AQUA, "",2);
 		pane.getChildren().add(buttonw);		
 		pane.getChildren().add(ViewUtils.vspace());
-		//GridPane warningPane = createWarningPane();
 		center.getChildren().add(emergencyView);
 		buttonw.setOnAction(e ->
 		{
-			title.setText("לא תקינים");
+			title.setText(ENERGRNCY);
 			ObservableList<Node> children = center.getChildren();
 			for (Node node : children)
 			{
@@ -74,17 +67,18 @@ public class MainView extends BorderPane
 			{
 				Button button = ViewUtils.jfxbutton(department.id, FontAwesomeIcon.BUILDING, 70, 70, Constants.COLOR_20, Color.GHOSTWHITE, Color.AQUA, "",2);
 				pane.getChildren().add(button);
-				GridPane gridPane = createPane(department.rooms);
-				gridPane.setVisible(false);
-				center.getChildren().add(gridPane);
 				
+				DepartmentView departmentView = new DepartmentView();
+				departmentView.setVisible(false);
+				center.getChildren().add(departmentView);
+				department.view = departmentView;				
 				button.setOnAction(e ->
 				{
 					title.setText(department.id);
 					ObservableList<Node> children = center.getChildren();
 					for (Node node : children)
 					{
-						node.setVisible(node == gridPane);
+						node.setVisible(node == departmentView);
 					}
 				});
 			}
@@ -97,63 +91,7 @@ public class MainView extends BorderPane
 		pane.setMaxWidth(110);
 		pane.setMinWidth(110);
 		
-		
-		setRight(pane);
-		
+		setRight(pane);	
 		setCenter(center);
-		
-	}
-	
-	
-	
-	private GridPane createPane(List<Room> rooms)
-	{
-		List<Bed> beds = new ArrayList<>();
-		for (Room room : rooms) 
-		{
-			beds.addAll(room.beds);
-		}
-		
-		
-		GridPane pane = new GridPane();
-		//pane.setGridLinesVisible(true);
-		int rows = 3;
-		int columns = 7;
-		
-		for (int i = 0; i < rows; i++) 
-		{
-			RowConstraints rowConstraints = new RowConstraints();
-			rowConstraints.setFillHeight(true);
-			rowConstraints.setVgrow(Priority.ALWAYS);
-			pane.getRowConstraints().add(rowConstraints);
-		}
-		
-		for (int i = 0; i < columns; i++)
-		{
-			ColumnConstraints columnConstraints = new ColumnConstraints();
-			columnConstraints.setFillWidth(true);
-			columnConstraints.setHgrow(Priority.ALWAYS);
-			pane.getColumnConstraints().add(columnConstraints);
-		}
-		
-		int bedIndex = 0;
-		for (int j = 0; j < rows; j++)
-		{
-			for (int i = 0; i < columns; i++)
-			{
-				
-				Bed bed = beds.get(bedIndex);
-				if(bed != null)
-				{
-					RegularModule thinModule = new RegularModule(bed);
-					thinModule.setBackground(Constants.BACKGOUND_10);
-					GridPane.setMargin(thinModule, new Insets(1));
-					pane.add(thinModule,i,j);
-					thinModules.add(thinModule);
-				}
-				bedIndex++;
-			}
-		}
-		return pane;
 	}
 }

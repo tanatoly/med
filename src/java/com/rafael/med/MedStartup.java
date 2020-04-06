@@ -34,18 +34,13 @@ import javafx.stage.Stage;
 
 public class MedStartup extends Application
 {
-	private static final String CONFIG_FILE_NAME 				= "med-config.xml";
-
 	protected static Logger log;
 	
 
 	@Override
 	public void start(Stage primaryStage) throws Exception
 	{
-		Configuration configuration 		= Configurator.getConfiguraionByFile(CONFIG_FILE_NAME);
-		
-		
-		
+	
 		URL fontawesome 					= ClassLoader.getSystemResource("com/rafael/med/fonts/fontawesome-webfont.ttf");
 		URL f525icons 						= ClassLoader.getSystemResource("com/rafael/med/fonts/525icons.ttf");
 		URL materialdesignicons 			= ClassLoader.getSystemResource("com/rafael/med/fonts/materialdesignicons-webfont.ttf");
@@ -78,7 +73,7 @@ public class MedStartup extends Application
 			throw new Exception("NO TRAY IMAGE LOADED");
 		}
 		primaryStage.getIcons().add(SwingFXUtils.toFXImage(trayImage, null));
-		TrayIcon trayIcon = new TrayIcon(trayImage, "bnet software suite");
+		TrayIcon trayIcon = new TrayIcon(trayImage, "med monitor");
 		SystemTray.getSystemTray().add(trayIcon);
 			
 		
@@ -86,7 +81,7 @@ public class MedStartup extends Application
 		double screenWidth  = primaryScreen.getBounds().getWidth();
 		double screenHeight = primaryScreen.getBounds().getHeight();
 		
-		Text centeTitle = new Text("ROOM 1");
+		Text centeTitle = new Text();
 		centeTitle.setFill(Color.WHITE);
 		centeTitle.setFont(Font.font(22));
 		

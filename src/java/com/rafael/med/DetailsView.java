@@ -41,9 +41,10 @@ public class DetailsView extends JFXDialog
 		super(center, null, DialogTransition.CENTER);
 		Pane content = createContent();
 		content.setBackground(Constants.BACKGOUND_40);
-		content.setPadding(new Insets(0, 4, 4, 4));
-		content.minWidthProperty().bind(mainPane.widthProperty().multiply(0.8));
-		content.minHeightProperty().bind(mainPane.heightProperty().multiply(0.8));
+		content.setPadding(new Insets(0, 0, 4, 4));
+		content.setMinSize(1200, 800);
+		content.setMaxSize(1200, 800);
+		
 		setContent(content);
 		content.setBorder(new Border(new BorderStroke(Constants.COLOR_95, BorderStrokeStyle.SOLID, new CornerRadii(2.0), BorderWidths.DEFAULT)));
 	}
@@ -53,19 +54,16 @@ public class DetailsView extends JFXDialog
 		GridPane content = new GridPane();
 		//content.setGridLinesVisible(true);
 		
-		RowConstraints r = new RowConstraints();
-		r.setPercentHeight(3);
-		RowConstraints r1 = new RowConstraints();
-		r1.setPercentHeight(5);
-		RowConstraints r2 = new RowConstraints();
-		r2.setPercentHeight(46);
-		content.getRowConstraints().addAll(r,r1,r2, r2);
+		RowConstraints r0 = new RowConstraints(10);
+		RowConstraints r1 = new RowConstraints(60);
+		RowConstraints r2 = new RowConstraints((800 - 60 - 20 - 4)/2);
+		content.getRowConstraints().addAll(r0,r1,r2, r2);
 		
 		
-		ColumnConstraints c2 = new ColumnConstraints();
-		c2.setPercentWidth(25);
+		ColumnConstraints c2 = new ColumnConstraints((1200 - 8 - 4 )/3);
+		//c2.setPercentWidth(33);
 		
-		content.getColumnConstraints().addAll(c2,c2,c2,c2);
+		content.getColumnConstraints().addAll(c2,c2,c2);
 		
 		
 		
@@ -87,14 +85,14 @@ public class DetailsView extends JFXDialog
 		{
 			close();
 		});
-		GridPane.setConstraints(close, 					3, 0, 1, 1, HPos.RIGHT, VPos.TOP);
+		GridPane.setConstraints(close, 					2, 0, 1, 1, HPos.RIGHT, VPos.TOP);
 		GridPane.setConstraints(bedNumber, 				0, 1, 1, 1, HPos.CENTER, VPos.TOP);
-		GridPane.setConstraints(name, 					1, 1, 2, 1, HPos.CENTER, VPos.TOP);
-		GridPane.setConstraints(id, 					3, 1, 1, 1, HPos.CENTER, VPos.TOP);
+		GridPane.setConstraints(name, 					1, 1, 1, 1, HPos.CENTER, VPos.TOP);
+		GridPane.setConstraints(id, 					2, 1, 1, 1, HPos.CENTER, VPos.TOP);
 		
 		
 		
-		for (int i = 0; i < 4; i++)
+		for (int i = 0; i < 3; i++)
 		{
 			for (int j = 2; j <= 3; j++)
 			{
@@ -124,25 +122,25 @@ public class DetailsView extends JFXDialog
 	{
 		if(bed != null)
 		{
-		
 			bedNumber.setText(bed.getName());
-		name.setText(bed.patientName);
-		id.setText(bed.patientId);
+			name.setText(bed.patientName);
+			id.setText(bed.patientId);
 		
-		int index = 0;
-		for (Map.Entry<String, Device> entry : bed.devices.entrySet())
-		{
-			String serial = entry.getKey();
-			Device device = entry.getValue();
-			DeviceModule deviceView = deviceViews.get(index);
-			if(deviceView == null)
+			int index = 0;
+			for (Device device : bed.devices.values())
 			{
-				throw new IllegalStateException("NOT FOUND DEVICEVIEW FOR INDEX = " +index);
+				if(index < deviceViews.size())
+				{
+				
+					DeviceModule deviceView = deviceViews.get(index);
+					if(deviceView == null)
+					{
+						throw new IllegalStateException("NOT FOUND DEVICEVIEW FOR INDEX = " +index);
+					}
+					deviceView.update(device);
+					index++;
+				}
 			}
-			deviceView.update(device);
-			index++;
 		}
-		}
-		
 	}
 }

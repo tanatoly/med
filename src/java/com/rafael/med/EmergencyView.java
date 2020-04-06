@@ -36,14 +36,15 @@ public class EmergencyView extends ScrollPane
 		
 		private final RowText[] rows = new RowText[ROWS];
 		
-		public EmergencyModule(Bed bed)
+		public EmergencyModule(Bed bed, EmergencyView emergencyView)
 		{
 			this.bed = bed;
+			
 			
 			this.setMaxHeight(160);
 			this.setMinHeight(160);
 			this.setBackground(Constants.BACKGOUND_40);
-			this.setPadding(new Insets(0,6,0,6));
+			this.setPadding(new Insets(0,6,4,6));
 			
 			RowConstraints r1 = new RowConstraints(40);
 			RowConstraints r2 = new RowConstraints(30);
@@ -57,11 +58,12 @@ public class EmergencyView extends ScrollPane
 			Text bedNumber 	= new Text(bed.getName());
 			bedNumber.setFont(Font.font(14));
 			bedNumber.setFill(Color.AQUA);
-			Text firstTime	= new Text(bed.getFirstTime());
-			firstTime.setFont(Font.font(12));
-			firstTime.setFill(Color.LIMEGREEN);
-			
-			Text card 		= ViewUtils.glyphIcon(FontAwesomeIcon.ID_CARD, 30, Color.WHITE);
+			Text alarm = ViewUtils.glyphIcon(FontAwesomeIcon.CLOSE, 26, Constants.COLOR_95);
+			alarm.setOnMouseClicked(e ->
+			{
+				emergencyView.removeBed(bed);
+			});
+			Text card 		= ViewUtils.glyphIcon(FontAwesomeIcon.ID_CARD, 26, Color.WHITE);
 			card.setOnMouseClicked(e ->
 			{
 				MedManager.INSTANCE.showDetails(bed);
@@ -69,13 +71,13 @@ public class EmergencyView extends ScrollPane
 			
 			
 			GridPane.setConstraints(bedNumber, 			0, 0, 2, 1, HPos.LEFT, VPos.CENTER);
-			GridPane.setConstraints(firstTime, 			2, 0, 1, 1, HPos.CENTER, VPos.CENTER);
+			GridPane.setConstraints(alarm, 			2, 0, 1, 1, HPos.CENTER, VPos.CENTER);
 			GridPane.setConstraints(card, 				3, 0, 1, 1, HPos.RIGHT, VPos.CENTER);
-			getChildren().addAll(bedNumber, firstTime, card);
+			getChildren().addAll(bedNumber, alarm, card);
 
 			for (int i = 0; i < rows.length; i++) 
 			{
-				rows[i] = new RowText();
+				rows[i] = new RowText(16);
 				GridPane.setConstraints(rows[i].name, 	0, i + 1, 2, 1, HPos.LEFT, VPos.CENTER);
 				GridPane.setConstraints(rows[i].value, 	2, i + 1, 1, 1, HPos.CENTER, VPos.CENTER);
 				GridPane.setConstraints(rows[i].units, 	3, i + 1, 1, 1, HPos.RIGHT, VPos.CENTER);
@@ -94,7 +96,7 @@ public class EmergencyView extends ScrollPane
 				{
 					for (Param param : device.params.values())
 					{
-						if(param !=null && param.isInEmergencyModule && count < rows.length)
+						if(param !=null && param.isAlarm && count < rows.length)
 						{
 							RowText row = rows[count];
 							row.name.setText(param.name);
@@ -133,12 +135,12 @@ public class EmergencyView extends ScrollPane
 	{
 		if(moduleWidth == 0)
 		{
-			moduleWidth = (getWidth() - 20) / 7  - 4;
+			moduleWidth = (getWidth() - 22) / 6  - 4;
 		}
 		
 		if(!map.containsKey(bed))
 		{
-			EmergencyModule module = new EmergencyModule(bed);
+			EmergencyModule module = new EmergencyModule(bed,this);
 			module.setMaxWidth(moduleWidth);
 			module.setMinWidth(moduleWidth);
 			map.put(bed, module);

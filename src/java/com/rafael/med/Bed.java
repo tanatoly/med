@@ -10,19 +10,19 @@ public final class Bed
 	
 	public final Map<String,Device> devices = new HashMap<>();
 	
-	String number;
+	public String number;
 	public String patientName;
 	public String patientId;
 	public final int id;
-	private Map<Integer, Device> allDevices;
+	private Map<Integer, Device> prototypeDevices;
 
 	public String room;
 	public final AtomicLong firstTime = new AtomicLong(0);
 	
-	public Bed(String id, Map<Integer, Device> allDevices)
+	public Bed(String id, Map<Integer, Device> prototypeDevices)
 	{
-		this.id = Integer.parseInt(id);
-		this.allDevices = allDevices;
+		this.id 				= Integer.parseInt(id);
+		this.prototypeDevices 	= prototypeDevices;
 	}
 	public void handleMessage(ByteBuffer buffer) throws Exception
 	{
@@ -31,19 +31,19 @@ public final class Bed
 		byte[] serialBytes	= new byte[serialLength];
 		buffer.get(serialBytes);
 		String serial		= new String(serialBytes);
-		
+				
 		Device device = devices.get(serial);
 		if(device == null)
 		{
-			Device prototype = allDevices.get(deviceType);
+			Device prototype = prototypeDevices.get(deviceType);
 			if(prototype == null)
 			{
 				throw new Exception("NOT FOUND DEVICE WITH TYPE NUMBER = " + deviceType);
 			}
 			device = new Device(prototype, serial);
 			devices.put(serial, device);
-		}
-		device.handleMessage(deviceType,buffer);
+		}	
+		device.handleMessage(buffer);
 	}
 	
 	public String getName()
@@ -51,8 +51,31 @@ public final class Bed
 		return "חדר " + room + "  מיטה " + number;
 	}
 	
-	public String getFirstTime()
+	@Override
+	public int hashCode() 
 	{
-		return "לפני 24 דקות";
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + id;
+		return result;
+	}
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Bed other = (Bed) obj;
+		if (id != other.id)
+			return false;
+		return true;
+	}
+	@Override
+	public String toString()
+	{
+		return String.format("Bed [id=%s]", id);
 	}
 }

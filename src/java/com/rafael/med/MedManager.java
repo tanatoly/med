@@ -3,6 +3,7 @@ package com.rafael.med;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.util.Iterator;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -11,10 +12,21 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.rafael.med.Datagram.Listener;
+import com.rafael.med.common.Constants;
+import com.rafael.med.common.ViewUtils;
 
-import javafx.application.Platform;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.collections.ObservableList;
 import javafx.concurrent.ScheduledService;
 import javafx.concurrent.Task;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.scene.Node;
+import javafx.scene.control.Button;
+import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
 public class MedManager 
@@ -28,13 +40,13 @@ public class MedManager
 	private Lock readLock				= readWriteLock.readLock();
 	private Lock writeLock				= readWriteLock.writeLock();
 	
-	private ScheduledService<Void> scheduledService;
 	
 	private MainView mainView;
 	private MedData data;
 
 
 	private DetailsView detailsView;
+	private AtomicBoolean isDepartmentsViewFilled = new AtomicBoolean(false);
 
 	public void init(MainView mainView) throws Exception 
 	{
@@ -43,58 +55,56 @@ public class MedManager
 		mainView.buildView(data);
 		this.detailsView 	= new DetailsView(mainView, mainView.center);
 		
-		
-		Iterator<Bed> it = data.allBeds.values().iterator();
-		
-		scheduledService = new ScheduledService<Void>() 
+		Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(2),new EventHandler<ActionEvent>()
 		{
-			@Override
-			protected Task<Void> createTask() 
+			public void handle(ActionEvent ae)
 			{
-				return new Task<Void>()
+				readLock.lock();
+				try
 				{
-					@Override
-					protected Void call() throws Exception
-					{	
-						readLock.lock();
-						try
+					if(isDepartmentsViewFilled.compareAndSet(false, true))
+					{
+						for (Department department : data.departments.values())
 						{
-							for (RegularModule module : mainView.thinModules)
+							if(department != null)
 							{
-								module.update();
+								for (Room room : department.rooms) 
+								{
+									if(room != null)
+									{
+										for (Bed bed : room.beds)
+										{
+											if(bed != null)
+											{
+												department.view.addBed(bed);
+											}
+										}
+									}
+								}
 							}
-							detailsView.update();
-							mainView.emergencyView.update();
-							
-//							Bed next = it.next();
-//							next.firstTime.set(System.currentTimeMillis());
-//							
-//							System.out.println(next);
-//							
-//							Platform.runLater( new Runnable() {
-//								
-//								@Override
-//								public void run() {
-//									mainView.emergencyView.addBed(next);
-//									
-//								}
-//							});
-							
 						}
-						catch (Throwable e) 
-						{
-							log.error("FAILED PERIODIC ACTION - ",e);
-						}
-						finally
-						{
-							readLock.unlock();
-						}
-						return null;
 					}
-				};
-			}
-		};		
-		
+					
+					for (Department department : data.departments.values())
+					{
+						department.view.update();
+					}
+
+					detailsView.update();
+					mainView.emergencyView.update();
+				}
+				catch (Throwable e) 
+				{
+					log.error("FAILED PERIODIC ACTION - ",e);
+				}
+				finally
+				{
+					readLock.unlock();
+				}
+		    }
+		}));
+		timeline.setCycleCount(Animation.INDEFINITE);
+		timeline.play();
 		
 		Datagram receiver = new Datagram(new Listener()
 		{
@@ -121,9 +131,6 @@ public class MedManager
 			}
 		});
 		receiver.open();
-		scheduledService.setDelay(Duration.seconds(1));
-		scheduledService.setPeriod(Duration.seconds(1));
-		scheduledService.start();
 	}
 	
 	
@@ -139,6 +146,13 @@ public class MedManager
 
 	public void addToEmergency(Bed bed) 
 	{
+		mainView.emergencyView.addBed(bed);
+	}
+
+
+	public void removeFromEmergency(Bed bed)
+	{
+		//mainView.emergencyView.removeBed(bed);
 		
 	}
 }
