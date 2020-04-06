@@ -25,6 +25,7 @@ import javafx.scene.text.Text;
 public class MainView extends BorderPane
 {
 	
+	private static final String ENERGRNCY = "אדומים";
 	public final StackPane center;
 	private Text title;
 	public final List<RegularModule> thinModules = new ArrayList<>();
@@ -34,6 +35,7 @@ public class MainView extends BorderPane
 	public MainView(Text title)
 	{
 		this.title = title;
+		title.setText(ENERGRNCY);
 		setBackground(Constants.BACKGOUND_10);
 		center = new StackPane();
 		BorderPane.setMargin(center, new Insets(5));
@@ -52,14 +54,14 @@ public class MainView extends BorderPane
 		pane.setAlignment(Pos.TOP_CENTER);
 		pane.getChildren().add(ViewUtils.vspace(10));
 		
-		Button buttonw = ViewUtils.jfxbutton("לא תקינים", FontAwesomeIcon.WARNING, 70, 70, Constants.COLOR_20, Color.GHOSTWHITE, Color.AQUA, "",2);
+		Button buttonw = ViewUtils.jfxbutton(ENERGRNCY, FontAwesomeIcon.WARNING, 70, 70, Constants.COLOR_20, Color.GHOSTWHITE, Color.AQUA, "",2);
 		pane.getChildren().add(buttonw);		
 		pane.getChildren().add(ViewUtils.vspace());
 		//GridPane warningPane = createWarningPane();
 		center.getChildren().add(emergencyView);
 		buttonw.setOnAction(e ->
 		{
-			title.setText("לא תקינים");
+			title.setText(ENERGRNCY);
 			ObservableList<Node> children = center.getChildren();
 			for (Node node : children)
 			{
@@ -118,7 +120,7 @@ public class MainView extends BorderPane
 		GridPane pane = new GridPane();
 		//pane.setGridLinesVisible(true);
 		int rows = 3;
-		int columns = 7;
+		int columns = 6;
 		
 		for (int i = 0; i < rows; i++) 
 		{

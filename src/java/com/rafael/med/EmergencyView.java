@@ -94,7 +94,7 @@ public class EmergencyView extends ScrollPane
 				{
 					for (Param param : device.params.values())
 					{
-						if(param !=null && param.isInEmergencyModule && count < rows.length)
+						if(param !=null && param.isAlarm && count < rows.length)
 						{
 							RowText row = rows[count];
 							row.name.setText(param.name);
@@ -133,7 +133,7 @@ public class EmergencyView extends ScrollPane
 	{
 		if(moduleWidth == 0)
 		{
-			moduleWidth = (getWidth() - 20) / 7  - 4;
+			moduleWidth = (getWidth() - 22) / 6  - 4;
 		}
 		
 		if(!map.containsKey(bed))

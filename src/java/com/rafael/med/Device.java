@@ -6,8 +6,8 @@ import java.util.Map;
 
 public class Device 
 {
-	public int type;
-	public String name;
+	public final int type;
+	public final String name;
 	public String serial;
 	public String error;
 	public boolean isWorking;
@@ -27,15 +27,14 @@ public class Device
 		this.type 	= prototype.type;
 		this.name 	= prototype.name;
 		this.serial = serial;
+		
+		params.putAll(prototype.params);
+		
 	}
 	
 
-	public void handleMessage(int deviceType, ByteBuffer buffer) throws Exception
+	public void handleMessage(ByteBuffer buffer) throws Exception
 	{
-		if(type != deviceType)
-		{
-			throw new Exception("UNEXPECTED DEVICE TYPE " + deviceType + " (SERIAL  = " + serial + " , TYPE = " + type);
-		}
 		int paramsSize = buffer.get();
 		for (int i = 0; i < paramsSize; i++)
 		{

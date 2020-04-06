@@ -89,7 +89,7 @@ public class RegularModule extends GridPane
 			AtomicBoolean isWarning = new AtomicBoolean(false);
 			for (Param param : device.params.values())
 			{
-				if(param.isInRegularModule)
+				if(param.isRegular)
 				{
 					if(count < params.length)
 					{
