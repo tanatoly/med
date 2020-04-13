@@ -1,20 +1,13 @@
 package com.rafael.med;
 
 import java.nio.ByteBuffer;
-import java.text.DecimalFormat;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.commons.lang3.StringUtils;
 
-public class Param
+public class Param extends DeviceParam
 {
-	private static final int TYPE_FLOAT 	= 1;
-	private static final int TYPE_INT 		= 2;
-	private static final int TYPE_STRING 	= 3;
 	
-	private DecimalFormat df = new DecimalFormat("#.00"); 
-	
-	public final int id;
 	public final String name;
 	public final int valueType;
 	public float valueFloat;
@@ -28,10 +21,14 @@ public class Param
 	public boolean isAlarm;
 	
 	public AtomicBoolean isWarning = new AtomicBoolean(false);
+	public double defaultValue;
+	
+	public AtomicBoolean isDefaultSet = new AtomicBoolean(false);
+	public AtomicBoolean isRangeSet = new AtomicBoolean(false);
 	
 	public Param(String id, String name, String valueType, String presision, String units, String min, String max, String regular, String alarm)
 	{
-		this.id 			= Integer.parseInt(id);
+		super(Integer.parseInt(id));
 		this.name 			= name;
 		this.valueType		= Integer.parseInt(valueType);
 		this.presision		= Integer.parseInt(presision);
@@ -57,7 +54,7 @@ public class Param
 
 	public Param(Param prototype) 
 	{
-		this.id 			= prototype.id;
+		super(prototype.id);
 		this.name 			= prototype.name;
 		this.valueType		= prototype.valueType;
 		this.presision		= prototype.presision;
@@ -84,6 +81,30 @@ public class Param
 		}
 		return null;
 	}
+	
+	public String getDefaultValue()
+	{
+		if(isDefaultSet.get())
+		{
+			return "(" + df.format(defaultValue) + ")";
+		}
+		else
+		{
+			return StringUtils.EMPTY;
+		}
+	}
+	
+	public String getRange()
+	{
+		if(isRangeSet.get())
+		{
+			return "[" + df.format(minValue) + " : " + df.format(maxValue) + "]";
+		}
+		else
+		{
+			return StringUtils.EMPTY;
+		}
+	}	
 
 	public void handleMessage(ByteBuffer buffer) 
 	{
@@ -108,5 +129,7 @@ public class Param
 			valueString = new String(bytes);
 		}
 		isWarning.compareAndSet(!isNowWarning, isNowWarning);
-	}	
+	}
+
+	
 }

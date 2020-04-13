@@ -62,31 +62,57 @@ public class MedData
 							Node paramNode = paramList.item(j);
 							if (paramNode instanceof Element)
 							{
+								String nodeName = paramNode.getNodeName();
 								Element paramElement = (Element) paramNode;
+								System.out.println("------------ " + nodeName);
+								if(nodeName.equals("param"))
+								{
+									String paramId = paramElement.getAttribute("id");
+									String paramName = paramElement.getAttribute("name");
+									String paramType = paramElement.getAttribute("type");
+									String presision = paramElement.getAttribute("presision");
+									String units = paramElement.getAttribute("units");
 								
-								String paramId = paramElement.getAttribute("id");
-								String paramName = paramElement.getAttribute("name");
-								String paramType = paramElement.getAttribute("type");
-								String presision = paramElement.getAttribute("presision");
-								String units = paramElement.getAttribute("units");
+									String min = paramElement.getAttribute("min");
+									String max = paramElement.getAttribute("max");
 								
-								String min = paramElement.getAttribute("min");
-								String max = paramElement.getAttribute("max");
+									String regular = paramElement.getAttribute("regular");
+									String alarm = paramElement.getAttribute("alarm");
 								
-								
-								
-								String regular = paramElement.getAttribute("regular");
-								String alarm = paramElement.getAttribute("alarm");
-								
-								Param param = new Param(paramId, paramName, paramType, presision, units, min, max , regular, alarm);
-								device.addParam(param);
+									Param param = new Param(paramId, paramName, paramType, presision, units, min, max , regular, alarm);
+									device.addParam(param);
+								}
+								else if(nodeName.equals("range"))
+								{
+									String rangeId 	= paramElement.getAttribute("id");
+									String paramId 	= paramElement.getAttribute("paramId");
+									String isMin 	= paramElement.getAttribute("isMin");
+									
+									
+									device.addDinamicRange(rangeId, paramId, isMin);
+									
+								}
+								else if(nodeName.equals("default"))
+								{
+									String defaultId 	= paramElement.getAttribute("id");
+									String paramId 		= paramElement.getAttribute("paramId");
+									
+									device.addDefault(defaultId, paramId);
+									
+								}
+								else if(nodeName.equals("mfl"))
+								{
+									String mflId 	= paramElement.getAttribute("id");
+									String mflName = paramElement.getAttribute("name");
+									String isError 	= paramElement.getAttribute("isError");
+									device.addMfl(mflId,mflName, isError);
+								}
 							}
 						}
 					}
 				}
 			}
 		}
-		
 		
 		
 		NodeList bedsByTagName = rootElement.getElementsByTagName("beds");

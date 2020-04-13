@@ -63,14 +63,14 @@ public class MedStartup extends Application
 		{
 			throw new Exception("NO SYSTEM TRAY SUPPORT");
 		}
-		BufferedImage trayImage 		= ImageIO.read(ClassLoader.getSystemResource("com/rafael/med/images/tray.png"));
+		BufferedImage trayImage 		= ImageIO.read(ClassLoader.getSystemResource("com/rafael/med/images/doc-tray.png"));
 		
 		if(trayImage == null)
 		{
 			throw new Exception("NO TRAY IMAGE LOADED");
 		}
 		primaryStage.getIcons().add(SwingFXUtils.toFXImage(trayImage, null));
-		TrayIcon trayIcon = new TrayIcon(trayImage, "med monitor");
+		TrayIcon trayIcon = new TrayIcon(trayImage, "DocEyes");
 		SystemTray.getSystemTray().add(trayIcon);
 			
 		
@@ -93,7 +93,8 @@ public class MedStartup extends Application
 	
 		
 		ImageView rafaelImage = new ImageView(ClassLoader.getSystemResource("com/rafael/med/images/rafael.png").toExternalForm());
-		Text text = new Text("  Medical monitor");
+		ImageView docImage = new ImageView(ClassLoader.getSystemResource("com/rafael/med/images/doc.png").toExternalForm());
+		Text text = new Text("  DocEyes");
 		text.setFill(Constants.COLOR_95);
 		text.setFont(Font.font(20));
 		
@@ -101,7 +102,7 @@ public class MedStartup extends Application
 		createTimeLabel.setFill(Constants.COLOR_95);
 		createTimeLabel.setFont(Font.font(20));
 		
-		HBox top = new HBox(rafaelImage, text, ViewUtils.hspace(), centeTitle, ViewUtils.hspace(), createTimeLabel,ViewUtils.hspace(50));
+		HBox top = new HBox(rafaelImage, ViewUtils.hspace(20), docImage, text, ViewUtils.hspace(), centeTitle, ViewUtils.hspace(), createTimeLabel,ViewUtils.hspace(50));
 		top.setAlignment(Pos.CENTER);
 		HBox.setHgrow(top, Priority.ALWAYS);
 		
