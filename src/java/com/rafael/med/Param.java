@@ -1,20 +1,15 @@
 package com.rafael.med;
 
 import java.nio.ByteBuffer;
-import java.text.DecimalFormat;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.commons.lang3.StringUtils;
 
-public class Param
+public class Param extends DeviceParam
 {
-	private static final int TYPE_FLOAT 	= 1;
-	private static final int TYPE_INT 		= 2;
-	private static final int TYPE_STRING 	= 3;
 	
-	private DecimalFormat df = new DecimalFormat("#.00"); 
-	
-	public final int id;
 	public final String name;
 	public final int valueType;
 	public float valueFloat;
@@ -28,10 +23,20 @@ public class Param
 	public boolean isAlarm;
 	
 	public AtomicBoolean isWarning = new AtomicBoolean(false);
+	public double defaultValue;
+	
+	public AtomicBoolean isDefaultSet = new AtomicBoolean(false);
+	
+	public AtomicBoolean isMinSet = new AtomicBoolean(false);
+	public AtomicBoolean isMaxSet = new AtomicBoolean(false);
+	
+	public final Map<Long, Object> records = new HashMap<>(1000);
+	
+	
 	
 	public Param(String id, String name, String valueType, String presision, String units, String min, String max, String regular, String alarm)
 	{
-		this.id 			= Integer.parseInt(id);
+		super(Integer.parseInt(id));
 		this.name 			= name;
 		this.valueType		= Integer.parseInt(valueType);
 		this.presision		= Integer.parseInt(presision);
@@ -57,7 +62,7 @@ public class Param
 
 	public Param(Param prototype) 
 	{
-		this.id 			= prototype.id;
+		super(prototype.id);
 		this.name 			= prototype.name;
 		this.valueType		= prototype.valueType;
 		this.presision		= prototype.presision;
@@ -84,29 +89,88 @@ public class Param
 		}
 		return null;
 	}
+	
+	public String getDefaultValue()
+	{
+		if(isDefaultSet.get())
+		{
+			return "(" + df.format(defaultValue) + ")";
+		}
+		else
+		{
+			return StringUtils.EMPTY;
+		}
+	}
+	
+	public String getRange()
+	{
+		if(isMinSet.get() && isMaxSet.get())
+		{
+			return "[" + df.format(minValue) + " : " + df.format(maxValue) + "]";
+		}
+		else if (isMinSet.get())
+		{
+			return "[" + df.format(minValue) + " : ]";
+		}
+		else if (isMaxSet.get())
+		{
+			return "[ : " + df.format(maxValue) + "]";
+		}
+		else
+		{
+			return StringUtils.EMPTY;
+		}
+	}	
 
-	public void handleMessage(ByteBuffer buffer) 
+	public void handleMessage(long timestamp, ByteBuffer buffer) 
 	{
 		int valueType = buffer.get();
 
 		boolean isNowWarning = false;
 		if(valueType == TYPE_FLOAT)
 		{
-			valueFloat = buffer.getFloat();
-			isNowWarning = valueFloat < minValue || valueFloat > maxValue;
+			float v = buffer.getFloat();
+			valueFloat = v;
+			isNowWarning = isNowWarming(valueFloat);
+			records.put(timestamp, v);
 		}
 		else if(valueType == TYPE_INT)
 		{
-			valueInt = buffer.getInt();
-			isNowWarning = valueInt < minValue || valueInt > maxValue;
+			int v = buffer.getInt();
+			valueInt = v;
+			isNowWarning = isNowWarming(valueInt);
+			records.put(timestamp, v);
 		}
 		else if(valueType == TYPE_STRING)
 		{
 			int stringLength 	= buffer.get();
 			byte[] bytes 		= new byte[stringLength];
 			buffer.get(bytes);
-			valueString = new String(bytes);
+			String v = new String(bytes);
+			valueString = v;
+			records.put(timestamp, v);
 		}
 		isWarning.compareAndSet(!isNowWarning, isNowWarning);
-	}	
+	}
+
+	
+	private boolean isNowWarming(double value)
+	{
+		if(isMinSet.get() && isMaxSet.get())
+		{
+			return value < minValue || value > maxValue;
+		}
+		else if (isMinSet.get())
+		{
+			return value < minValue;
+		}
+		else if (isMaxSet.get())
+		{
+			return value > maxValue;
+		}
+		else
+		{
+			return value < minValue || value > maxValue;
+		}
+	}
 }

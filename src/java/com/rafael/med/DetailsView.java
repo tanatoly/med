@@ -25,6 +25,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.stage.Screen;
 
 public class DetailsView extends JFXDialog
 {
@@ -33,16 +34,19 @@ public class DetailsView extends JFXDialog
 	private Text id;
 	private final List<DeviceModule> deviceViews = new ArrayList<>(8);
 	private Bed bed;
+	private double width;
 	
 	
 	public DetailsView(BorderPane mainPane, StackPane center)
 	{
 		super(center, null, DialogTransition.CENTER);
+		width = Screen.getPrimary().getVisualBounds().getWidth() - 110 - 20;
+		
 		Pane content = createContent();
 		content.setBackground(Constants.BACKGOUND_40);
 		content.setPadding(new Insets(0, 0, 4, 4));
-		content.setMinSize(1200, 800);
-		content.setMaxSize(1200, 800);
+		content.setMinSize(width, 800);
+		content.setMaxSize(width, 800);
 		
 		setContent(content);
 		content.setBorder(new Border(new BorderStroke(Constants.COLOR_95, BorderStrokeStyle.SOLID, new CornerRadii(2.0), BorderWidths.DEFAULT)));
@@ -55,14 +59,14 @@ public class DetailsView extends JFXDialog
 		
 		RowConstraints r0 = new RowConstraints(10);
 		RowConstraints r1 = new RowConstraints(60);
-		RowConstraints r2 = new RowConstraints((800 - 60 - 20 - 4)/2);
-		content.getRowConstraints().addAll(r0,r1,r2, r2);
+		RowConstraints r2 = new RowConstraints((800 - 60 - 20 - 4));
+		content.getRowConstraints().addAll(r0,r1,r2);
 		
 		
-		ColumnConstraints c2 = new ColumnConstraints((1200 - 8 - 4 )/3);
+		ColumnConstraints c2 = new ColumnConstraints((width - 8 )/4);
 		//c2.setPercentWidth(33);
 		
-		content.getColumnConstraints().addAll(c2,c2,c2);
+		content.getColumnConstraints().addAll(c2,c2, c2, c2);
 		
 		
 		
@@ -84,22 +88,19 @@ public class DetailsView extends JFXDialog
 		{
 			close();
 		});
-		GridPane.setConstraints(close, 					2, 0, 1, 1, HPos.RIGHT, VPos.TOP);
+		GridPane.setConstraints(close, 					3, 0, 1, 1, HPos.RIGHT, VPos.TOP);
 		GridPane.setConstraints(bedNumber, 				0, 1, 1, 1, HPos.CENTER, VPos.TOP);
-		GridPane.setConstraints(name, 					1, 1, 1, 1, HPos.CENTER, VPos.TOP);
-		GridPane.setConstraints(id, 					2, 1, 1, 1, HPos.CENTER, VPos.TOP);
+		GridPane.setConstraints(name, 					1, 1, 2, 1, HPos.CENTER, VPos.TOP);
+		GridPane.setConstraints(id, 					3, 1, 1, 1, HPos.CENTER, VPos.TOP);
 		
 		
 		
-		for (int i = 0; i < 3; i++)
+		for (int i = 0; i < 4; i=i + 2)
 		{
-			for (int j = 2; j <= 3; j++)
-			{
-				DeviceModule deviceView = new DeviceModule();
-				GridPane.setConstraints(deviceView, 				i, j, 1, 1, HPos.CENTER, VPos.CENTER);
-				content.getChildren().add(deviceView);
-				deviceViews.add(deviceView);
-			}
+			DeviceModule deviceView = new DeviceModule();
+			GridPane.setConstraints(deviceView, 				i, 2, 2, 1, HPos.CENTER, VPos.CENTER);
+			content.getChildren().add(deviceView);
+			deviceViews.add(deviceView);
 		}
 		
 		content.getChildren().addAll(bedNumber, name, id, close);

@@ -1,5 +1,7 @@
 package com.rafael.med;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.rafael.med.common.Constants;
 
 import javafx.geometry.HPos;
@@ -19,9 +21,9 @@ import javafx.scene.text.Text;
 
 public final class DeviceModule extends GridPane
 {
-	private static final int ROWS = 10;
+	private static final int ROWS = 20;
 	
-	private RowText[] params;
+	private RowText[] rows;
 	private Text deviceType;
 	private Text deviceSerial;
 	
@@ -35,16 +37,21 @@ public final class DeviceModule extends GridPane
 		this.setMaxHeight(50 +  (30 * ROWS));
 		this.setMinHeight(50 +  (30 * ROWS));
 		
+		double rowPercent = 100/ (ROWS + 1);
 		
-		RowConstraints r1 = new RowConstraints();
-		r1.setPercentHeight(10);
-		RowConstraints r2 = new RowConstraints();
-		r2.setPercentHeight(9);
-		getRowConstraints().addAll(r1, r2, r2, r2 ,r2 , r2, r2, r2, r2 , r2, r2);
+		RowConstraints r = new RowConstraints();
+		r.setPercentHeight(rowPercent);
+		for (int i = 0; i <= ROWS; i++) 
+		{
+			getRowConstraints().add(r);
+		}
 		
 		ColumnConstraints c = new ColumnConstraints();
-		c.setPercentWidth(25);
-		getColumnConstraints().addAll(c,c,c,c);
+		c.setPercentWidth(10);
+		for (int i = 0; i <10; i++) 
+		{
+			getColumnConstraints().add(c);
+		}
 		
 		
 		GridPane.setMargin(this, new Insets(3));
@@ -58,20 +65,24 @@ public final class DeviceModule extends GridPane
 		deviceSerial.setFont(Font.font(22));
 
 	
-		GridPane.setConstraints(deviceType, 				0, 0, 2, 1, HPos.CENTER, VPos.CENTER);
-		GridPane.setConstraints(deviceSerial, 				2, 0, 2, 1, HPos.CENTER, VPos.CENTER);
+		GridPane.setConstraints(deviceType, 				0, 0, 5, 1, HPos.CENTER, VPos.CENTER);
+		GridPane.setConstraints(deviceSerial, 				5, 0, 4, 1, HPos.CENTER, VPos.CENTER);
 		getChildren().addAll(deviceType, deviceSerial);
 		
 		
-		params = new RowText[ROWS];
+		rows = new RowText[ROWS];
 		
-		for (int i = 0; i < params.length; i++) 
-		{
-			params[i] = new RowText(18);
-			GridPane.setConstraints(params[i].name, 	0, i + 1, 2, 1, HPos.LEFT, VPos.CENTER);
-			GridPane.setConstraints(params[i].value, 	2, i + 1, 1, 1, HPos.CENTER, VPos.CENTER);
-			GridPane.setConstraints(params[i].units, 	3, i + 1, 1, 1, HPos.RIGHT, VPos.CENTER);
-			getChildren().addAll(params[i].name, params[i].value, params[i].units );
+		for (int i = 0; i < rows.length; i++) 
+		{	
+			rows[i] = new RowText(18);
+			GridPane.setConstraints(rows[i].name, 				0, i + 1, 2, 1, HPos.LEFT, VPos.CENTER);
+			GridPane.setConstraints(rows[i].value, 				2, i + 1, 2, 1, HPos.LEFT, VPos.CENTER);
+			GridPane.setConstraints(rows[i].units, 				4, i + 1, 2, 1, HPos.LEFT, VPos.CENTER);
+			GridPane.setConstraints(rows[i].defaultValue, 		6, i + 1, 1, 1, HPos.LEFT, VPos.CENTER);
+			GridPane.setConstraints(rows[i].range, 				7, i + 1, 3, 1, HPos.LEFT, VPos.CENTER);
+			
+			getChildren().addAll(rows[i].name, rows[i].value, rows[i].units, rows[i].defaultValue, rows[i].range );
+	
 		}
 
 	}
@@ -89,12 +100,14 @@ public final class DeviceModule extends GridPane
 		int count = 0;
 		for (Param param : device.params.values())
 		{
-			if(count < params.length)
+			if(count < rows.length)
 			{
-				RowText rowText = params[count];
+				RowText rowText = rows[count];
 				rowText.name.setText(param.name);
 				rowText.value.setText(param.getValue());
 				rowText.units.setText(param.units);
+				rowText.defaultValue.setText(param.getDefaultValue());	
+				rowText.range.setText(param.getRange());
 				if(param.isWarning.get())
 				{
 					rowText.setColor(Color.RED);
@@ -105,7 +118,32 @@ public final class DeviceModule extends GridPane
 				}
 				if(isDeviceNotTransmit)
 				{
-					rowText.setColor(Constants.COLOR_95);
+					rowText.setColor(Constants.COLOR_80);
+				}
+			}
+			count++;
+		}
+		for (Mfl mfl : device.mfls.values())
+		{
+			
+			if(mfl != null && mfl.isError && count < rows.length)
+			{
+				RowText rowText = rows[count];
+				rowText.name.setText("MFL");
+				rowText.value.setText(mfl.name);
+				rowText.units.setText(StringUtils.EMPTY);
+				
+				if(mfl.value == 1)
+				{
+					rowText.setColor(Color.RED);
+				}
+				else
+				{
+					rowText.setColor(Color.GREEN);
+				}
+				if(isDeviceNotTransmit)
+				{
+					rowText.setColor(Constants.COLOR_80);
 				}
 			}
 			count++;

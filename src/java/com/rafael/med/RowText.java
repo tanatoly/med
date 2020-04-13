@@ -9,6 +9,8 @@ final class RowText
 	public Text name;
 	public Text value;
 	public Text units;
+	public Text defaultValue;
+	public Text range;
 	
 	public RowText(double fontSize)
 	{
@@ -23,6 +25,14 @@ final class RowText
 		units = new Text();
 		units.setFill(Color.WHITE);
 		units.setFont(Font.font(fontSize));
+		
+		defaultValue = new Text();
+		defaultValue.setFill(Color.WHITE);
+		defaultValue.setFont(Font.font(fontSize - 3));
+		
+		range = new Text();
+		range.setFill(Color.WHITE);
+		range.setFont(Font.font(fontSize - 2));
 	}
 	
 	public void setColor(Color color)
@@ -30,5 +40,7 @@ final class RowText
 		name.setFill(color);
 		value.setFill(color);
 		units.setFill(color);
+		defaultValue.setFill(color);
+		range.setFill(color);
 	}
 }

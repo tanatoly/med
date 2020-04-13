@@ -316,7 +316,7 @@ public class Utilities
 	public static final DateTimeFormatter DATE_TIME_dd_MM_yyyy_HH_mm_ss_SSS = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss.SSS");
 	
 	public static final DateTimeFormatter DATE_TIME_dd_MM_yyyy_HH_mm_ss_minus = DateTimeFormatter.ofPattern("dd-MM-yyyy-HH-mm-ss");
-	public static final DateTimeFormatter DATE_TIME_dd_MM_yyyy_HH 		= DateTimeFormatter.ofPattern("dd/MM/yyyy HH");
+	public static final DateTimeFormatter DATE_TIME_yyyy_MM_dd_HH_mm_ss 		= DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss");
 	public static final DateTimeFormatter DATE_TIME_HH_mm 				= DateTimeFormatter.ofPattern("HH:mm");
 	public static final DateTimeFormatter DATE_TIME_HH_mm_ss 				= DateTimeFormatter.ofPattern("HH:mm:ss");
 

@@ -14,7 +14,7 @@
 	<property name="minor" 		value="01" />
 	<!--	########################################### -->
 
-	<property name="versions.dir" value="E:${file.separator}Workspace${file.separator}versions${file.separator}" />
+	<property name="versions.dir" value="C:${file.separator}Workspace${file.separator}versions${file.separator}" />
 	<property name="versions.file" value="${versions.dir}${file.separator}build.properties" />
 	<property file="${versions.file}"/>
 
@@ -124,6 +124,7 @@
 			<fileset dir="${targets.dir}${target}"/>
 		</zip>
 
+		
 		<copy todir="${versions.dir}" file="${targets.dir}${target}${file.separator}med-${major}.${minor}.${build}-${target}.zip"/>
 		
 		

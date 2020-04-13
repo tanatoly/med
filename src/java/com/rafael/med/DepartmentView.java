@@ -49,8 +49,12 @@ public class DepartmentView extends ScrollPane
 			getRowConstraints().addAll(r1, r2, r2, r2 ,r2 , r2, r2, r2, r2 , r2);
 			
 			ColumnConstraints c = new ColumnConstraints();
-			c.setPercentWidth(25);
-			getColumnConstraints().addAll(c,c,c,c);
+			c.setPercentWidth(10);
+			for (int i = 0; i <10; i++) 
+			{
+				getColumnConstraints().add(c);
+			}
+			
 			
 			
 			Text bedNumber 	= new Text(bed.getName());
@@ -63,19 +67,22 @@ public class DepartmentView extends ScrollPane
 				MedManager.INSTANCE.showDetails(bed);
 			});
 			
-			GridPane.setConstraints(bedNumber, 			0, 0, 2, 1, HPos.CENTER, VPos.CENTER);
-			GridPane.setConstraints(alarm, 				2, 0, 1, 1, HPos.CENTER, VPos.CENTER);
-			GridPane.setConstraints(card, 				3, 0, 1, 1, HPos.RIGHT, VPos.CENTER);
+			GridPane.setConstraints(bedNumber, 			0, 0, 4, 1, HPos.CENTER, VPos.CENTER);
+			GridPane.setConstraints(alarm, 				4, 0, 2, 1, HPos.CENTER, VPos.CENTER);
+			GridPane.setConstraints(card, 				6, 0, 3, 1, HPos.RIGHT, VPos.CENTER);
 			getChildren().addAll(bedNumber, alarm, card);
 
 			for (int i = 0; i < rows.length; i++) 
 			{
 				rows[i] = new RowText(16);
-				GridPane.setConstraints(rows[i].name, 	0, i + 1, 2, 1, HPos.LEFT, VPos.CENTER);
-				GridPane.setConstraints(rows[i].value, 	2, i + 1, 1, 1, HPos.CENTER, VPos.CENTER);
-				GridPane.setConstraints(rows[i].units, 	3, i + 1, 1, 1, HPos.RIGHT, VPos.CENTER);
 				
-				getChildren().addAll(rows[i].name, rows[i].value, rows[i].units );
+				GridPane.setConstraints(rows[i].name, 				0, i + 1, 2, 1, HPos.LEFT, VPos.CENTER);
+				GridPane.setConstraints(rows[i].value, 				2, i + 1, 2, 1, HPos.LEFT, VPos.CENTER);
+				GridPane.setConstraints(rows[i].units, 				4, i + 1, 2, 1, HPos.LEFT, VPos.CENTER);
+				GridPane.setConstraints(rows[i].defaultValue, 		6, i + 1, 1, 1, HPos.LEFT, VPos.CENTER);
+				GridPane.setConstraints(rows[i].range, 				7, i + 1, 3, 1, HPos.LEFT, VPos.CENTER);
+				
+				getChildren().addAll(rows[i].name, rows[i].value, rows[i].units, rows[i].defaultValue, rows[i].range );
 			}
 		}
 		
@@ -100,7 +107,8 @@ public class DepartmentView extends ScrollPane
 							row.name.setText(param.name);
 							row.value.setText(param.getValue());
 							row.units.setText(param.units);
-								
+							row.defaultValue.setText(param.getDefaultValue());	
+							row.range.setText(param.getRange());	
 							
 							if(param.isWarning.get())
 							{
@@ -114,9 +122,17 @@ public class DepartmentView extends ScrollPane
 							
 							if(isDeviceNotTransmit)
 							{
-								row.setColor(Constants.COLOR_95);
+								row.setColor(Constants.COLOR_80);
 							}
 							count++;
+						}
+					}
+					
+					for (Mfl mfl : device.mfls.values())
+					{
+						if(mfl != null && mfl.isError && mfl.value == 1)
+						{
+							isWarning.compareAndSet(false, true);
 						}
 					}
 				}
@@ -155,7 +171,7 @@ public class DepartmentView extends ScrollPane
 	{
 		if(moduleWidth == 0)
 		{
-			moduleWidth = (getWidth() - 22) / 6  - 4;
+			moduleWidth = (getWidth() - 22) / 3  - 4;
 		}
 		
 		if(!map.containsKey(bed))
