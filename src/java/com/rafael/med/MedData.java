@@ -66,7 +66,6 @@ public class MedData
 							{
 								String nodeName = paramNode.getNodeName();
 								Element paramElement = (Element) paramNode;
-								//System.out.println("------------ " + nodeName);
 								if(nodeName.equals("param"))
 								{
 									String paramId = paramElement.getAttribute("id");

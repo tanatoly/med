@@ -80,7 +80,7 @@ public final class DeviceModule extends GridPane
 			GridPane.setConstraints(rows[i].units, 				4, i + 1, 2, 1, HPos.LEFT, VPos.CENTER);
 			GridPane.setConstraints(rows[i].defaultValue, 		6, i + 1, 1, 1, HPos.LEFT, VPos.CENTER);
 			GridPane.setConstraints(rows[i].range, 				7, i + 1, 3, 1, HPos.LEFT, VPos.CENTER);
-			
+
 			getChildren().addAll(rows[i].name, rows[i].value, rows[i].units, rows[i].defaultValue, rows[i].range );
 	
 		}
