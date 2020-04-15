@@ -57,6 +57,5 @@ public class ParamRange extends DeviceParam
 			param.maxValue = value;
 			param.isMaxSet.set(true);
 		}
-		
 	}
 }

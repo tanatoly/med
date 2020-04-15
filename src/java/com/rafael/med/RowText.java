@@ -33,6 +33,7 @@ final class RowText
 		range = new Text();
 		range.setFill(Color.WHITE);
 		range.setFont(Font.font(fontSize - 2));
+
 	}
 	
 	public void setColor(Color color)

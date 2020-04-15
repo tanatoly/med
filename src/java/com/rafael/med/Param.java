@@ -3,6 +3,7 @@ package com.rafael.med;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
+//github.com/tanatoly/med.git
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.commons.lang3.StringUtils;
@@ -26,6 +27,7 @@ public class Param extends DeviceParam
 	public double defaultValue;
 	
 	public AtomicBoolean isDefaultSet = new AtomicBoolean(false);
+
 	
 	public AtomicBoolean isMinSet = new AtomicBoolean(false);
 	public AtomicBoolean isMaxSet = new AtomicBoolean(false);
@@ -33,6 +35,7 @@ public class Param extends DeviceParam
 	public final Map<Long, Object> records = new HashMap<>(1000);
 	
 	
+
 	
 	public Param(String id, String name, String valueType, String presision, String units, String min, String max, String regular, String alarm)
 	{
@@ -173,4 +176,5 @@ public class Param extends DeviceParam
 			return value < minValue || value > maxValue;
 		}
 	}
+
 }

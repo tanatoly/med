@@ -2,7 +2,6 @@ package com.rafael.med;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentSkipListMap;
 
 import com.rafael.med.common.Constants;
 import com.rafael.med.common.ViewUtils;

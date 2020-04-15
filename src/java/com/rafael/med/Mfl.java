@@ -22,8 +22,8 @@ public class Mfl extends DeviceParam
 		this.isError 	= prototype.isError;
 		this.name = prototype.name;
 	}
-
 	public void handleMessage(long timestamp, ByteBuffer buffer) throws Exception
+
 	{
 		int valueType = buffer.get();
 

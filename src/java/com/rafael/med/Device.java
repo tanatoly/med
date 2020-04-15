@@ -118,7 +118,7 @@ public class Device
 			else if (deviceParam instanceof Mfl) 
 			{
 				Mfl mfl = (Mfl) deviceParam;
-				mfl.handleMessage(lastMessageTime,buffer);
+				mfl.handleMessage(timestamp,buffer);
 			}
 		}
 		

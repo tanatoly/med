@@ -76,6 +76,7 @@ public class DepartmentView extends ScrollPane
 			{
 				rows[i] = new RowText(16);
 				
+				
 				GridPane.setConstraints(rows[i].name, 				0, i + 1, 2, 1, HPos.LEFT, VPos.CENTER);
 				GridPane.setConstraints(rows[i].value, 				2, i + 1, 2, 1, HPos.LEFT, VPos.CENTER);
 				GridPane.setConstraints(rows[i].units, 				4, i + 1, 2, 1, HPos.LEFT, VPos.CENTER);
