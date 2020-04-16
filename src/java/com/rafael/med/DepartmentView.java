@@ -21,7 +21,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
-public class DepartmentView extends ScrollPane
+public class DepartmentView extends ScrollPane implements CenterView
 {
 	
 	public static final class RegularModule extends GridPane
@@ -57,7 +57,7 @@ public class DepartmentView extends ScrollPane
 			
 			
 			
-			Text bedNumber 	= new Text(bed.getName());
+			Text bedNumber 	= new Text(bed.getRoomLocation());
 			bedNumber.setFont(Font.font(16));
 			bedNumber.setFill(Color.AQUA);
 			alarm = ViewUtils.glyphIcon(FontAwesomeIcon.WARNING, 24, Color.RED);
@@ -141,7 +141,7 @@ public class DepartmentView extends ScrollPane
 			if(isWarning.get())
 			{
 				alarm.setFill(Color.RED);
-				MedManager.INSTANCE.addToEmergency(bed);
+				MedManager.INSTANCE.addBedToEmergency(bed);
 			}
 			else
 			{
@@ -161,8 +161,8 @@ public class DepartmentView extends ScrollPane
 	{
 		flowPane = new FlowPane(4,4);
 		
-		setFitToWidth(true);
-		setFitToHeight(true);
+//		setFitToWidth(true);
+//		setFitToHeight(true);
 		flowPane.setAlignment(Pos.BASELINE_LEFT);
 		setContent(flowPane);
 		
@@ -185,12 +185,14 @@ public class DepartmentView extends ScrollPane
 		}
 	}
 	
-	
-	public void update()
+	@Override
+	public void update(boolean isToFront)
 	{
 		for (RegularModule module : map.values()) 
 		{
 			module.update();
 		}
 	}
+	
+	
 }

@@ -25,7 +25,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
-public class EmergencyView extends ScrollPane
+public class EmergencyView extends ScrollPane implements CenterView
 {
 	
 	public static final class EmergencyModule extends GridPane
@@ -55,7 +55,7 @@ public class EmergencyView extends ScrollPane
 			getColumnConstraints().addAll(c,c,c,c);
 			
 			
-			Text bedNumber 	= new Text(bed.getName());
+			Text bedNumber 	= new Text(bed.getRoomLocation());
 			bedNumber.setFont(Font.font(14));
 			bedNumber.setFill(Color.AQUA);
 			Text alarm = ViewUtils.glyphIcon(FontAwesomeIcon.CLOSE, 26, Constants.COLOR_95);
@@ -133,8 +133,8 @@ public class EmergencyView extends ScrollPane
 	{
 		flowPane = new FlowPane(4,4);
 		
-		setFitToWidth(true);
-		setFitToHeight(true);
+//		setFitToWidth(true);
+//		setFitToHeight(true);
 		flowPane.setAlignment(Pos.BASELINE_LEFT);
 		setContent(flowPane);
 		
@@ -167,7 +167,8 @@ public class EmergencyView extends ScrollPane
 			
 	}
 	
-	public void update()
+	@Override
+	public void update(boolean isToFront)
 	{
 		for (EmergencyModule module : map.values()) 
 		{

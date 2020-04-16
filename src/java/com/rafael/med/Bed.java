@@ -7,7 +7,9 @@ import java.util.concurrent.atomic.AtomicLong;
 
 public final class Bed
 {
-	
+	private static final String STR_BED 			= "  מיטה ";
+	private static final String STR_ROOM 			= "חדר ";
+
 	public final Map<String,Device> devices = new HashMap<>();
 	
 	public String number;
@@ -17,6 +19,7 @@ public final class Bed
 	private Map<Integer, Device> prototypeDevices;
 
 	public String room;
+	public String department;
 	public final AtomicLong firstTime = new AtomicLong(0);
 	
 	public Bed(String id, Map<Integer, Device> prototypeDevices)
@@ -46,10 +49,21 @@ public final class Bed
 		device.handleMessage(buffer);
 	}
 	
-	public String getName()
+	public String getRoomLocation()
 	{
-		return "חדר " + room + "  מיטה " + number;
+		return STR_ROOM + room + STR_BED + number;
 	}
+	
+	public String getDepartmentLocation()
+	{
+		return department + "  " + getRoomLocation();
+	}
+	
+	public String getFullName()
+	{
+		return patientName + "   " +  patientId + "    "  + getDepartmentLocation() ;
+	}
+	
 	
 	@Override
 	public int hashCode() 

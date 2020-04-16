@@ -46,11 +46,10 @@ public class MedManager
 	
 	
 	private MainView mainView;
-	private MedData data;
+	public MedData data;
 
 	private static final Path excelPath = Paths.get("excel");
 
-	private DetailsView detailsView;
 	private AtomicBoolean isDepartmentsViewFilled = new AtomicBoolean(false);
 	private ByteBuffer excelBuffer = ByteBuffer.allocate(10 * 1024 * 1024);
 	
@@ -61,53 +60,24 @@ public class MedManager
 		this.data 			= new MedData();
 		this.mainView 		= mainView;
 		mainView.buildView(data);
-		this.detailsView 	= new DetailsView(mainView, mainView.center);
 		Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(2),new EventHandler<ActionEvent>()
 		{
 			public void handle(ActionEvent ae)
 			{
-				readLock.lock();
-				try
+				if(isDepartmentsViewFilled.compareAndSet(false, true))
 				{
-					if(isDepartmentsViewFilled.compareAndSet(false, true))
-					{
-						for (Department department : data.departments.values())
-						{
-							if(department != null)
-							{
-								for (Room room : department.rooms) 
-								{
-									if(room != null)
-									{
-										for (Bed bed : room.beds)
-										{
-											if(bed != null)
-											{
-												department.view.addBed(bed);
-											}
-										}
-									}
-								}
-							}
-						}
-
-					}
 					for (Department department : data.departments.values())
 					{
-						department.view.update();
+						for (Room room : department.rooms) 
+						{
+							for (Bed bed : room.beds)
+							{
+								department.view.addBed(bed);
+							}
+						}
 					}
-
-					detailsView.update();
-					mainView.emergencyView.update();
 				}
-				catch (Throwable e) 
-				{
-					log.error("FAILED PERIODIC ACTION - ",e);
-				}
-				finally
-				{
-					readLock.unlock();
-				}
+				updateCenterView(false);
 		    }
 		}));
 		timeline.setCycleCount(Animation.INDEFINITE);
@@ -166,17 +136,49 @@ public class MedManager
 		Files.createDirectories(excelPath);
 	}
 	
+	public void updateCenterView(boolean isToFront) 
+	{
+		readLock.lock();
+		try
+		{			
+			if(mainView.currentView != null)
+			{
+				mainView.currentView.update(isToFront);
+//				log.trace("update view = " + mainView.currentView);
+			}
+			
+//			for (Department department : data.departments.values())
+//			{
+//				department.view.update();
+//			}
+//
+//			mainView.detailsView.update();
+//			mainView.emergencyView.update();
+		}
+		catch (Throwable e) 
+		{
+			log.error("FAILED PERIODIC ACTION - ",e);
+		}
+		finally
+		{
+			readLock.unlock();
+		}
+		
+	}
 	
 	public void showDetails(Bed bed)
 	{
-		if(bed != null)
-		{
-			detailsView.setBed(bed);
-			detailsView.show();
-		}
+		mainView.detailsView.setBed(bed);
+		mainView.showDetailsView(bed.getFullName());
+	}
+	
+	public void showSettingsForBed(Bed bed)
+	{
+		mainView.settingView.goToBed(bed);
+		mainView.showDetailsView(bed.getFullName());
 	}
 
-	public void addToEmergency(Bed bed) 
+	public void addBedToEmergency(Bed bed) 
 	{
 		mainView.emergencyView.addBed(bed);
 	}
@@ -290,4 +292,7 @@ public class MedManager
 			}
 		}
 	}
+
+
+	
 }

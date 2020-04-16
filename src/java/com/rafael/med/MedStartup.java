@@ -74,15 +74,21 @@ public class MedStartup extends Application
 		SystemTray.getSystemTray().add(trayIcon);
 			
 		
-		Screen primaryScreen = Screen.getPrimary();
-		double screenWidth  = primaryScreen.getBounds().getWidth();
-		double screenHeight = primaryScreen.getBounds().getHeight();
+		Screen primaryScreen 			= Screen.getPrimary();
+		double screenWidth  			= primaryScreen.getBounds().getWidth();
+		double screenHeight 			= primaryScreen.getBounds().getHeight();
+		
+		double screenVisualWidth  		= primaryScreen.getVisualBounds().getWidth();
+		double screenVisualHeight 		= primaryScreen.getVisualBounds().getHeight();
+		
+		System.out.println("screenWidth = " + screenWidth + ", screenHeight =  " + screenHeight + " , screenVisualWidth = " + screenVisualWidth + ",  screenVisualHeight = "  +screenVisualHeight);
+		
 		
 		Text centeTitle = new Text();
 		centeTitle.setFill(Color.WHITE);
 		centeTitle.setFont(Font.font(22));
 		
-		MainView mainView = new MainView(centeTitle);
+		MainView mainView = new MainView(centeTitle, screenWidth, screenHeight);
 		
 		JFXDecorator decorator = new JFXDecorator(primaryStage, mainView, false, true, true);
 		decorator.setUserData(mainView);

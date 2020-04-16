@@ -143,7 +143,16 @@
 
 
 
-
+.chart-series-line {
+    -fx-stroke: black;
+    -fx-stroke-width: 0.5px;
+    -fx-effect: null;
+}
+ 
+.series1.chart-series-line {
+    -fx-stroke: red;
+    -fx-stroke-width: 2px;
+}
 
 
 
@@ -165,16 +174,14 @@
 }
 
 .tab-header-background{
-	-fx-background-color: -color-base;
+	-fx-background-color: -color-30;
 }
 .tab-selected-line{
-	-fx-stroke: -color-fill;
+	-fx-stroke: WHITE;
 	-fx-stroke-width:4;
 }
 .tab-label{
-	-fx-text-fill: -color-fill;
-
-
+	-fx-text-fill: AQUA;
 }
 
 .custom-jfx-check-box{

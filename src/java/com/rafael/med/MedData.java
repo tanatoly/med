@@ -158,6 +158,7 @@ public class MedData
 										bed.patientName 	= bedElement.getAttribute("patientName");
 										bed.patientId 		= bedElement.getAttribute("patientId");
 										bed.room			= roomId;
+										bed.department		= departmentId;
 										
 										allBeds.put(bed.id, bed);
 										room.addBed(bed);
