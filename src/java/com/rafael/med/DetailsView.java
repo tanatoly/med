@@ -281,9 +281,10 @@ public class DetailsView extends JFXTabPane implements CenterView
 			BorderPane content = new BorderPane();
 			setContent(content);
 			
-			deviceFragment = new DeviceFragment(prototype,30);
+			deviceFragment = new DeviceFragment(prototype,20);
 			content.setLeft(deviceFragment);
 			deviceFragment.minWidthProperty().bind(widthProperty().divide(3));
+			deviceFragment.maxWidthProperty().bind(widthProperty().divide(3));
 			
 			BorderPane.setMargin(deviceFragment, new Insets(4));
 			
