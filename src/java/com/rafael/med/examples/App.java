@@ -12,6 +12,7 @@ import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.chart.AreaChart;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
@@ -56,7 +57,7 @@ public class App extends Application
     yAxis.setAnimated(false); // axis animations are removed
 
     
-  final LineChart<Number, Number> lineChart = new LineChart<>(xAxis, yAxis);
+  final AreaChart<Number, Number> lineChart = new AreaChart<>(xAxis, yAxis);
  //   ScatterChart<Number, Number> lineChart = new ScatterChart<>(xAxis, yAxis);
     lineChart.setTitle("Realtime JavaFX Charts");
     lineChart.setAnimated(true); // disable animations
@@ -74,6 +75,11 @@ public class App extends Application
 
   XYChart.Series<Number, Number> seriesP = new XYChart.Series<>();
  
+  for (float i = -1; i < 1; i = (float) (i + 0.1))
+  {
+	  seriesP.getData().add(new XYChart.Data<>(0, i ));
+}
+  
   seriesP.setName("TOCHKa");
  // seriesP.setStyle("-fx-stroke: yellow;");
   
@@ -117,6 +123,7 @@ public class App extends Application
 	for (int i = 0; i < WINDOW_SIZE; i = i + XSTEP)
     {
     	data.add(index,new XYChart.Data<>(i, 0 ));
+    	
     	index++;
 	}
     
@@ -165,18 +172,14 @@ public class App extends Application
     	
     	double y = Math.sin(Math.toRadians(s.getAndAdd(10)));
     	
-    	 Circle x = new Circle(10,Color.AQUA);
+    	
     	Data<Number, Number> current = data.get(count.getAndIncrement());
     	current.setYValue(y);
-    	current.setNode(x);
     	
     	
     	
-    	seriesP.getData().clear();
-    	for (float i = 0; i < y; i = (float) (i + 0.1)) 
-    	{
-    		seriesP.getData().add(new Data<Number, Number>(current.getXValue(), i));
-		}
+    	
+    	
     	
 
     	//System.out.println("x = " + current.getXValue() + " y = " + current.getYValue());
