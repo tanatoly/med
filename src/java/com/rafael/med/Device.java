@@ -7,6 +7,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.rafael.med.ParamFeature.ParamAlarm;
+import com.rafael.med.ParamFeature.ParamDefault;
+import com.rafael.med.ParamFeature.ParamRange;
+
 public class Device 
 {
 	public final int type;
@@ -19,6 +23,7 @@ public class Device
 	public final Map<Integer, Param> params 			= new LinkedHashMap<>();
 	public final Map<Integer, ParamRange> ranges 		= new HashMap<>();
 	public final Map<Integer, ParamDefault> defaults 	= new HashMap<>();
+	public final Map<Integer, ParamAlarm> alarms 		= new HashMap<>();
 	public final Map<Integer, Mfl> mfls 				= new LinkedHashMap<>();
 
 	public final Map<Integer, DeviceParam> all			= new HashMap<>();
@@ -34,7 +39,7 @@ public class Device
 		this.name 	= name;
 	}
 
-	public Device(Device prototype, String serial) // existing device
+	public Device(Device prototype, String serial)  // existing device
 	{
 		this.type 	= prototype.type;
 		this.name 	= prototype.name;
@@ -51,15 +56,7 @@ public class Device
 			all.put(key, param);
 		}
 		
-		for (Map.Entry<Integer, ParamRange> entry : prototype.ranges.entrySet()) 
-		{
-			Integer key = entry.getKey();
-			ParamRange value = entry.getValue();
-			
-			ParamRange range = new ParamRange(value);
-			ranges.put(key, range);
-			all.put(key, range);
-		}
+		
 		
 		for (Map.Entry<Integer, Mfl> entry : prototype.mfls.entrySet()) 
 		{
@@ -71,14 +68,34 @@ public class Device
 			all .put(key, mfl);
 		}
 		
+		for (Map.Entry<Integer, ParamRange> entry : prototype.ranges.entrySet()) 
+		{
+			Integer key = entry.getKey();
+			ParamRange value = entry.getValue();
+			
+			ParamRange range = value.clone();
+			ranges.put(key, range);
+			all.put(key, range);
+		}
+		
 		for (Map.Entry<Integer, ParamDefault> entry : prototype.defaults.entrySet()) 
 		{
 			Integer key = entry.getKey();
 			ParamDefault value = entry.getValue();
 			
-			ParamDefault paramDefault = new ParamDefault(value);
+			ParamDefault paramDefault = value.clone();
 			defaults.put(key, paramDefault);
 			all.put(key, paramDefault);
+		}
+		
+		for (Map.Entry<Integer, ParamAlarm> entry : prototype.alarms.entrySet()) 
+		{
+			Integer key = entry.getKey();
+			ParamAlarm value = entry.getValue();
+			
+			ParamAlarm paramAlarm = value.clone();
+			alarms.put(key, paramAlarm);
+			all.put(key, paramAlarm);
 		}
 		
 	}
@@ -108,18 +125,25 @@ public class Device
 			else if (deviceParam instanceof ParamRange)
 			{
 				ParamRange range = (ParamRange) deviceParam;
-				range.handleMessage(this,buffer);
+				range.handleMessage(this, timestamp, buffer);
 			}
 			else if (deviceParam instanceof ParamDefault)
 			{
 				ParamDefault paramDefault = (ParamDefault) deviceParam;
-				paramDefault.handleMessage(this,buffer);
+				paramDefault.handleMessage(this,timestamp,buffer);
+			}
+			else if (deviceParam instanceof ParamAlarm) 
+			{
+				ParamAlarm paramAlarm = (ParamAlarm) deviceParam;
+				paramAlarm.handleMessage(this,timestamp,buffer);
 			}
 			else if (deviceParam instanceof Mfl) 
 			{
 				Mfl mfl = (Mfl) deviceParam;
 				mfl.handleMessage(timestamp,buffer);
 			}
+			
+			
 		}
 		
 	}
@@ -173,24 +197,34 @@ public class Device
 	
 	public void addDefault(String defaultId, String paramId)
 	{
-		ParamDefault paramDefault = new ParamDefault(defaultId, paramId);
+		ParamDefault paramDefault = new ParamDefault(Integer.parseInt(defaultId), Integer.parseInt(paramId));
 		defaults.put(paramDefault.id, paramDefault);
 		all.put(paramDefault.id, paramDefault);
 	}
 	
 	public void addDinamicRange(String rangeId, String paramId, String isMin)
 	{
-		ParamRange range = new ParamRange(rangeId, paramId, isMin);
+		ParamRange range = new ParamRange(Integer.parseInt(rangeId), Integer.parseInt(paramId), Boolean.parseBoolean(isMin));
 		ranges.put(range.id, range);
 		all.put(range.id, range);
 	}
 
+	public void addAlarm(String alarmId, String paramId) 
+	{
+		ParamAlarm alarm = new ParamAlarm(Integer.parseInt(alarmId), Integer.parseInt(paramId));
+		alarms.put(alarm.id, alarm);
+		all.put(alarm.id, alarm);
+	}
+	
 	public void addMfl(String mflId, String name, String isError)
 	{
 		Mfl mfl = new Mfl(mflId, name, isError);
 		mfls.put(mfl.id, mfl);
 		all.put(mfl.id, mfl);
 	}
+	
+	
+	
 
 	public void clearRecording() 
 	{
@@ -203,5 +237,7 @@ public class Device
 			}
 		}
 	}
+
+	
 	
 }

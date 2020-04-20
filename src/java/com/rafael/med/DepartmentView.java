@@ -111,20 +111,13 @@ public class DepartmentView extends ScrollPane implements CenterView
 							row.defaultValue.setText(param.getDefaultValue());	
 							row.range.setText(param.getRange());	
 							
-							if(param.isWarning.get())
+							
+							row.setColor(param.getColor(isDeviceNotTransmit));
+							if(param.isAlarm.get())
 							{
-								row.setColor(Color.RED);
 								isWarning.compareAndSet(false, true);
 							}
-							else
-							{
-								row.setColor(Color.WHITE);
-							}
 							
-							if(isDeviceNotTransmit)
-							{
-								row.setColor(Constants.COLOR_80);
-							}
 							count++;
 						}
 					}

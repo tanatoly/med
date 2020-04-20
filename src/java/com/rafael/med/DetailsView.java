@@ -116,18 +116,7 @@ public class DetailsView extends JFXTabPane implements CenterView
 					rowText.units.setText(param.units);
 					rowText.defaultValue.setText(param.getDefaultValue());	
 					rowText.range.setText(param.getRange());
-					if(param.isWarning.get())
-					{
-						rowText.setColor(Color.RED);
-					}
-					else
-					{
-						rowText.setColor(Color.WHITE);
-					}
-					if(isDeviceNotTransmit)
-					{
-						rowText.setColor(Constants.COLOR_80);
-					}
+					rowText.setColor(param.getColor(isDeviceNotTransmit));
 				}
 				count++;
 			}

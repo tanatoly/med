@@ -78,9 +78,9 @@ public class MedData
 									String max = paramElement.getAttribute("max");
 								
 									String regular = paramElement.getAttribute("regular");
-									String alarm = paramElement.getAttribute("alarm");
+									
 								
-									Param param = new Param(paramId, paramName, paramType, presision, units, min, max , regular, alarm);
+									Param param = new Param(paramId, paramName, paramType, presision, units, min, max , regular);
 									device.addParam(param);
 								}
 								else if(nodeName.equals("range"))
@@ -107,6 +107,12 @@ public class MedData
 									String mflName = paramElement.getAttribute("name");
 									String isError 	= paramElement.getAttribute("isError");
 									device.addMfl(mflId,mflName, isError);
+								}
+								else if(nodeName.equals("alarm"))
+								{
+									String alarmId 	= paramElement.getAttribute("id");
+									String paramId 	= paramElement.getAttribute("paramId");
+									device.addAlarm(alarmId, paramId);
 								}
 							}
 						}

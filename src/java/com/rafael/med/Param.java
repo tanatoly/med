@@ -8,6 +8,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.rafael.med.common.Constants;
+
+import javafx.scene.paint.Color;
+
 public class Param extends DeviceParam
 {
 	
@@ -16,28 +20,25 @@ public class Param extends DeviceParam
 	public float valueFloat;
 	public int valueInt;
 	public String valueString;
-	public double minValue;
-	public double maxValue;
+	
 	public final String units;
 	public final int presision;
 	public boolean isRegular;
-	public boolean isAlarm;
 	
-	public AtomicBoolean isWarning = new AtomicBoolean(false);
+	
 	public double defaultValue;
-	
-	public AtomicBoolean isDefaultSet = new AtomicBoolean(false);
+	public AtomicBoolean isDefaultSet 	= new AtomicBoolean(false);
 
-	
-	public AtomicBoolean isMinSet = new AtomicBoolean(false);
-	public AtomicBoolean isMaxSet = new AtomicBoolean(false);
+	public double minValue;
+	public double maxValue;
+	public AtomicBoolean isMinSet 		= new AtomicBoolean(false);
+	public AtomicBoolean isMaxSet 		= new AtomicBoolean(false);
+	public AtomicBoolean isAlarm  		= new AtomicBoolean(false);
+
 	
 	public final Map<Long, Object> records = new HashMap<>(1000);
 	
-	
-
-	
-	public Param(String id, String name, String valueType, String presision, String units, String min, String max, String regular, String alarm)
+	public Param(String id, String name, String valueType, String presision, String units, String min, String max, String regular)
 	{
 		super(Integer.parseInt(id));
 		this.name 			= name;
@@ -57,10 +58,6 @@ public class Param extends DeviceParam
 		{
 			isRegular = Boolean.parseBoolean(regular);
 		}
-		if(StringUtils.isNotBlank(alarm))
-		{
-			isAlarm = Boolean.parseBoolean(alarm);
-		}
 	}
 
 	public Param(Param prototype) 
@@ -73,7 +70,6 @@ public class Param extends DeviceParam
 		this.minValue 		= prototype.minValue;
 		this.maxValue 		= prototype.maxValue;
 		this.isRegular 		= prototype.isRegular;
-		this.isAlarm 		= prototype.isAlarm;
 	}
 
 	public String getValue()
@@ -124,24 +120,41 @@ public class Param extends DeviceParam
 			return StringUtils.EMPTY;
 		}
 	}	
+	
+	
+	public Color getColor(boolean isDeviceNotTransmit)
+	{
+		if(isDeviceNotTransmit)
+		{
+			return Constants.COLOR_80;
+		}
+		else if(isAlarm.get())
+		{
+			return Color.RED;
+		}
+		else
+		{
+			return Color.WHITE;
+		}
+	}
 
 	public void handleMessage(long timestamp, ByteBuffer buffer) 
 	{
 		int valueType = buffer.get();
 
-		boolean isNowWarning = false;
+		//boolean isNowWarning = false;
 		if(valueType == TYPE_FLOAT)
 		{
 			float v = buffer.getFloat();
 			valueFloat = v;
-			isNowWarning = isNowWarming(valueFloat);
+			//isNowWarning = isNowWarming(valueFloat);
 			records.put(timestamp, v);
 		}
 		else if(valueType == TYPE_INT)
 		{
 			int v = buffer.getInt();
 			valueInt = v;
-			isNowWarning = isNowWarming(valueInt);
+			//isNowWarning = isNowWarming(valueInt);
 			records.put(timestamp, v);
 		}
 		else if(valueType == TYPE_STRING)
@@ -153,28 +166,28 @@ public class Param extends DeviceParam
 			valueString = v;
 			records.put(timestamp, v);
 		}
-		isWarning.compareAndSet(!isNowWarning, isNowWarning);
+		//isWarning.compareAndSet(!isNowWarning, isNowWarning);
 	}
 
 	
-	private boolean isNowWarming(double value)
-	{
-		if(isMinSet.get() && isMaxSet.get())
-		{
-			return value < minValue || value > maxValue;
-		}
-		else if (isMinSet.get())
-		{
-			return value < minValue;
-		}
-		else if (isMaxSet.get())
-		{
-			return value > maxValue;
-		}
-		else
-		{
-			return value < minValue || value > maxValue;
-		}
-	}
+//	private boolean isNowWarming(double value)
+//	{
+//		if(isMinSet.get() && isMaxSet.get())
+//		{
+//			return value < minValue || value > maxValue;
+//		}
+//		else if (isMinSet.get())
+//		{
+//			return value < minValue;
+//		}
+//		else if (isMaxSet.get())
+//		{
+//			return value > maxValue;
+//		}
+//		else
+//		{
+//			return value < minValue || value > maxValue;
+//		}
+//	}
 
 }

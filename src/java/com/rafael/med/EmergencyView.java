@@ -100,20 +100,16 @@ public class EmergencyView extends ScrollPane implements CenterView
 					
 					for (Param param : device.params.values())
 					{
-						if(param !=null && param.isAlarm && count < rows.length)
+						if(param !=null &&  count < rows.length)
 						{
 							RowText row = rows[count];
 							row.name.setText(param.name);
 							row.value.setText(param.getValue());
 							row.units.setText(param.units);
 								
-							Color color = param.isWarning.get() ? Color.RED : Color.WHITE;
-							row.setColor(color);
 							
-							if(isDeviceNotTransmit)
-							{
-								row.setColor(Constants.COLOR_95);
-							}
+							row.setColor(param.getColor(isDeviceNotTransmit));
+							
 							count++;
 						}
 					}
