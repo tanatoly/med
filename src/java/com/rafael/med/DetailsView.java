@@ -1,7 +1,10 @@
 package com.rafael.med;
 
+import java.awt.Toolkit;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -12,6 +15,7 @@ import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.value.ChangeListener;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
@@ -19,6 +23,8 @@ import javafx.geometry.VPos;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
+import javafx.scene.chart.XYChart.Data;
+import javafx.scene.chart.XYChart.Series;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
 import javafx.scene.layout.BorderPane;
@@ -156,110 +162,152 @@ public class DetailsView extends JFXTabPane implements CenterView
 /******************************************** 	ChartFragment ***********************************/		
 	public static final class ChartFragment extends BorderPane
 	{
+		public static final class XY
+		{
+			public double x;
+			public double y;
+			
+			public XY()
+			{
+				this.x = 0;
+				this.y = 0;
+			}
+		}
 		
-		private LineChart<Number, Number> chart;
-		private XYChart.Series<Number, Number> hourDataSeries;
-		private XYChart.Series<Number, Number> minuteDataSeries;
-		private NumberAxis xAxis;
+		private static final double MIN_X 		= 0;
+		private static final double MAX_X 		= 10_000;
+		private static final double STEP_X 		= 50;
 		
-		private double hours = 0;
-		private double minutes = 0;
-		private double timeInHours = 0;
-		private double prevY = 10;
-		private double y = 10;
+		private static final double MIN_Y 		= -1;
+		private static final double MAX_Y 		= 1;
+		private static final double STEP_Y 		= 0.1;
 		
-		public ChartFragment()
+
+		
+
+		private AtomicBoolean isFirst = new AtomicBoolean();;
+		private Series<Number, Number> seriesMain_1;
+		private Series<Number, Number> seriesMain_2;
+		private ObservableList<Data<Number, Number>> dataMain_1;
+		private ObservableList<Data<Number, Number>> dataMain_2;
+		
+		private ObservableList<Data<Number, Number>> fromList;
+		private ObservableList<Data<Number, Number>> toList;
+		
+		private XY[] points;		
+		private Series<Number, Number> seriesLine;
+		private ObservableList<Data<Number, Number>> dataLine;
+		
+		
+		private double nextX = 0;
+		private AtomicInteger pointCounter = new AtomicInteger(0);
+		
+		private AtomicInteger randomY  		= new AtomicInteger();
+		public int randomDelat;
+		
+		public ChartFragment(String title)
 		{
 			setBackground(Constants.BACKGOUND_70);
 			
 	        
-	        xAxis = new NumberAxis(0, 24, 3);
-	        final NumberAxis yAxis = new NumberAxis(0, 100, 10);
-	        chart = new LineChart<>(xAxis, yAxis);
-	        // setup chart
-	       // chart.getStylesheets().add(StockLineChartApp.class.getResource("StockLineChart.css").toExternalForm());
-	        chart.setCreateSymbols(false);
-	        chart.setAnimated(false);
-	        chart.setLegendVisible(false);
-	        chart.setTitle("Kuku");
-	        xAxis.setLabel("Time");
-	        xAxis.setForceZeroInRange(false);
-	        yAxis.setLabel("Share Price");
-	        yAxis
-	                .setTickLabelFormatter(new NumberAxis.DefaultFormatter(yAxis, "$", null));
-	        // add starting data
-	        hourDataSeries = new XYChart.Series<>();
-	        hourDataSeries.setName("Hourly Data");
-	        minuteDataSeries = new XYChart.Series<>();
-	        minuteDataSeries.setName("Minute Data");
-	        // create some starting data
-	        hourDataSeries.getData()
-	                .add(new XYChart.Data<Number, Number>(timeInHours, prevY));
-	        minuteDataSeries.getData()
-	                .add(new XYChart.Data<Number, Number>(timeInHours, prevY));
-	        for (double m = 0; m < (60); m++)
-	        {
-	            nextTime();
-	            plotTime();
-	        }
-	        chart.getData().add(minuteDataSeries);
-	        chart.getData().add(hourDataSeries);
-	        
-	        setCenter(chart);
+			NumberAxis xAxis = new NumberAxis("Time", MIN_X, MAX_X, STEP_X); 
+			NumberAxis yAxis = new NumberAxis("Value",MIN_Y, MAX_Y, STEP_Y);
+			xAxis.setLabel("x");
+			xAxis.setAnimated(false);
+			yAxis.setLabel("y");
+			yAxis.setAnimated(false);
+
+
+			LineChart<Number, Number> lineChart = new LineChart<>(xAxis, yAxis);
+			lineChart.setTitle(title);
+			lineChart.setAnimated(false); // disable animations
+			lineChart.setCreateSymbols(false);
+			lineChart.setLegendVisible(false);
+			lineChart.setVerticalGridLinesVisible(true);
+			setCenter(lineChart);
+
+			seriesMain_1 = new XYChart.Series<>();
+			dataMain_1 = seriesMain_1.getData();
+			for (double i = MIN_X; i < MAX_X; i+=STEP_X) 
+			{
+				dataMain_1.add(new XYChart.Data<>(i, 0 ));
+			}
+			seriesMain_2 = new XYChart.Series<>();
+			dataMain_2 = seriesMain_2.getData();
 			
+			
+			seriesLine = new XYChart.Series<>();
+			dataLine = seriesLine.getData();
+			
+			points = new XY[3];
+			for (int i = 0; i < points.length; i++) 
+			{
+				dataLine.add(new XYChart.Data<>(0, 0 ));
+				points[i] = new XY();
+			}
+			
+			lineChart.getData().addAll(seriesMain_1, seriesMain_2, seriesLine);
+			
+			fromList = dataMain_1;
+			toList = dataMain_2;
 		}
 		
-		private void nextTime() {
-	        if (minutes == 59) {
-	            hours++;
-	            minutes = 0;
-	        } else {
-	            minutes++;
-	        }
-	        timeInHours = hours + ((1d / 60d) * minutes);
-	    }
-	 
-	    private void plotTime() {
-	        if ((timeInHours % 1) == 0) {
-	            // change of hour
-	            double oldY = y;
-	            y = prevY - 10 + (Math.random() * 20);
-	            prevY = oldY;
-	            while (y < 10 || y > 90) {
-	                y = y - 10 + (Math.random() * 20);
-	            }
-	            hourDataSeries.getData()
-	                    .add(new XYChart.Data<Number, Number>(timeInHours, prevY));
-	            // after 25hours delete old data
-	            if (timeInHours > 25) {
-	                hourDataSeries.getData().remove(0);
-	            }
-	            // every hour after 24 move range 1 hour
-	            if (timeInHours > 24) {
-	                xAxis.setLowerBound(xAxis.getLowerBound() + 1);
-	                xAxis.setUpperBound(xAxis.getUpperBound() + 1);
-	            }
-	        }
-	        double min = (timeInHours % 1);
-	        double randomPickVariance = Math.random();
-	        if (randomPickVariance < 0.3) {
-	            double minY = prevY + ((y - prevY) * min) - 4 + (Math.random() * 8);
-	            minuteDataSeries.getData().add(new XYChart.Data<Number, Number>(timeInHours, minY));
-	        } else if (randomPickVariance < 0.7) {
-	            double minY = prevY + ((y - prevY) * min) - 6 + (Math.random() * 12);
-	            minuteDataSeries.getData().add(new XYChart.Data<Number, Number>(timeInHours, minY));
-	        } else if (randomPickVariance < 0.95) {
-	            double minY = prevY + ((y - prevY) * min) - 10 + (Math.random() * 20);
-	            minuteDataSeries.getData().add(new XYChart.Data<Number, Number>(timeInHours, minY));
-	        } else {
-	            double minY = prevY + ((y - prevY) * min) - 15 + (Math.random() * 30);
-	            minuteDataSeries.getData().add(new XYChart.Data<Number, Number>(timeInHours, minY));
-	        }
-	        // after 25hours delete old data
-	        if (timeInHours > 25) {
-	            minuteDataSeries.getData().remove(0);
-	        }
-	    }
+		public void onTimelineTick()
+		{
+			if(isFirst.compareAndSet(false, true))
+			{
+				seriesMain_1.getNode().lookup(".chart-series-line").setStyle("-fx-stroke: white;-fx-stroke-width: 2px;");
+				seriesMain_2.getNode().lookup(".chart-series-line").setStyle("-fx-stroke: white;-fx-stroke-width: 2px;");
+				seriesLine.getNode().lookup(".chart-series-line").setStyle("-fx-stroke: aqua;-fx-stroke-width: 2px;");
+			}
+			double y = Math.sin(Math.toRadians(randomY.getAndAdd(randomDelat)));
+			
+			
+			Data<Number, Number> data = fromList.remove(0);
+			data.setYValue(y);
+			toList.add(data);
+			
+			int andIncrement = pointCounter.getAndIncrement();
+			points[andIncrement].x = data.getXValue().doubleValue();
+			points[andIncrement].y = data.getYValue().doubleValue();
+			
+			pointCounter.compareAndSet(points.length, 0);
+			
+			int cc = 0;
+			for (Data<Number, Number> currentLine : dataLine)
+			{
+				currentLine.setXValue(points[cc].x);
+				currentLine.setYValue(points[cc].y);
+				cc++;
+			}
+						
+			nextX = nextX + STEP_X;
+			if(nextX >= MAX_X)
+			{
+				nextX = 0;
+				
+				if(fromList == dataMain_1)
+				{
+					fromList = dataMain_2;
+					toList = dataMain_1;
+					
+				}
+				else
+				{
+					fromList = dataMain_1;
+					toList = dataMain_2;
+				}
+
+				for (int i = 0; i < points.length; i++) 
+				{
+					points[i].x = 0;
+					points[i].y = 0;
+				}
+				
+				 Toolkit.getDefaultToolkit().beep();
+			}
+		}
+	    
 	    
 	}
 	
@@ -307,7 +355,8 @@ public class DetailsView extends JFXTabPane implements CenterView
 			
 			for (int i = 0; i < charts.length; i++) 
 			{
-				charts[i] = new ChartFragment();
+				charts[i] = new ChartFragment(prototype.name);
+				charts[i].randomDelat = 10 * i;
 				GridPane.setMargin(charts[i], new Insets(4));
 				center.add(charts[i], 0, i);
 			}
@@ -315,17 +364,11 @@ public class DetailsView extends JFXTabPane implements CenterView
 			content.setCenter(center);
 			
 			chartTimeline = new Timeline();
-			chartTimeline.getKeyFrames().add(new KeyFrame(Duration.millis(1000 / 60), (ActionEvent actionEvent) -> 
+			chartTimeline.getKeyFrames().add(new KeyFrame(Duration.millis(100), (ActionEvent actionEvent) -> 
 			{
-				// 6 minutes data per frame
-				
 				for (int i = 0; i < charts.length; i++) 
 				{
-					for (int count = 0; count < 6; count++) 
-					{
-						charts[i].nextTime();
-						charts[i].plotTime();
-					}
+					charts[i].onTimelineTick();
 				}
 			}));
 			chartTimeline.setCycleCount(Animation.INDEFINITE);
@@ -404,17 +447,17 @@ public class DetailsView extends JFXTabPane implements CenterView
 	{
 		this.bed = bed;
 		
-//		//DELETE
-//		
-//		Device prototype = MedManager.INSTANCE.data.allDevices.get(2);
-//		Device device = new Device(prototype, "123456");
-//		bed.devices.put("123456", device);
-//		
-//		prototype = MedManager.INSTANCE.data.allDevices.get(100);
-//		device = new Device(prototype, "987654");
-//		bed.devices.put("987654", device);
-//		
-//		//DELETE
+		//DELETE
+		
+		Device prototype = MedManager.INSTANCE.data.allDevices.get(2);
+		Device device = new Device(prototype, "123456");
+		bed.devices.put("123456", device);
+		
+		prototype = MedManager.INSTANCE.data.allDevices.get(100);
+		device = new Device(prototype, "987654");
+		bed.devices.put("987654", device);
+		
+		//DELETE
 	}
 
 	@Override

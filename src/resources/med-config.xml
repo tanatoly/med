@@ -21,6 +21,8 @@
 			
 			<range id="102" paramId="4" isMin="false" />
 			<range id="103" paramId="4" isMin="true" />
+			
+			<alarm id="400" paramId="4"/>
 		 	
 		 	<!-- mfl   id="101" name="main failure" isError="true"/ -->
 		 	

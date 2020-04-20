@@ -1,4 +1,5 @@
 package com.rafael.med.examples;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javafx.animation.Animation;
@@ -7,199 +8,196 @@ import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.geometry.Bounds;
-import javafx.geometry.Insets;
-import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.chart.AreaChart;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.chart.XYChart.Data;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Line;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
 public class App extends Application 
 {
-  final int WINDOW_SIZE = 10_000;
-  final int XSTEP = 100;
-  
-  double nextX = 0;
-  double nextY = 0;
-  double deltaY = 0;
-
-  public static void main(String[] args) { launch(args); }
-
-  @Override
-  public void start(Stage primaryStage) throws Exception 
-  {
-    primaryStage.setTitle("JavaFX Realtime Chart Demo");
-    
-    
-    StackPane stackPane = new StackPane();
-
-    // defining the axes
-    final NumberAxis xAxis = new NumberAxis("Time", 0, WINDOW_SIZE, XSTEP); 
-    final NumberAxis yAxis = new NumberAxis("Value",-1, 1, 0.1);
-    xAxis.setLabel("x");
-    xAxis.setAnimated(false); // axis animations are removed
-   
-    yAxis.setLabel("y");
-    yAxis.setAnimated(false); // axis animations are removed
-
-    
-  final AreaChart<Number, Number> lineChart = new AreaChart<>(xAxis, yAxis);
- //   ScatterChart<Number, Number> lineChart = new ScatterChart<>(xAxis, yAxis);
-    lineChart.setTitle("Realtime JavaFX Charts");
-    lineChart.setAnimated(true); // disable animations
-
-    // defining a series to display data
-    XYChart.Series<Number, Number> series = new XYChart.Series<>();
-    series.setName("Data Series");
-
-    // add series to chart
-   // lineChart.getData().add(series);
-    
-   // styleString.append("-fx-stroke: blue; -fx-stroke-width: 2; ");
-  lineChart.setCreateSymbols(false);
-   
-
-  XYChart.Series<Number, Number> seriesP = new XYChart.Series<>();
- 
-  for (float i = -1; i < 1; i = (float) (i + 0.1))
-  {
-	  seriesP.getData().add(new XYChart.Data<>(0, i ));
-}
-  
-  seriesP.setName("TOCHKa");
- // seriesP.setStyle("-fx-stroke: yellow;");
-  
-  lineChart.getData().addAll(series,seriesP);
-  
-  
- 
-  
-    // setup scene
-  	StackPane upper = new StackPane();
-  	Background BACKGOUND_95 			= new Background(new BackgroundFill(Color.rgb(0, 0, 0, 0.5), CornerRadii.EMPTY, Insets.EMPTY));
-  	upper.setBackground(BACKGOUND_95);
-  	upper.setOnMouseMoved(new EventHandler<javafx.scene.input.MouseEvent>() {
-
-		@Override
-		public void handle(javafx.scene.input.MouseEvent event) {
-			
-			System.out.println("------------------ x = " + event.getX() + " y = " + event.getY());
-			
-			
+	
+	public static final class XY
+	{
+		public double x;
+		public double y;
+		
+		public XY()
+		{
+			this.x = 0;
+			this.y = 0;
 		}
-	});
-  	
-  	
-  	
-  	//stackPane.getChildren().addAll(lineChart,upper);
-  	
-    Scene scene = new Scene(lineChart, 800, 600);
-    primaryStage.setScene(scene);
-
-    // show the stage
-    primaryStage.show();
-
-   
-
-    // put dummy data onto graph per second
-    
-    
-    int index = 0;
-    ObservableList<Data<Number, Number>> data = series.getData();
-	for (int i = 0; i < WINDOW_SIZE; i = i + XSTEP)
-    {
-    	data.add(index,new XYChart.Data<>(i, 0 ));
-    	
-    	index++;
 	}
-    
+	
+	static final double MIN_X 		= 0;
+	static final double MAX_X 		= 10_000;
+	static final double STEP_X 		= 100;
+	static final int POINTS_X		= (int) ((MAX_X - MIN_X) / STEP_X);
 
-	
-	
-	 // find chart area Node
-    
-    
-    // remember scene position of chart area
-//    yShift = chartAreaBounds.getMinY();
-//    // set x parameters of the valueMarker to chart area bounds
-//    valueMarker.setStartX(chartAreaBounds.getMinX());
-//    valueMarker.setEndX(chartAreaBounds.getMaxX());
-	
-	
-	final int sum = index;
-    
-    final AtomicInteger count = new AtomicInteger();
-    Timeline timeline1 = new Timeline();
-    lineChart.setVerticalGridLinesVisible(true);
-    
-    Line l = new Line(0, 0, 0, 0);
-    
-  Region chartArea = (Region) lineChart.lookup(".chart-plot-background");
-  Bounds chartAreaBounds = chartArea.localToScene(chartArea.getBoundsInLocal());
-  double xmax = chartAreaBounds.getMaxX();
-  double ymax = chartAreaBounds.getMaxY();
-  
-  double xmin = chartAreaBounds.getMinX();
-  double ymin = chartAreaBounds.getMinY();
-  
-  
-  System.out.println("xmin = " + xmin + " ymin = " + ymin + " xmax =  " + xmax + " ymax =  " + ymax);
-//  
-  
- 
-  
-//  
-//  
-//  upper.getChildren().add(x);
-  AtomicInteger k = new AtomicInteger();
-   AtomicInteger s = new AtomicInteger();
-    timeline1.getKeyFrames().add( new KeyFrame(Duration.millis(XSTEP), (ActionEvent actionEvent) -> 
-    {
-    	
-    	double y = Math.sin(Math.toRadians(s.getAndAdd(10)));
-    	
-    	
-    	Data<Number, Number> current = data.get(count.getAndIncrement());
-    	current.setYValue(y);
-    	
-    	
-    	
-    	
-    	
-    	
 
-    	//System.out.println("x = " + current.getXValue() + " y = " + current.getYValue());
-        if(count.compareAndSet(sum, 0))
-        {
-        	Node lookup = series.getNode().lookup(".chart-series-line");
-        	lookup.setStyle("-fx-stroke: blue;");
-        }
-        
+	static final double MIN_Y 		= -1;
+	static final double MAX_Y 		= 1;
+	static final double STEP_Y 		= 0.1;
+	static final int POINTS_Y		= (int) ((MAX_X - MIN_X) / STEP_X);
 
-         
-    }));
-    timeline1.setCycleCount(Animation.INDEFINITE);
-    timeline1.setDelay(Duration.millis(100));
-    timeline1.play();
-    
-    
-    
- 
-  
-  }
-  
+
+
+	double nextX = 0;
+	double nextY = 0;
+	private XY[] points;
+	private ObservableList<Data<Number, Number>> fromList;
+	private ObservableList<Data<Number, Number>> toList;
+	
+	
+	
+
+	public static void main(String[] args) { launch(args); }
+
+	@Override
+	public void start(Stage primaryStage) throws Exception 
+	{
+
+		NumberAxis xAxis = new NumberAxis("Time", MIN_X, MAX_X, STEP_X); 
+		NumberAxis yAxis = new NumberAxis("Value",MIN_Y, MAX_Y, STEP_Y);
+		xAxis.setLabel("x");
+		xAxis.setAnimated(false);
+		yAxis.setLabel("y");
+		yAxis.setAnimated(false);
+
+
+		LineChart<Number, Number> lineChart = new LineChart<>(xAxis, yAxis);
+		lineChart.setTitle("Realtime JavaFX Charts");
+		lineChart.setAnimated(false); // disable animations
+		lineChart.setCreateSymbols(false);
+		lineChart.setLegendVisible(false);
+
+		XYChart.Series<Number, Number> seriesMain_1 = new XYChart.Series<>();
+		ObservableList<Data<Number, Number>> dataMain_1 = seriesMain_1.getData();
+		for (double i = MIN_X; i < MAX_X; i+=STEP_X) 
+		{
+			dataMain_1.add(new XYChart.Data<>(i, 0 ));
+		}
+		
+		XYChart.Series<Number, Number> seriesMain_2 = new XYChart.Series<>();
+		ObservableList<Data<Number, Number>> dataMain_2 = seriesMain_2.getData();
+		
+		
+		XYChart.Series<Number, Number> seriesLine = new XYChart.Series<>();
+		ObservableList<Data<Number, Number>> dataLine = seriesLine.getData();
+		//seriesLine.nodeProperty().get().setStyle("\"-fx-stroke: blue;-fx-stroke-width: 2px;");
+//		for (double i = MIN_Y; i < MAX_Y; i+=STEP_Y) 
+//		{
+//			dataLine.add(new XYChart.Data<>(0, i ));
+//		}
+		
+		points = new XY[3];
+		for (int i = 0; i < points.length; i++) 
+		{
+			dataLine.add(new XYChart.Data<>(0, 0 ));
+			points[i] = new XY();
+		}
+		
+		
+		lineChart.getData().addAll(seriesMain_1, seriesMain_2);
+		
+		Timeline timeline1 = new Timeline();
+		lineChart.setVerticalGridLinesVisible(true);
+		
+		AtomicInteger count = new AtomicInteger();
+		
+		AtomicInteger randomY = new AtomicInteger();
+		
+		nextX = 0;
+		
+		AtomicInteger pintCount = new AtomicInteger(0);
+		AtomicBoolean isFirst = new AtomicBoolean();
+		
+		
+		AtomicBoolean isChange = new AtomicBoolean();
+		
+		
+		fromList = dataMain_1;
+		toList = dataMain_2;
+		
+		timeline1.getKeyFrames().add( new KeyFrame(Duration.millis(STEP_X), (ActionEvent actionEvent) -> 
+		{
+			
+			if(isFirst.compareAndSet(false, true))
+			{
+				seriesMain_1.getNode().lookup(".chart-series-line").setStyle("-fx-stroke: green;-fx-stroke-width: 2px;");
+				seriesMain_2.getNode().lookup(".chart-series-line").setStyle("-fx-stroke: blue;-fx-stroke-width: 2px;");
+				//seriesLine.getNode().lookup(".chart-series-line").setStyle("-fx-stroke: black;-fx-stroke-width: 3px;");
+			}
+			double y = Math.sin(Math.toRadians(randomY.getAndAdd(10)));
+			
+			
+			
+				Data<Number, Number> data = fromList.remove(0);
+				data.setYValue(y);
+				toList.add(data);
+			
+			
+			
+//			Data<Number, Number> currentMain = dataMain.get(count.getAndIncrement());
+//			currentMain.setYValue(y);
+//			
+//			
+//			
+//			int andIncrement = pintCount.getAndIncrement();
+//			points[andIncrement].x = currentMain.getXValue().doubleValue();
+//			points[andIncrement].y = currentMain.getYValue().doubleValue();
+//			
+//			pintCount.compareAndSet(points.length, 0);
+//			
+//			int cc = 0;
+//			for (Data<Number, Number> currentLine : dataLine)
+//			{
+//				currentLine.setXValue(points[cc].x);
+//				currentLine.setYValue(points[cc].y);
+//				cc++;
+//			}
+						
+			nextX = nextX + STEP_X;
+			if(nextX >= MAX_X)
+			{
+				nextX = 0;
+				
+				if(fromList == dataMain_1)
+				{
+					fromList = dataMain_2;
+					toList = dataMain_1;
+					
+				}
+				else
+				{
+					fromList = dataMain_1;
+					toList = dataMain_2;
+				}
+				
+				
+//				count.set(0);
+//				for (int i = 0; i < points.length; i++) 
+//				{
+//					points[i].x = 0;
+//					points[i].y = 0;
+//				}
+			}
+		}));
+		timeline1.setCycleCount(Animation.INDEFINITE);
+		timeline1.setDelay(Duration.millis(STEP_X));
+		timeline1.play();
+		
+		
+		
+
+		
+
+		Scene scene = new Scene(lineChart, 800, 600);
+		primaryStage.setScene(scene);
+		primaryStage.show();
+
+	}
+
 }

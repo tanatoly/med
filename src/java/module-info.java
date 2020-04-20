@@ -19,6 +19,7 @@ module com.rafael.med
 	
 	
 	exports com.rafael.med;
+	exports com.rafael.med.examples;
 		
 
 	exports com.jfoenix.demo.components;
