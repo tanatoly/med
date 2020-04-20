@@ -24,7 +24,37 @@
 			
 			<alarm id="400" paramId="4"/>
 		 	
-		 	<mfl   id="101" name="main failure" isError="true"/>
+		 	<mfl   id="101" name="main failure"/>
+		 	
+		 	
+		 	
+		 	<!-- chart 1  -->
+		 	<wf id="1000" name="blyayayayaya"/>
+		 	
+		 	<wf-range id="1001" wfId="1000" isAxisX="true" isMin="true"/>
+		 	<wf-range id="1002" wfId="1000" isAxisX="true" isMin="false"/>
+		 	<wf-range id="1003" wfId="1000" isAxisX="false" isMin="true"/>
+		 	<wf-range id="1004" wfId="1000" isAxisX="false" isMin="false"/>
+		 	
+		 	<wf-step id="1005" wfId="1000" isAxisX="true"/>
+		 	<wf-step id="1006" wfId="1000" isAxisX="false"/>
+		 	
+		 	<wf-value id="1007" wfId="1000" type="1"/>
+		 	
+		 	<!-- chart 2 -->
+		 	
+		 	<wf id="2000" name="tatatatatata"/>
+		 	
+		 	<wf-range id="1001" wfId="2000" isAxisX="true" isMin="true"/>
+		 	<wf-range id="2002" wfId="2000" isAxisX="true" isMin="false"/>
+		 	<wf-range id="2003" wfId="2000" isAxisX="false" isMin="true"/>
+		 	<wf-range id="2004" wfId="2000" isAxisX="false" isMin="false"/>
+		 	
+		 	<wf-step id="2005" wfId="2000" isAxisX="true"/>
+		 	<wf-step id="2006" wfId="2000" isAxisX="false"/>
+		 	
+		 	
+		 	
 		 	
 		 	
 		</device>

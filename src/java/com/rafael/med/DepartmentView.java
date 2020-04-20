@@ -124,7 +124,7 @@ public class DepartmentView extends ScrollPane implements CenterView
 					
 					for (Mfl mfl : device.mfls.values())
 					{
-						if(mfl != null && mfl.isError && mfl.value == 1)
+						if(mfl != null && mfl.value == 1)
 						{
 							isWarning.compareAndSet(false, true);
 						}
