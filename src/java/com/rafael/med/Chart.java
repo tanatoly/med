@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.chart.XYChart.Data;
 
 public class Chart extends DeviceParam
@@ -20,6 +22,8 @@ public class Chart extends DeviceParam
 	public final String name;
 	public boolean isChartReady = false;
 	public List<Data<Number, Number>> data;
+	
+	public final BooleanProperty isChartCreated = new SimpleBooleanProperty(false);
 	
 	private int currentIndex = 0;
 	
@@ -41,6 +45,8 @@ public class Chart extends DeviceParam
 					data.add(new Data<>(0, 0 ));
 				}
 			}
+			
+			isChartCreated.set(true);
 			Data<Number, Number> xyValue = data.get(currentIndex);
 			xyValue.setYValue(value);
 		}

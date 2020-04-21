@@ -51,7 +51,7 @@ public class DetailsView extends JFXTabPane implements CenterView
 		public DeviceFragment(Device prototype, int rows)
 		{
 			
-			setBackground(Constants.BACKGOUND_50);
+			setBackground(Constants.BACKGOUND_35);
 			
 //			setGridLinesVisible(true);
 			
@@ -197,15 +197,17 @@ public class DetailsView extends JFXTabPane implements CenterView
 		
 		public ChartFragment(Chart chart)
 		{
-			setBackground(Constants.BACKGOUND_80);
+			setBackground(Constants.BACKGOUND_35);
 			
 	        
-			NumberAxis xAxis = new NumberAxis("Time", MIN_X, MAX_X, STEP_X); 
-			NumberAxis yAxis = new NumberAxis("Value",MIN_Y, MAX_Y, STEP_Y);
+			NumberAxis xAxis = new NumberAxis(); 
+			NumberAxis yAxis = new NumberAxis();
 			xAxis.setLabel("x");
 			xAxis.setAnimated(false);
 			yAxis.setLabel("y");
 			yAxis.setAnimated(false);
+			xAxis.setTickLabelsVisible(false);
+			yAxis.setTickLabelsVisible(false);
 
 
 			LineChart<Number, Number> lineChart = new LineChart<>(xAxis, yAxis);
@@ -214,14 +216,16 @@ public class DetailsView extends JFXTabPane implements CenterView
 			lineChart.setCreateSymbols(false);
 			lineChart.setLegendVisible(false);
 			lineChart.setVerticalGridLinesVisible(true);
+			
+			
 			setCenter(lineChart);
 
 			seriesMain_1 = new XYChart.Series<>();
 			dataMain_1 = seriesMain_1.getData();
-			for (double i = MIN_X; i < MAX_X; i+=STEP_X) 
-			{
-				dataMain_1.add(new XYChart.Data<>(i, 0 ));
-			}
+//			for (double i = MIN_X; i < MAX_X; i+=STEP_X) 
+//			{
+//				dataMain_1.add(new XYChart.Data<>(i, 0 ));
+//			}
 			seriesMain_2 = new XYChart.Series<>();
 			dataMain_2 = seriesMain_2.getData();
 			
@@ -240,6 +244,27 @@ public class DetailsView extends JFXTabPane implements CenterView
 			
 			fromList = dataMain_1;
 			toList = dataMain_2;
+			
+			
+			chart.isChartCreated.addListener((ChangeListener<Boolean>) (observable, oldValue, newValue) -> 
+			{
+				if(newValue)
+				{
+					System.out.println("------------ CHART CREATED");
+					xAxis.setUpperBound(chart.maxX);
+					xAxis.setLowerBound(chart.minX);
+					xAxis.setTickUnit(chart.stepX);
+					
+					yAxis.setUpperBound(chart.maxY);
+					yAxis.setLowerBound(chart.minY);
+					yAxis.setTickUnit(chart.stepY);
+					
+					for (Data<Number, Number> chartData : chart.data)
+					{
+						dataMain_1.add(chartData);
+					}
+				}
+			});
 		}
 		
 		public void onTimelineTick()
@@ -363,7 +388,7 @@ public class DetailsView extends JFXTabPane implements CenterView
 			{
 				for (int i = 0; i < chartFragments.length; i++) 
 				{
-					chartFragments[i].onTimelineTick();
+					//chartFragments[i].onTimelineTick();
 				}
 			}));
 			chartTimeline.setCycleCount(Animation.INDEFINITE);
@@ -446,6 +471,9 @@ public class DetailsView extends JFXTabPane implements CenterView
 		
 		Device prototype = MedManager.INSTANCE.data.allDevices.get(2);
 		Device device = new Device(prototype, "123456");
+		
+		
+		
 		bed.devices.put("123456", device);
 		
 		prototype = MedManager.INSTANCE.data.allDevices.get(100);

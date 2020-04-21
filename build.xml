@@ -21,7 +21,7 @@
 	
 	<target name="build" description="build">
 
-		
+		<delete dir="${targets.dir}"/>
 		<antcall target="compile"/>
 		
 		<antcall target="build-image">
@@ -34,12 +34,13 @@
 			<param name="target" value="arm-hf-32"/>
 			<param name="source" value="zulu11.1.8-ca-jdk11-c2-linux_aarch32hf"/>
 		</antcall>
+		-->
 		
 		<antcall target="build-image">
 			<param name="target" value="linux-64"/>
-			<param name="source" value="zulu11.31.11-ca-jdk11.0.3-linux_x64"/>
+			<param name="source" value="zulu11.39.15-ca-fx-jdk11.0.7-linux_x64"/>
 		</antcall>
-		-->
+		
 		<delete dir="${build.dir}"/>
 		
 		<propertyfile file="${versions.file}" comment="Build properties.Don't edit manual">
@@ -58,6 +59,8 @@
 
 	
 	<target name="compile">
+		
+		
 		
 		<delete dir="${build.dir}"/>
 		<mkdir dir="${build.dir}${file.separator}output" />
@@ -87,7 +90,7 @@
 
 	<target name="build-image">
 		
-		<delete dir="${targets.dir}"/>
+		
 		
 		<tstamp>
 			<format property="build.time" pattern="dd-MM-yyyy_HH-mm-ss" />
@@ -103,6 +106,7 @@
 			<arg value="--no-man-pages"/>
 			<arg value="--strip-debug"/>
 			<arg value="--release-info=add:date=${build.time}:version=${major}.${minor}.${build}"/>
+			<arg value="--launcher=run-med=com.rafael.med/com.rafael.med.MedStartup"/>
 		</exec> 
 		
 		
@@ -117,7 +121,7 @@
 		<move file="${targets.dir}${target}${file.separator}release" todir="${targets.dir}${target}${file.separator}conf"></move>
 		
 		<copy todir="${targets.dir}${target}" includeemptydirs="false">
-			<fileset dir="${basedir}${file.separator}src${file.separator}resources" includes="med-run.bat" />
+			<fileset dir="${basedir}${file.separator}src${file.separator}resources" includes="med-run.bat,med-run" />
 		</copy>
 		
 		<zip destfile="${targets.dir}${target}${file.separator}med-${major}.${minor}.${build}-${target}.zip">
