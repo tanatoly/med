@@ -476,20 +476,20 @@ public class DetailsView extends JFXTabPane implements CenterView
 	{
 		this.bed = bed;
 		
-		//DELETE
-		
-		Device prototype = MedManager.INSTANCE.data.allDevices.get(2);
-		Device device = new Device(prototype, "123456");
-		
-		
-		
-		bed.devices.put("123456", device);
-		
-		prototype = MedManager.INSTANCE.data.allDevices.get(100);
-		device = new Device(prototype, "987654");
-		bed.devices.put("987654", device);
-		
-		//DELETE
+//		//DELETE
+//		
+//		Device prototype = MedManager.INSTANCE.data.allDevices.get(2);
+//		Device device = new Device(prototype, "123456");
+//		
+//		
+//		
+//		bed.devices.put("123456", device);
+//		
+//		prototype = MedManager.INSTANCE.data.allDevices.get(100);
+//		device = new Device(prototype, "987654");
+//		bed.devices.put("987654", device);
+//		
+//		//DELETE
 	}
 
 	@Override
