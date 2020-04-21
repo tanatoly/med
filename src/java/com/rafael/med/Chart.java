@@ -26,12 +26,15 @@ public class Chart extends DeviceParam
 	public final BooleanProperty isChartCreated = new SimpleBooleanProperty(false);
 	
 	private int currentIndex = 0;
+	private int sizeX = 0;
 	
 	public Chart(int id, String name) 
 	{
 		super(id);
 		this.name = name;
 	}
+	
+	
 	
 	public void setNextValue(double value)
 	{
@@ -42,17 +45,31 @@ public class Chart extends DeviceParam
 				data = new ArrayList<Data<Number,Number>>();
 				for (double i = minX; i < maxX; i+=stepX) 
 				{
-					data.add(new Data<>(0, 0 ));
+					data.add(new Data<>(i, 0 ));
+					sizeX++;
 				}
+				isChartCreated.set(true);
+			}
+			if(currentIndex >= sizeX)
+			{
+				currentIndex = 0;
 			}
 			
-			isChartCreated.set(true);
-			Data<Number, Number> xyValue = data.get(currentIndex);
+			Data<Number, Number> xyValue = data.get(currentIndex++);
 			xyValue.setYValue(value);
 		}
 	}
 	
 	
+	
+	@Override
+	public String toString()
+	{
+		return String.format("Chart [maxX=%s, minX=%s, maxY=%s, minY=%s, stepX=%s, stepY=%s, name=%s]", maxX, minX, maxY, minY, stepX, stepY, name);
+	}
+
+
+
 	public static abstract class ChartFeature extends DeviceParam implements Cloneable
 	{
 		public final int chartId;

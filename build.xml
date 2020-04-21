@@ -106,7 +106,6 @@
 			<arg value="--no-man-pages"/>
 			<arg value="--strip-debug"/>
 			<arg value="--release-info=add:date=${build.time}:version=${major}.${minor}.${build}"/>
-			<arg value="--launcher=run-med=com.rafael.med/com.rafael.med.MedStartup"/>
 		</exec> 
 		
 		

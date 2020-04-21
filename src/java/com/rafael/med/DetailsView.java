@@ -8,6 +8,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.jfoenix.controls.JFXTabPane;
 import com.rafael.med.common.Constants;
@@ -40,7 +42,7 @@ import javafx.util.Duration;
 
 public class DetailsView extends JFXTabPane implements CenterView
 {
-	
+	private static final Logger log = LogManager.getLogger();
 	/******************************************** 	DeviceFragment ***********************************/	
 	public static final class DeviceFragment extends GridPane
 	{
@@ -164,16 +166,16 @@ public class DetailsView extends JFXTabPane implements CenterView
 			}
 		}
 		
-		private static final double MIN_X 		= 0;
-		private static final double MAX_X 		= 10_000;
-		private static final double STEP_X 		= 50;
-		
-		private static final double MIN_Y 		= -1;
-		private static final double MAX_Y 		= 1;
-		private static final double STEP_Y 		= 0.1;
-		
-
-		
+//		private static final double MIN_X 		= 0;
+//		private static final double MAX_X 		= 10_000;
+//		private static final double STEP_X 		= 50;
+//		
+//		private static final double MIN_Y 		= -1;
+//		private static final double MAX_Y 		= 1;
+//		private static final double STEP_Y 		= 0.1;
+//		
+//
+//		
 
 		private AtomicBoolean isFirst = new AtomicBoolean();;
 		private Series<Number, Number> seriesMain_1;
@@ -194,9 +196,11 @@ public class DetailsView extends JFXTabPane implements CenterView
 		
 		private AtomicInteger randomY  		= new AtomicInteger();
 		public int randomDelat;
+		private Chart chart;
 		
 		public ChartFragment(Chart chart)
 		{
+			this.chart = chart;
 			setBackground(Constants.BACKGOUND_35);
 			
 	        
@@ -250,7 +254,7 @@ public class DetailsView extends JFXTabPane implements CenterView
 			{
 				if(newValue)
 				{
-					System.out.println("------------ CHART CREATED");
+					
 					xAxis.setUpperBound(chart.maxX);
 					xAxis.setLowerBound(chart.minX);
 					xAxis.setTickUnit(chart.stepX);
@@ -263,6 +267,8 @@ public class DetailsView extends JFXTabPane implements CenterView
 					{
 						dataMain_1.add(chartData);
 					}
+					
+					log.debug("CHART {} WAS CREATED",chart);
 				}
 			});
 		}
@@ -275,11 +281,14 @@ public class DetailsView extends JFXTabPane implements CenterView
 				seriesMain_2.getNode().lookup(".chart-series-line").setStyle("-fx-stroke: white;-fx-stroke-width: 2px;");
 				seriesLine.getNode().lookup(".chart-series-line").setStyle("-fx-stroke: aqua;-fx-stroke-width: 2px;");
 			}
-			double y = Math.sin(Math.toRadians(randomY.getAndAdd(randomDelat)));
+			
+			
+			
+			//double y = Math.sin(Math.toRadians(randomY.getAndAdd(randomDelat)));
 			
 			
 			Data<Number, Number> data = fromList.remove(0);
-			data.setYValue(y);
+			//data.setYValue(y);
 			toList.add(data);
 			
 			int andIncrement = pointCounter.getAndIncrement();
@@ -296,8 +305,8 @@ public class DetailsView extends JFXTabPane implements CenterView
 				cc++;
 			}
 						
-			nextX = nextX + STEP_X;
-			if(nextX >= MAX_X)
+			nextX = nextX + chart.stepX;
+			if(nextX >= chart.maxX)
 			{
 				nextX = 0;
 				

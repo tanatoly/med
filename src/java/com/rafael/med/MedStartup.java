@@ -59,10 +59,6 @@ public class MedStartup extends Application
 		
 		
 		
-		if(!SystemTray.isSupported())
-		{
-			throw new Exception("NO SYSTEM TRAY SUPPORT");
-		}
 		BufferedImage trayImage 		= ImageIO.read(ClassLoader.getSystemResource("com/rafael/med/images/doc-tray.png"));
 		
 		if(trayImage == null)
@@ -70,8 +66,12 @@ public class MedStartup extends Application
 			throw new Exception("NO TRAY IMAGE LOADED");
 		}
 		primaryStage.getIcons().add(SwingFXUtils.toFXImage(trayImage, null));
-		TrayIcon trayIcon = new TrayIcon(trayImage, "DocEyes");
-		SystemTray.getSystemTray().add(trayIcon);
+		if(SystemTray.isSupported())
+		{
+		
+			TrayIcon trayIcon = new TrayIcon(trayImage, "DocEyes");
+			SystemTray.getSystemTray().add(trayIcon);
+		}
 			
 		
 		Screen primaryScreen 			= Screen.getPrimary();
