@@ -39,7 +39,7 @@
 		 	<wf-step id="1005" wfId="1000" isAxisX="true"/>
 		 	<wf-step id="1006" wfId="1000" isAxisX="false"/>
 		 	
-		 	<wf-value id="1007" wfId="1000" type="1"/>
+		 	<wf-value id="1007" wfId="1000" />
 		 	
 		 	<!-- chart 2 -->
 		 	

@@ -1,6 +1,7 @@
 package com.rafael.med;
 
 import java.awt.Toolkit;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -194,9 +195,9 @@ public class DetailsView extends JFXTabPane implements CenterView
 		private AtomicInteger randomY  		= new AtomicInteger();
 		public int randomDelat;
 		
-		public ChartFragment(String title)
+		public ChartFragment(Chart chart)
 		{
-			setBackground(Constants.BACKGOUND_70);
+			setBackground(Constants.BACKGOUND_80);
 			
 	        
 			NumberAxis xAxis = new NumberAxis("Time", MIN_X, MAX_X, STEP_X); 
@@ -208,8 +209,8 @@ public class DetailsView extends JFXTabPane implements CenterView
 
 
 			LineChart<Number, Number> lineChart = new LineChart<>(xAxis, yAxis);
-			lineChart.setTitle(title);
-			lineChart.setAnimated(false); // disable animations
+			lineChart.setTitle(chart.name);
+			lineChart.setAnimated(false);
 			lineChart.setCreateSymbols(false);
 			lineChart.setLegendVisible(false);
 			lineChart.setVerticalGridLinesVisible(true);
@@ -293,11 +294,9 @@ public class DetailsView extends JFXTabPane implements CenterView
 					points[i].y = 0;
 				}
 				
-				 Toolkit.getDefaultToolkit().beep();
+				// Toolkit.getDefaultToolkit().beep();
 			}
 		}
-	    
-	    
 	}
 	
 	
@@ -307,7 +306,6 @@ public class DetailsView extends JFXTabPane implements CenterView
 	{
 		private Device device;
 		private Timeline chartTimeline;
-		private ChartFragment[] charts = new ChartFragment[3];
 		private DeviceFragment deviceFragment;
 		
 		public DeviceTab(Device prototype)
@@ -327,9 +325,14 @@ public class DetailsView extends JFXTabPane implements CenterView
 			
 			
 			GridPane center = new GridPane();
+			
+			
+			
 			//center.setGridLinesVisible(true);
 			
-			for (int i = 0; i < charts.length; i++) 
+			Collection<Chart> charts = prototype.charts.values();
+			
+			for (int i = 0; i < charts.size(); i++) 
 			{
 				RowConstraints rowConstraints = new RowConstraints();
 				rowConstraints.setFillHeight(true);
@@ -342,12 +345,15 @@ public class DetailsView extends JFXTabPane implements CenterView
 			columnConstraints.setHgrow(Priority.ALWAYS);
 			center.getColumnConstraints().add(columnConstraints);
 			
-			for (int i = 0; i < charts.length; i++) 
+			int index = 0;
+			ChartFragment [] chartFragments = new ChartFragment[charts.size()]; 
+			for (Chart chart : charts)
 			{
-				charts[i] = new ChartFragment(prototype.name);
-				charts[i].randomDelat = 10 * i;
-				GridPane.setMargin(charts[i], new Insets(4));
-				center.add(charts[i], 0, i);
+				chartFragments[index] = new ChartFragment(chart);
+				chartFragments[index].randomDelat = 10 * index;
+				GridPane.setMargin(chartFragments[index], new Insets(4));
+				center.add(chartFragments[index], 0, index);
+				index++;
 			}
 			
 			content.setCenter(center);
@@ -355,9 +361,9 @@ public class DetailsView extends JFXTabPane implements CenterView
 			chartTimeline = new Timeline();
 			chartTimeline.getKeyFrames().add(new KeyFrame(Duration.millis(100), (ActionEvent actionEvent) -> 
 			{
-				for (int i = 0; i < charts.length; i++) 
+				for (int i = 0; i < chartFragments.length; i++) 
 				{
-					charts[i].onTimelineTick();
+					chartFragments[i].onTimelineTick();
 				}
 			}));
 			chartTimeline.setCycleCount(Animation.INDEFINITE);

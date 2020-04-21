@@ -79,9 +79,7 @@ public class MedData
 								
 									String regular = paramElement.getAttribute("regular");
 									
-								
-									Param param = new Param(paramId, paramName, paramType, presision, units, min, max , regular);
-									device.addParam(param);
+									device.addParam(paramId, paramName, paramType, presision, units, min, max , regular);
 								}
 								else if(nodeName.equals("range"))
 								{
@@ -90,7 +88,7 @@ public class MedData
 									String isMin 	= paramElement.getAttribute("isMin");
 									
 									
-									device.addDinamicRange(rangeId, paramId, isMin);
+									device.addParamRange(rangeId, paramId, isMin);
 									
 								}
 								else if(nodeName.equals("default"))
@@ -98,7 +96,7 @@ public class MedData
 									String defaultId 	= paramElement.getAttribute("id");
 									String paramId 		= paramElement.getAttribute("paramId");
 									
-									device.addDefault(defaultId, paramId);
+									device.addParamDefault(defaultId, paramId);
 									
 								}
 								else if(nodeName.equals("mfl"))
@@ -112,7 +110,44 @@ public class MedData
 								{
 									String alarmId 	= paramElement.getAttribute("id");
 									String paramId 	= paramElement.getAttribute("paramId");
-									device.addAlarm(alarmId, paramId);
+									device.addParamAlarm(alarmId, paramId);
+								}
+								
+								
+								//----------------- charts--------------/
+								
+								else if(nodeName.equals("wf")) 			//<wf id="1000" name="blyayayayaya"/>
+								{
+									String chartId 		= paramElement.getAttribute("id");
+									String chartName 	= paramElement.getAttribute("name");
+									device.addChart(chartId, chartName);
+								}
+								
+								
+								else if(nodeName.equals("wf-range"))	//<wf-range id="1001" wfId="1000" isAxisX="true" isMin="true"/>
+								{
+									String chartRangeId 	= paramElement.getAttribute("id");
+									String chartId 			= paramElement.getAttribute("wfId");
+									String isAxisX 			= paramElement.getAttribute("isAxisX");
+									String isMin 			= paramElement.getAttribute("isMin");
+									
+									device.addChartRange(chartRangeId, chartId, isAxisX, isMin );
+									
+								}
+								else if(nodeName.equals("wf-step"))		//<wf-step id="1005" wfId="1000" isAxisX="true"/>
+								{
+									String chartStepId 		= paramElement.getAttribute("id");
+									String chartId 			= paramElement.getAttribute("wfId");
+									String isAxisX 			= paramElement.getAttribute("isAxisX");
+									
+									device.adChartStep(chartStepId, chartId, isAxisX);
+									
+								}
+								else if(nodeName.equals("wf-value"))	//<wf-value id="1007" wfId="1000" type="1"/>
+								{
+									String chartValueId 	= paramElement.getAttribute("id");
+									String chartId 			= paramElement.getAttribute("wfId");
+									device.addChartValue(chartValueId, chartId);
 								}
 							}
 						}

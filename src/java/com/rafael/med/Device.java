@@ -7,6 +7,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.rafael.med.Chart.ChartRange;
+import com.rafael.med.Chart.ChartStep;
+import com.rafael.med.Chart.ChartValue;
 import com.rafael.med.ParamFeature.ParamAlarm;
 import com.rafael.med.ParamFeature.ParamDefault;
 import com.rafael.med.ParamFeature.ParamRange;
@@ -16,21 +19,19 @@ public class Device
 	public final int type;
 	public final String name;
 	public String serial;
-	public String error;
-	public boolean isWorking;
+	
 	public long lastMessageTime = 0;
 	
-	public final Map<Integer, Param> params 			= new LinkedHashMap<>();
-	public final Map<Integer, ParamRange> ranges 		= new HashMap<>();
-	public final Map<Integer, ParamDefault> defaults 	= new HashMap<>();
-	public final Map<Integer, ParamAlarm> alarms 		= new HashMap<>();
-	public final Map<Integer, Mfl> mfls 				= new LinkedHashMap<>();
-
+	public final Map<Integer, Param> 	params 			= new LinkedHashMap<>();
+	public final Map<Integer, Mfl> 		mfls 			= new LinkedHashMap<>();
+	public final Map<Integer, Chart> 	charts 			= new LinkedHashMap<>();
+	
 	public final Map<Integer, DeviceParam> all			= new HashMap<>();
 	
 	
 	
 	public final List<Long> timestamps = new ArrayList<>(1000);
+	
 	
 	
 	public Device(String type, String name) // prototype device
@@ -46,58 +47,28 @@ public class Device
 		this.serial = serial;
 		
 
-		for (Map.Entry<Integer, Param> entry : prototype.params.entrySet()) 
+		for (Map.Entry<Integer, DeviceParam> entry : prototype.all.entrySet()) 
 		{
-			Integer key = entry.getKey();
-			Param value = entry.getValue();
+			Integer key 		= entry.getKey();
+			DeviceParam value 	= entry.getValue();
+			all.put(key, value);
 			
-			Param param = new Param(value);
-			params.put(key, param);
-			all.put(key, param);
+			if (value instanceof Param) 
+			{
+				Param param = (Param) value;
+				params.put(key, param);
+			}
+			else if (value instanceof Mfl) 
+			{
+				Mfl mfl = (Mfl) value;
+				mfls.put(key, mfl);
+			}
+			else if (value instanceof Chart) 
+			{
+				Chart chart = (Chart) value;
+				charts.put(key, chart);
+			}
 		}
-		
-		
-		
-		for (Map.Entry<Integer, Mfl> entry : prototype.mfls.entrySet()) 
-		{
-			Integer key = entry.getKey();
-			Mfl value = entry.getValue();
-			
-			Mfl mfl = new Mfl(value);
-			mfls .put(key, mfl);
-			all .put(key, mfl);
-		}
-		
-		for (Map.Entry<Integer, ParamRange> entry : prototype.ranges.entrySet()) 
-		{
-			Integer key = entry.getKey();
-			ParamRange value = entry.getValue();
-			
-			ParamRange range = value.clone();
-			ranges.put(key, range);
-			all.put(key, range);
-		}
-		
-		for (Map.Entry<Integer, ParamDefault> entry : prototype.defaults.entrySet()) 
-		{
-			Integer key = entry.getKey();
-			ParamDefault value = entry.getValue();
-			
-			ParamDefault paramDefault = value.clone();
-			defaults.put(key, paramDefault);
-			all.put(key, paramDefault);
-		}
-		
-		for (Map.Entry<Integer, ParamAlarm> entry : prototype.alarms.entrySet()) 
-		{
-			Integer key = entry.getKey();
-			ParamAlarm value = entry.getValue();
-			
-			ParamAlarm paramAlarm = value.clone();
-			alarms.put(key, paramAlarm);
-			all.put(key, paramAlarm);
-		}
-		
 	}
 	
 	
@@ -143,14 +114,103 @@ public class Device
 				mfl.handleMessage(timestamp,buffer);
 			}
 			
-			
+			else if (deviceParam instanceof ChartRange)
+			{
+				ChartRange chartRange = (ChartRange) deviceParam;
+				chartRange.handleMessage(this, timestamp, buffer);
+			}
+			else if (deviceParam instanceof ChartStep)
+			{
+				ChartStep chartStep = (ChartStep) deviceParam;
+				chartStep.handleMessage(this,timestamp,buffer);
+			}
+			else if (deviceParam instanceof ChartValue) 
+			{
+				ChartValue chartValue = (ChartValue) deviceParam;
+				chartValue.handleMessage(this,timestamp,buffer);
+			}
 		}
-		
 	}
 
 
+	
+	
+	
+	
+	public void addParam(String paramId, String paramName, String paramType, String presision, String units, String min,String max, String regular) 
+	{
+		Param param = new Param(paramId, paramName, paramType, presision, units, min, max , regular);
+		params.put(param.id, param);
+		all.put(param.id, param);
+	}
+
+	public void addParamDefault(String defaultId, String paramId)
+	{
+		ParamDefault paramDefault = new ParamDefault(Integer.parseInt(defaultId), Integer.parseInt(paramId));
+		all.put(paramDefault.id, paramDefault);
+	}
+	
+	public void addParamRange(String rangeId, String paramId, String isMin)
+	{
+		ParamRange range = new ParamRange(Integer.parseInt(rangeId), Integer.parseInt(paramId), Boolean.parseBoolean(isMin));
+		all.put(range.id, range);
+	}
+	public void addParamAlarm(String alarmId, String paramId) 
+	{
+		ParamAlarm alarm = new ParamAlarm(Integer.parseInt(alarmId), Integer.parseInt(paramId));
+		all.put(alarm.id, alarm);
+	}
+	
+	public void addMfl(String mflId, String name, String isError)
+	{
+		Mfl mfl = new Mfl(mflId, name, isError);
+		mfls.put(mfl.id, mfl);
+		all.put(mfl.id, mfl);
+	}
+	
+	
+
+	public void addChart(String chartId, String chartName)
+	{
+		Chart chart = new Chart(Integer.parseInt(chartId), chartName);
+		charts.put(chart.id, chart);
+	}
+
+	public void addChartRange(String id, String chartId, String isAxisX, String isMin)
+	{
+		ChartRange chartRange = new ChartRange(Integer.parseInt(id), Integer.parseInt(chartId), Boolean.parseBoolean(isMin), Boolean.parseBoolean(isAxisX));
+		all.put(chartRange.id, chartRange);
+		
+	}
+
+	public void adChartStep(String id, String chartId, String isAxisX)
+	{
+		ChartStep chartStep = new ChartStep(Integer.parseInt(id), Integer.parseInt(chartId), Boolean.parseBoolean(isAxisX));
+		all.put(chartStep.id, chartStep);
+	}
+
+	public void addChartValue(String id, String chartId)
+	{
+		ChartValue chartValue = new ChartValue(Integer.parseInt(id), Integer.parseInt(chartId));
+		all.put(chartValue.id, chartValue);
+	}
+
+	public void clearRecording() 
+	{
+		timestamps.clear();
+		for (Param param : params.values())
+		{
+			if(param != null)
+			{
+				param.records.clear();
+			}
+		}
+	}
+	
+	
 	@Override
-	public int hashCode() {
+	public int hashCode()
+	{
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
@@ -160,7 +220,8 @@ public class Device
 	}
 
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(Object obj)
+	{
 		if (this == obj)
 			return true;
 		if (obj == null)
@@ -184,60 +245,8 @@ public class Device
 	}
 
 	@Override
-	public String toString() {
+	public String toString()
+	{
 		return String.format("Device [type=%s, name=%s, serial=%s]", type, name, serial);
 	}
-
-	public void addParam(Param param)
-	{
-		params.put(param.id, param);
-		all.put(param.id, param);
-	}
-
-	
-	public void addDefault(String defaultId, String paramId)
-	{
-		ParamDefault paramDefault = new ParamDefault(Integer.parseInt(defaultId), Integer.parseInt(paramId));
-		defaults.put(paramDefault.id, paramDefault);
-		all.put(paramDefault.id, paramDefault);
-	}
-	
-	public void addDinamicRange(String rangeId, String paramId, String isMin)
-	{
-		ParamRange range = new ParamRange(Integer.parseInt(rangeId), Integer.parseInt(paramId), Boolean.parseBoolean(isMin));
-		ranges.put(range.id, range);
-		all.put(range.id, range);
-	}
-
-	public void addAlarm(String alarmId, String paramId) 
-	{
-		ParamAlarm alarm = new ParamAlarm(Integer.parseInt(alarmId), Integer.parseInt(paramId));
-		alarms.put(alarm.id, alarm);
-		all.put(alarm.id, alarm);
-	}
-	
-	public void addMfl(String mflId, String name, String isError)
-	{
-		Mfl mfl = new Mfl(mflId, name, isError);
-		mfls.put(mfl.id, mfl);
-		all.put(mfl.id, mfl);
-	}
-	
-	
-	
-
-	public void clearRecording() 
-	{
-		timestamps.clear();
-		for (Param param : params.values())
-		{
-			if(param != null)
-			{
-				param.records.clear();
-			}
-		}
-	}
-
-	
-	
 }
