@@ -174,6 +174,7 @@ public class Device
 	{
 		Chart chart = new Chart(Integer.parseInt(chartId), chartName);
 		charts.put(chart.id, chart);
+		all.put(chart.id, chart);
 	}
 
 	public void addChartRange(String id, String chartId, String isAxisX, String isMin)
