@@ -8,6 +8,10 @@ public class SettingView extends ScrollPane implements CenterView
 	@Override
 	public void update(boolean isToFront)
 	{
+		if(MedManager.INSTANCE.isSlowUpdate())
+		{
+			
+		}
 		
 	}
 

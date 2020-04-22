@@ -29,7 +29,7 @@
 		 	
 		 	
 		 	<!-- chart 1  -->
-		 	<wf id="1000" name="blyayayayaya"/>
+		 	<wf id="1000" name="blyayayayaya" labelX="x" labelY="y"/>
 		 	
 		 	<wf-range id="1001" wfId="1000" isAxisX="true" isMin="true"/>
 		 	<wf-range id="1002" wfId="1000" isAxisX="true" isMin="false"/>
@@ -43,16 +43,19 @@
 		 	
 		 	<!-- chart 2 -->
 		 	
-		 	<wf id="2000" name="tatatatatata"/>
+		 	<wf id="2000" name="tatatatatata" labelX="x" labelY="y"/>
 		 	
-		 	<wf-range id="1001" wfId="2000" isAxisX="true" isMin="true"/>
+		 	<wf-range id="2001" wfId="2000" isAxisX="true" isMin="true"/>
 		 	<wf-range id="2002" wfId="2000" isAxisX="true" isMin="false"/>
 		 	<wf-range id="2003" wfId="2000" isAxisX="false" isMin="true"/>
 		 	<wf-range id="2004" wfId="2000" isAxisX="false" isMin="false"/>
 		 	
 		 	<wf-step id="2005" wfId="2000" isAxisX="true"/>
 		 	<wf-step id="2006" wfId="2000" isAxisX="false"/>
+		 	<wf-value id="2007" wfId="2000" />
 		 	
+		 	
+		  
 		 	
 		 	
 		 	

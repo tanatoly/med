@@ -29,8 +29,6 @@ import com.rafael.med.common.Utilities;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.util.Duration;
 
 public class MedManager 
@@ -55,30 +53,30 @@ public class MedManager
 	
 	private Map<Device, FileChannel> files = new HashMap<>();
 
+	private long currentUpdateCount = 0;
+	
 	public void init(MainView mainView) throws Exception 
 	{
 		this.data 			= new MedData();
 		this.mainView 		= mainView;
 		mainView.buildView(data);
-		Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(2),new EventHandler<ActionEvent>()
+		Timeline timeline = new Timeline(new KeyFrame(Duration.millis(100),ae -> 
 		{
-			public void handle(ActionEvent ae)
+			if(isDepartmentsViewFilled.compareAndSet(false, true))
 			{
-				if(isDepartmentsViewFilled.compareAndSet(false, true))
+				for (Department department : data.departments.values())
 				{
-					for (Department department : data.departments.values())
+					for (Room room : department.rooms) 
 					{
-						for (Room room : department.rooms) 
+						for (Bed bed : room.beds)
 						{
-							for (Bed bed : room.beds)
-							{
-								department.view.addBed(bed);
-							}
+							department.view.addBed(bed);
 						}
 					}
 				}
-				updateCenterView(false);
-		    }
+			}
+			updateCenterView(currentUpdateCount,false);
+			currentUpdateCount++;
 		}));
 		timeline.setCycleCount(Animation.INDEFINITE);
 		timeline.play();
@@ -136,7 +134,7 @@ public class MedManager
 		Files.createDirectories(excelPath);
 	}
 	
-	public void updateCenterView(boolean isToFront) 
+	public void updateCenterView(long currentUpdateCount, boolean isToFront) 
 	{
 		readLock.lock();
 		try
@@ -144,16 +142,7 @@ public class MedManager
 			if(mainView.currentView != null)
 			{
 				mainView.currentView.update(isToFront);
-//				log.trace("update view = " + mainView.currentView);
 			}
-			
-//			for (Department department : data.departments.values())
-//			{
-//				department.view.update();
-//			}
-//
-//			mainView.detailsView.update();
-//			mainView.emergencyView.update();
 		}
 		catch (Throwable e) 
 		{
@@ -183,6 +172,12 @@ public class MedManager
 		mainView.emergencyView.addBed(bed);
 	}
 	
+	
+	public boolean isSlowUpdate()
+	{
+		return currentUpdateCount%10==0;
+	}
+	
 	public void toExcel() throws Exception
 	{
 		LocalDateTime now = LocalDateTime.now();
@@ -194,38 +189,6 @@ public class MedManager
 			{
 				for (Bed bed : room.beds) 
 				{
-//					//temp -------------------------------DELETE 
-//					if(bed.id == 1001)
-//					{
-//						Device prototype = data.allDevices.get(2);
-//						Device device = new Device(prototype, "123456");
-//						bed.devices.put("123456", device);
-//						for (int i = 0; i < 100; i++) 
-//						{
-//							long t = System.currentTimeMillis();
-//							device.timestamps.add(t);
-//							for (Param param : device.params.values())
-//							{
-//								param.records.put(t, "string-" + i);
-//							}
-//							Thread.sleep(5);
-//						}
-//						
-//						
-//						
-//						Device prototype1 = data.allDevices.get(100);
-//						Device device1 = new Device(prototype1, "001200");
-//						bed.devices.put("001200", device1);
-//					}
-//					else if(bed.id == 1002)
-//					{
-//						Device prototype = data.allDevices.get(2);
-//						Device device = new Device(prototype, "777777");
-//						bed.devices.put("777777", device);
-//					}		
-//					
-//					// ---------------------------- DELETE
-					
 					for (Device device : bed.devices.values())
 					{
 						if(device != null)

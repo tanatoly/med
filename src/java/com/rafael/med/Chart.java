@@ -23,15 +23,18 @@ public class Chart extends DeviceParam
 	public boolean isChartReady = false;
 	public List<Data<Number, Number>> data;
 	
-	public final BooleanProperty isChartCreated = new SimpleBooleanProperty(false);
 	
 	private int currentIndex = 0;
 	private int sizeX = 0;
+	public String labelX;
+	public String labelY;
 	
-	public Chart(int id, String name) 
+	public Chart(int id, String name, String labelX, String labelY) 
 	{
 		super(id);
 		this.name = name;
+		this.labelX = labelX;
+		this.labelY = labelY;
 	}
 	
 	
@@ -40,23 +43,22 @@ public class Chart extends DeviceParam
 	{
 		if(isChartReady )
 		{
-			if(data == null)
-			{
-				data = new ArrayList<Data<Number,Number>>();
-				for (double i = minX; i < maxX; i+=stepX) 
-				{
-					data.add(new Data<>(i, 0 ));
-					sizeX++;
-				}
-				isChartCreated.set(true);
-			}
-			if(currentIndex >= sizeX)
-			{
-				currentIndex = 0;
-			}
-			
-			Data<Number, Number> xyValue = data.get(currentIndex++);
-			xyValue.setYValue(value);
+//			if(data == null)
+//			{
+//				data = new ArrayList<Data<Number,Number>>();
+//				for (double i = minX; i < maxX; i+=stepX) 
+//				{
+//					data.add(new Data<>(i, 0 ));
+//					sizeX++;
+//				}
+//			}
+//			if(currentIndex >= sizeX)
+//			{
+//				currentIndex = 0;
+//			}
+//			
+//			Data<Number, Number> xyValue = data.get(currentIndex++);
+//			xyValue.setYValue(value);
 		}
 	}
 	

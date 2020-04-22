@@ -61,9 +61,7 @@ public class App extends Application
 
 		NumberAxis xAxis = new NumberAxis("Time", MIN_X, MAX_X, STEP_X); 
 		NumberAxis yAxis = new NumberAxis("Value",MIN_Y, MAX_Y, STEP_Y);
-		xAxis.setLabel("x");
 		xAxis.setAnimated(false);
-		yAxis.setLabel("y");
 		yAxis.setAnimated(false);
 
 
@@ -75,10 +73,10 @@ public class App extends Application
 
 		XYChart.Series<Number, Number> seriesMain_1 = new XYChart.Series<>();
 		ObservableList<Data<Number, Number>> dataMain_1 = seriesMain_1.getData();
-		for (double i = MIN_X; i < MAX_X; i+=STEP_X) 
-		{
-			dataMain_1.add(new XYChart.Data<>(i, 0 ));
-		}
+//		for (double i = MIN_X; i < MAX_X; i+=STEP_X) 
+//		{
+//			dataMain_1.add(new XYChart.Data<>(i, 0 ));
+//		}
 		
 		XYChart.Series<Number, Number> seriesMain_2 = new XYChart.Series<>();
 		ObservableList<Data<Number, Number>> dataMain_2 = seriesMain_2.getData();
@@ -103,7 +101,7 @@ public class App extends Application
 		lineChart.getData().addAll(seriesMain_1, seriesMain_2);
 		
 		Timeline timeline1 = new Timeline();
-		lineChart.setVerticalGridLinesVisible(true);
+		
 		
 		AtomicInteger count = new AtomicInteger();
 		
@@ -187,7 +185,7 @@ public class App extends Application
 		}));
 		timeline1.setCycleCount(Animation.INDEFINITE);
 		timeline1.setDelay(Duration.millis(STEP_X));
-		timeline1.play();
+		//timeline1.play();
 		
 		
 		

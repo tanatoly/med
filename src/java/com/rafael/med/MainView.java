@@ -122,7 +122,7 @@ public class MainView extends BorderPane
 		{
 			if(newValue)
 			{
-				MedManager.INSTANCE.updateCenterView(true);
+				MedManager.INSTANCE.updateCenterView(0,true);
 			}
 			else
 			{

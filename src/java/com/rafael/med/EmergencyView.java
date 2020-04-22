@@ -166,9 +166,12 @@ public class EmergencyView extends ScrollPane implements CenterView
 	@Override
 	public void update(boolean isToFront)
 	{
-		for (EmergencyModule module : map.values()) 
+		if(MedManager.INSTANCE.isSlowUpdate())
 		{
-			module.update();
+			for (EmergencyModule module : map.values()) 
+			{
+				module.update();
+			}
 		}
 	}
 }

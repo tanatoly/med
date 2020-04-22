@@ -93,6 +93,7 @@ public class Constants
 	public static Background BACKGOUND_RED 			= new Background(new BackgroundFill(Color.RED, CornerRadii.EMPTY, Insets.EMPTY));
 	public static Background BACKGOUND_GREEN 		= new Background(new BackgroundFill(Color.GREEN, CornerRadii.EMPTY, Insets.EMPTY));
 	public static Background BACKGOUND_LIME 		= new Background(new BackgroundFill(Color.LIME, CornerRadii.EMPTY, Insets.EMPTY));
+	public static Background BACKGOUND_WHITE 		= new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY));
 	
 	public static final int MAX_UPD_SIZE 		= 65507;
 

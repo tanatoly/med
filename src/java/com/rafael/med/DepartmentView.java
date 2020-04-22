@@ -181,9 +181,12 @@ public class DepartmentView extends ScrollPane implements CenterView
 	@Override
 	public void update(boolean isToFront)
 	{
-		for (RegularModule module : map.values()) 
+		if(MedManager.INSTANCE.isSlowUpdate())
 		{
-			module.update();
+			for (RegularModule module : map.values()) 
+			{
+				module.update();
+			}
 		}
 	}
 	

@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,6 +18,7 @@ import com.rafael.med.common.Constants;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -166,17 +168,7 @@ public class DetailsView extends JFXTabPane implements CenterView
 			}
 		}
 		
-//		private static final double MIN_X 		= 0;
-//		private static final double MAX_X 		= 10_000;
-//		private static final double STEP_X 		= 50;
-//		
-//		private static final double MIN_Y 		= -1;
-//		private static final double MAX_Y 		= 1;
-//		private static final double STEP_Y 		= 0.1;
-//		
-//
-//		
-
+		
 		private AtomicBoolean isFirst = new AtomicBoolean();;
 		private Series<Number, Number> seriesMain_1;
 		private Series<Number, Number> seriesMain_2;
@@ -193,43 +185,38 @@ public class DetailsView extends JFXTabPane implements CenterView
 		
 		private double nextX = 0;
 		private AtomicInteger pointCounter = new AtomicInteger(0);
-		
-		private AtomicInteger randomY  		= new AtomicInteger();
-		public int randomDelat;
 		private Chart chart;
+		
+		private AtomicBoolean isCreated = new AtomicBoolean(false);
 		
 		public ChartFragment(Chart chart)
 		{
 			this.chart = chart;
 			setBackground(Constants.BACKGOUND_35);
+		}
+		
+		public void createChart()
+		{
+			NumberAxis xAxis = new NumberAxis(chart.labelX, chart.minX, chart.maxX, chart.stepX); 
+			NumberAxis yAxis = new NumberAxis(chart.labelY, chart.minY, chart.maxY, chart.stepY);
 			
-	        
-			NumberAxis xAxis = new NumberAxis(); 
-			NumberAxis yAxis = new NumberAxis();
-			xAxis.setLabel("x");
 			xAxis.setAnimated(false);
-			yAxis.setLabel("y");
 			yAxis.setAnimated(false);
-			xAxis.setTickLabelsVisible(false);
-			yAxis.setTickLabelsVisible(false);
-
 
 			LineChart<Number, Number> lineChart = new LineChart<>(xAxis, yAxis);
 			lineChart.setTitle(chart.name);
 			lineChart.setAnimated(false);
 			lineChart.setCreateSymbols(false);
 			lineChart.setLegendVisible(false);
-			lineChart.setVerticalGridLinesVisible(true);
-			
 			
 			setCenter(lineChart);
 
 			seriesMain_1 = new XYChart.Series<>();
 			dataMain_1 = seriesMain_1.getData();
-//			for (double i = MIN_X; i < MAX_X; i+=STEP_X) 
-//			{
-//				dataMain_1.add(new XYChart.Data<>(i, 0 ));
-//			}
+			for (double i = xAxis.getLowerBound(); i < xAxis.getUpperBound(); i+=xAxis.getTickUnit()) 
+			{
+				dataMain_1.add(new XYChart.Data<>(i, 0 ));
+			}
 			seriesMain_2 = new XYChart.Series<>();
 			dataMain_2 = seriesMain_2.getData();
 			
@@ -248,30 +235,9 @@ public class DetailsView extends JFXTabPane implements CenterView
 			
 			fromList = dataMain_1;
 			toList = dataMain_2;
-			
-			
-			chart.isChartCreated.addListener((ChangeListener<Boolean>) (observable, oldValue, newValue) -> 
-			{
-				if(newValue)
-				{
-					
-					xAxis.setUpperBound(chart.maxX);
-					xAxis.setLowerBound(chart.minX);
-					xAxis.setTickUnit(chart.stepX);
-					
-					yAxis.setUpperBound(chart.maxY);
-					yAxis.setLowerBound(chart.minY);
-					yAxis.setTickUnit(chart.stepY);
-					
-					for (Data<Number, Number> chartData : chart.data)
-					{
-						dataMain_1.add(chartData);
-					}
-					
-					log.debug("CHART {} WAS CREATED",chart);
-				}
-			});
 		}
+		
+		
 		
 		public void onTimelineTick()
 		{
@@ -284,11 +250,11 @@ public class DetailsView extends JFXTabPane implements CenterView
 			
 			
 			
-			//double y = Math.sin(Math.toRadians(randomY.getAndAdd(randomDelat)));
+			double y = RandomUtils.nextInt(0, 50);
 			
 			
 			Data<Number, Number> data = fromList.remove(0);
-			//data.setYValue(y);
+			data.setYValue(y);
 			toList.add(data);
 			
 			int andIncrement = pointCounter.getAndIncrement();
@@ -339,8 +305,11 @@ public class DetailsView extends JFXTabPane implements CenterView
 	public static final class DeviceTab extends ScrollPane
 	{
 		private Device device;
-		private Timeline chartTimeline;
+//		private Timeline chartTimeline;
 		private DeviceFragment deviceFragment;
+		private ChartFragment[] chartFragments;
+		
+		private boolean isUpdateChart = false;
 		
 		public DeviceTab(Device prototype)
 		{
@@ -380,49 +349,71 @@ public class DetailsView extends JFXTabPane implements CenterView
 			center.getColumnConstraints().add(columnConstraints);
 			
 			int index = 0;
-			ChartFragment [] chartFragments = new ChartFragment[charts.size()]; 
+			chartFragments = new ChartFragment[charts.size()]; 
 			for (Chart chart : charts)
 			{
 				chartFragments[index] = new ChartFragment(chart);
-				chartFragments[index].randomDelat = 10 * index;
 				GridPane.setMargin(chartFragments[index], new Insets(4));
+				
+				chartFragments[index].maxHeightProperty().bind(center.heightProperty().divide(charts.size()).subtract(8));
+				chartFragments[index].minHeightProperty().bind(center.heightProperty().divide(charts.size()).subtract(8));
 				center.add(chartFragments[index], 0, index);
 				index++;
 			}
 			
 			content.setCenter(center);
 			
-			chartTimeline = new Timeline();
-			chartTimeline.getKeyFrames().add(new KeyFrame(Duration.millis(100), (ActionEvent actionEvent) -> 
-			{
-				for (int i = 0; i < chartFragments.length; i++) 
-				{
-					//chartFragments[i].onTimelineTick();
-				}
-			}));
-			chartTimeline.setCycleCount(Animation.INDEFINITE);
+//			chartTimeline = new Timeline();
+//			chartTimeline.getKeyFrames().add(new KeyFrame(Duration.millis(100), (ActionEvent actionEvent) -> 
+//			{
+//				for (int i = 0; i < chartFragments.length; i++) 
+//				{
+//					chartFragments[i].onTimelineTick();
+//				}
+//			}));
+//			chartTimeline.setCycleCount(Animation.INDEFINITE);
 		}
 
 		
 
 		public void stopChart()
 		{
-			chartTimeline.pause();
-			System.out.println( this + " stop");
+			//chartTimeline.pause();
+			isUpdateChart = false;
+			//System.out.println( this + " stop");
 		}
 
 		public void startChart()
 		{
-			chartTimeline.play();
-			System.out.println( this + " start");
+			//chartTimeline.play();
+			isUpdateChart = true;
+			//System.out.println( this + " start");
 			
 		}
 		
 		public void update()
 		{
-			deviceFragment.update(device);
-			System.out.println( this + " update");
+			System.out.println("------------------------------------- UPDATE");
 			
+			for (int i = 0; i < chartFragments.length; i++) 
+			{
+				ChartFragment chartFragment = chartFragments[i];
+				if(chartFragment.chart.isChartReady && chartFragment.isCreated.compareAndSet(false, true))
+				{
+					chartFragment.createChart();
+					System.out.println("------------------------------------- CRETED");
+				}
+				if(isUpdateChart)
+				{
+					chartFragments[i].onTimelineTick();
+				}
+			}
+			
+			
+			if(MedManager.INSTANCE.isSlowUpdate())
+			{
+				deviceFragment.update(device);
+			}
 		}
 
 		public void setDevice(Device device) 
@@ -475,21 +466,6 @@ public class DetailsView extends JFXTabPane implements CenterView
 	public void setBed(Bed bed) 
 	{
 		this.bed = bed;
-		
-//		//DELETE
-//		
-//		Device prototype = MedManager.INSTANCE.data.allDevices.get(2);
-//		Device device = new Device(prototype, "123456");
-//		
-//		
-//		
-//		bed.devices.put("123456", device);
-//		
-//		prototype = MedManager.INSTANCE.data.allDevices.get(100);
-//		device = new Device(prototype, "987654");
-//		bed.devices.put("987654", device);
-//		
-//		//DELETE
 	}
 
 	@Override
