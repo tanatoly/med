@@ -170,9 +170,9 @@ public class Device
 	
 	
 
-	public void addChart(String chartId, String chartName)
+	public void addChart(String chartId, String chartName, String chartLabelX, String chartLabelY)
 	{
-		Chart chart = new Chart(Integer.parseInt(chartId), chartName);
+		Chart chart = new Chart(Integer.parseInt(chartId), chartName,chartLabelX , chartLabelY);
 		charts.put(chart.id, chart);
 		all.put(chart.id, chart);
 	}
