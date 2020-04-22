@@ -42,6 +42,7 @@ public class MedManager
 	private Lock readLock				= readWriteLock.readLock();
 	private Lock writeLock				= readWriteLock.writeLock();
 	
+	public static final long VIEW_UPDATE_MINIMAL_PERIOD = 10;
 	
 	private MainView mainView;
 	public MedData data;
@@ -60,7 +61,7 @@ public class MedManager
 		this.data 			= new MedData();
 		this.mainView 		= mainView;
 		mainView.buildView(data);
-		Timeline timeline = new Timeline(new KeyFrame(Duration.millis(100),ae -> 
+		Timeline timeline = new Timeline(new KeyFrame(Duration.millis(VIEW_UPDATE_MINIMAL_PERIOD),ae -> 
 		{
 			if(isDepartmentsViewFilled.compareAndSet(false, true))
 			{
@@ -175,8 +176,14 @@ public class MedManager
 	
 	public boolean isSlowUpdate()
 	{
-		return currentUpdateCount%10==0;
+		return isUpdateTick(100);
 	}
+	
+	public boolean isUpdateTick(int modulus)
+	{
+		return currentUpdateCount%modulus==0;
+	}
+
 	
 	public void toExcel() throws Exception
 	{
@@ -256,6 +263,7 @@ public class MedManager
 		}
 	}
 
+	
 
 	
 }

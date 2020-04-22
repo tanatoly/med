@@ -1,27 +1,17 @@
 package com.rafael.med;
 
-import java.awt.Toolkit;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import com.jfoenix.controls.JFXTabPane;
 import com.rafael.med.common.Constants;
 
-import javafx.animation.Animation;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
-import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.VPos;
@@ -40,11 +30,9 @@ import javafx.scene.layout.RowConstraints;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import javafx.util.Duration;
 
 public class DetailsView extends JFXTabPane implements CenterView
 {
-	private static final Logger log = LogManager.getLogger();
 	/******************************************** 	DeviceFragment ***********************************/	
 	public static final class DeviceFragment extends GridPane
 	{
@@ -188,6 +176,7 @@ public class DetailsView extends JFXTabPane implements CenterView
 		private Chart chart;
 		
 		private AtomicBoolean isCreated = new AtomicBoolean(false);
+		public int modulus = 1;
 		
 		public ChartFragment(Chart chart)
 		{
@@ -195,6 +184,7 @@ public class DetailsView extends JFXTabPane implements CenterView
 			setBackground(Constants.BACKGOUND_35);
 		}
 		
+		@SuppressWarnings("unchecked")
 		public void createChart()
 		{
 			NumberAxis xAxis = new NumberAxis(chart.labelX, chart.minX, chart.maxX, chart.stepX); 
@@ -235,6 +225,11 @@ public class DetailsView extends JFXTabPane implements CenterView
 			
 			fromList = dataMain_1;
 			toList = dataMain_2;
+			
+			if(chart.stepX > MedManager.VIEW_UPDATE_MINIMAL_PERIOD)
+			{
+				modulus = (int) (chart.stepX / MedManager.VIEW_UPDATE_MINIMAL_PERIOD);
+			}
 		}
 		
 		
@@ -247,54 +242,55 @@ public class DetailsView extends JFXTabPane implements CenterView
 				seriesMain_2.getNode().lookup(".chart-series-line").setStyle("-fx-stroke: white;-fx-stroke-width: 2px;");
 				seriesLine.getNode().lookup(".chart-series-line").setStyle("-fx-stroke: aqua;-fx-stroke-width: 2px;");
 			}
-			
-			
-			
-			double y = RandomUtils.nextInt(0, 50);
-			
-			
-			Data<Number, Number> data = fromList.remove(0);
-			data.setYValue(y);
-			toList.add(data);
-			
-			int andIncrement = pointCounter.getAndIncrement();
-			points[andIncrement].x = data.getXValue().doubleValue();
-			points[andIncrement].y = data.getYValue().doubleValue();
-			
-			pointCounter.compareAndSet(points.length, 0);
-			
-			int cc = 0;
-			for (Data<Number, Number> currentLine : dataLine)
+			if(MedManager.INSTANCE.isUpdateTick(modulus))
 			{
-				currentLine.setXValue(points[cc].x);
-				currentLine.setYValue(points[cc].y);
-				cc++;
-			}
-						
-			nextX = nextX + chart.stepX;
-			if(nextX >= chart.maxX)
-			{
-				nextX = 0;
-				
-				if(fromList == dataMain_1)
+				while(chart.data.size() > 0)
 				{
-					fromList = dataMain_2;
-					toList = dataMain_1;
-					
-				}
-				else
-				{
-					fromList = dataMain_1;
-					toList = dataMain_2;
-				}
+					double result = chart.data.remove(0);
 
-				for (int i = 0; i < points.length; i++) 
-				{
-					points[i].x = 0;
-					points[i].y = 0;
+					Data<Number, Number> data = fromList.remove(0);
+					data.setYValue(result);
+					toList.add(data);
+
+					int andIncrement = pointCounter.getAndIncrement();
+					points[andIncrement].x = data.getXValue().doubleValue();
+					points[andIncrement].y = data.getYValue().doubleValue();
+
+					pointCounter.compareAndSet(points.length, 0);
+
+					int cc = 0;
+					for (Data<Number, Number> currentLine : dataLine)
+					{
+						currentLine.setXValue(points[cc].x);
+						currentLine.setYValue(points[cc].y);
+						cc++;
+					}
+
+					nextX = nextX + chart.stepX;
+					if(nextX >= chart.maxX)
+					{
+						nextX = 0;
+
+						if(fromList == dataMain_1)
+						{
+							fromList = dataMain_2;
+							toList = dataMain_1;
+
+						}
+						else
+						{
+							fromList = dataMain_1;
+							toList = dataMain_2;
+						}
+
+						for (int i = 0; i < points.length; i++) 
+						{
+							points[i].x = 0;
+							points[i].y = 0;
+						}
+
+					}
 				}
-				
-				// Toolkit.getDefaultToolkit().beep();
 			}
 		}
 	}
@@ -305,11 +301,8 @@ public class DetailsView extends JFXTabPane implements CenterView
 	public static final class DeviceTab extends ScrollPane
 	{
 		private Device device;
-//		private Timeline chartTimeline;
 		private DeviceFragment deviceFragment;
 		private ChartFragment[] chartFragments;
-		
-		private boolean isUpdateChart = false;
 		
 		public DeviceTab(Device prototype)
 		{
@@ -360,55 +353,23 @@ public class DetailsView extends JFXTabPane implements CenterView
 				center.add(chartFragments[index], 0, index);
 				index++;
 			}
-			
 			content.setCenter(center);
-			
-//			chartTimeline = new Timeline();
-//			chartTimeline.getKeyFrames().add(new KeyFrame(Duration.millis(100), (ActionEvent actionEvent) -> 
-//			{
-//				for (int i = 0; i < chartFragments.length; i++) 
-//				{
-//					chartFragments[i].onTimelineTick();
-//				}
-//			}));
-//			chartTimeline.setCycleCount(Animation.INDEFINITE);
-		}
-
-		
-
-		public void stopChart()
-		{
-			//chartTimeline.pause();
-			isUpdateChart = false;
-			//System.out.println( this + " stop");
-		}
-
-		public void startChart()
-		{
-			//chartTimeline.play();
-			isUpdateChart = true;
-			//System.out.println( this + " start");
-			
 		}
 		
-		public void update()
+		public void update(boolean isToFront)
 		{
-			System.out.println("------------------------------------- UPDATE");
-			
 			for (int i = 0; i < chartFragments.length; i++) 
 			{
 				ChartFragment chartFragment = chartFragments[i];
 				if(chartFragment.chart.isChartReady && chartFragment.isCreated.compareAndSet(false, true))
 				{
 					chartFragment.createChart();
-					System.out.println("------------------------------------- CRETED");
 				}
-				if(isUpdateChart)
+				if(chartFragment.isCreated.get())
 				{
 					chartFragments[i].onTimelineTick();
 				}
 			}
-			
 			
 			if(MedManager.INSTANCE.isSlowUpdate())
 			{
@@ -446,20 +407,6 @@ public class DetailsView extends JFXTabPane implements CenterView
 		}
         setTabMinWidth(200);
         setTabMaxWidth(200);
-        
-        getSelectionModel().selectedItemProperty().addListener((ChangeListener<Tab>) (observable, oldValue, newValue) ->
-        {
-        	if(oldValue != null)
-        	{
-        		DeviceTab deviceTab = (DeviceTab) oldValue.getContent();
-        		deviceTab.stopChart();
-        	}
-        	if(newValue != null )
-        	{
-        		DeviceTab deviceTab = (DeviceTab) newValue.getContent();
-        		deviceTab.startChart();
-        	}
-		});		
 	}
 	
 
@@ -495,7 +442,7 @@ public class DetailsView extends JFXTabPane implements CenterView
 					if(currentTab != null)
 					{
 						DeviceTab deviceTab = (DeviceTab) currentTab.getContent();
-						deviceTab.update();
+						deviceTab.update(isToFront);
 					}
 				}
 			}
@@ -506,7 +453,7 @@ public class DetailsView extends JFXTabPane implements CenterView
 				if(currentTab != null)
 				{
 					DeviceTab deviceTab = (DeviceTab) currentTab.getContent();
-					deviceTab.update();
+					deviceTab.update(isToFront);
 				}
 			}
 		}
@@ -515,10 +462,10 @@ public class DetailsView extends JFXTabPane implements CenterView
 	@Override
 	public void onToBack()
 	{
-		for (Tab tab : getTabs())
-		{
-			DeviceTab deviceTab = (DeviceTab) tab.getContent();
-			deviceTab.stopChart();
-		}
+//		for (Tab tab : getTabs())
+//		{
+//			DeviceTab deviceTab = (DeviceTab) tab.getContent();
+//			deviceTab.stopChart();
+//		}
 	}
 }

@@ -5,10 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.scene.chart.XYChart.Data;
-
 public class Chart extends DeviceParam
 {
 	public double maxX 	= Double.MAX_VALUE;
@@ -21,13 +17,11 @@ public class Chart extends DeviceParam
 	
 	public final String name;
 	public boolean isChartReady = false;
-	public List<Data<Number, Number>> data;
-	
-	
-	private int currentIndex = 0;
-	private int sizeX = 0;
+	public List<Double> data = new ArrayList<>();
 	public String labelX;
 	public String labelY;
+	
+	public int modulus = 1;
 	
 	public Chart(int id, String name, String labelX, String labelY) 
 	{
@@ -37,28 +31,11 @@ public class Chart extends DeviceParam
 		this.labelY = labelY;
 	}
 	
-	
-	
 	public void setNextValue(double value)
 	{
 		if(isChartReady )
 		{
-//			if(data == null)
-//			{
-//				data = new ArrayList<Data<Number,Number>>();
-//				for (double i = minX; i < maxX; i+=stepX) 
-//				{
-//					data.add(new Data<>(i, 0 ));
-//					sizeX++;
-//				}
-//			}
-//			if(currentIndex >= sizeX)
-//			{
-//				currentIndex = 0;
-//			}
-//			
-//			Data<Number, Number> xyValue = data.get(currentIndex++);
-//			xyValue.setYValue(value);
+			data.add(value);
 		}
 	}
 	
@@ -218,6 +195,8 @@ public class Chart extends DeviceParam
 			chart.setNextValue(value);
 		}
 	}
+
+	
 }
 
 

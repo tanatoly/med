@@ -139,20 +139,20 @@ public class TestSender
 	private static void addChart1(ByteBuffer buffer)
 	{
 		addParam(buffer, 1001, 2, 0);
-		addParam(buffer, 1002, 2, 100);
+		addParam(buffer, 1002, 2, 10_000);
 		addParam(buffer, 1003, 2, -50);
 		addParam(buffer, 1004, 2, 50);
-		addParam(buffer, 1005, 2, 1);
+		addParam(buffer, 1005, 2, 100);
 		addParam(buffer, 1006, 2, 1);
 	}
 	
 	private static void addChart2(ByteBuffer buffer)
 	{
 		addParam(buffer, 2001, 2, 0);
-		addParam(buffer, 2002, 2, 50);
+		addParam(buffer, 2002, 2, 10_000);
 		addParam(buffer, 2003, 2, 0);
 		addParam(buffer, 2004, 2, 10);
-		addParam(buffer, 2005, 2, 1);
+		addParam(buffer, 2005, 2, 100);
 		addParam(buffer, 2006, 2, 1);
 	}
 	
@@ -232,7 +232,7 @@ public class TestSender
 				outBuffer.flip();
 				testDatagram.send(outBuffer);
 				
-				Thread.sleep(100);
+				Thread.sleep(20);
 			} 
 			catch (Exception e) 
 			{
