@@ -120,7 +120,9 @@ public class MedData
 								{
 									String chartId 		= paramElement.getAttribute("id");
 									String chartName 	= paramElement.getAttribute("name");
-									device.addChart(chartId, chartName);
+									String chartLabelX 	= paramElement.getAttribute("labelX");
+									String chartLabelY 	= paramElement.getAttribute("labelY");
+									device.addChart(chartId, chartName, chartLabelX, chartLabelY );
 								}
 								
 								
