@@ -65,7 +65,7 @@ public class Chart extends DeviceParam
 	@Override
 	public String toString()
 	{
-		return String.format("Chart [maxX=%s, minX=%s, maxY=%s, minY=%s, stepX=%s, stepY=%s, name=%s]", maxX, minX, maxY, minY, stepX, stepY, name);
+		return String.format("Chart [id= %s,maxX=%s, minX=%s, maxY=%s, minY=%s, stepX=%s, stepY=%s, name=%s]", id, maxX, minX, maxY, minY, stepX, stepY, name);
 	}
 
 
