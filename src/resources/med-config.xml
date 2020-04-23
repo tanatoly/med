@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<config excelPeriodInMinutes="1" isChartTitle="true" isSelfTest="true">
+<config excelPeriodInMinutes="1" isChartTitle="true" isSelfTest="true" isExcel="false">
 	<devices>
 		<device type="2" name="PB980 ventilator">
 		

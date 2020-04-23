@@ -128,32 +128,36 @@ public class MedManager
 			}
 		});
 		receiver.open();
-		int excelPeriodInMinutes = data.excelPeriodInMinutes;
-		log.info("EXPORT TO EXCEL EVERY {} MINUTES", excelPeriodInMinutes);
-		Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(new Runnable() 
+		if(data.isExcel)
 		{
-			@Override
-			public void run()
+			log.warn("************************************* EXPORT TO EXCEL ACTIVE ****************************");
+			int excelPeriodInMinutes = data.excelPeriodInMinutes;
+			log.info("EXPORT TO EXCEL EVERY {} MINUTES", excelPeriodInMinutes);
+			Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(new Runnable() 
 			{
-				readLock.lock();
-				try
+				@Override
+				public void run()
 				{
-					long begin = System.nanoTime();
-					toExcel();
-					log.debug("export to excel  finshed during {} ms",  ((System.nanoTime() - begin) / 1_000_000) );
+					readLock.lock();
+					try
+					{
+						long begin = System.nanoTime();
+						toExcel();
+						log.debug("export to excel  finshed during {} ms",  ((System.nanoTime() - begin) / 1_000_000) );
+					}
+					catch (Throwable e) 
+					{
+						log.error("FAILED EXCEL PERIODIC ACTION - ",e);
+					}
+					finally
+					{
+						readLock.unlock();
+					}
 				}
-				catch (Throwable e) 
-				{
-					log.error("FAILED EXCEL PERIODIC ACTION - ",e);
-				}
-				finally
-				{
-					readLock.unlock();
-				}
-			}
-		}, excelPeriodInMinutes, excelPeriodInMinutes, TimeUnit.MINUTES);
-		
-		Files.createDirectories(excelPath);
+			}, excelPeriodInMinutes, excelPeriodInMinutes, TimeUnit.MINUTES);
+			
+			Files.createDirectories(excelPath);
+		}
 	}
 	
 	public void updateCenterView(long currentUpdateCount, boolean isToFront) 

@@ -23,6 +23,7 @@ public class MedData
 	public int excelPeriodInMinutes;
 	public boolean isChartTitle;
 	public boolean isSelfTest;
+	public boolean isExcel = true;
 	
 	public MedData () throws Exception
 	{
@@ -39,7 +40,7 @@ public class MedData
 		excelPeriodInMinutes = Integer.parseInt(rootElement.getAttribute("excelPeriodInMinutes"));
 		isChartTitle = Boolean.parseBoolean(rootElement.getAttribute("isChartTitle"));
 		isSelfTest = Boolean.parseBoolean(rootElement.getAttribute("isSelfTest"));
-		 
+		isExcel = Boolean.parseBoolean(rootElement.getAttribute("isExcel"));
 		
 		NodeList devicesByTagName = rootElement.getElementsByTagName("devices");
 		if(devicesByTagName != null)
