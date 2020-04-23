@@ -15,6 +15,7 @@ import javafx.collections.ObservableList;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.VPos;
+import javafx.scene.chart.AreaChart;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
@@ -178,7 +179,7 @@ public class DetailsView extends JFXTabPane implements CenterView
 		private AtomicBoolean isCreated = new AtomicBoolean(false);
 		public int modulus = 1;
 		private double previous = 0;
-		private LineChart lineChart;
+		private AreaChart<Number, Number> lineChart;
 		
 		public ChartFragment(Chart chart)
 		{
@@ -195,7 +196,7 @@ public class DetailsView extends JFXTabPane implements CenterView
 			xAxis.setAnimated(false);
 			yAxis.setAnimated(false);
 
-			lineChart = new LineChart<>(xAxis, yAxis);
+			lineChart = new AreaChart<>(xAxis, yAxis);
 			lineChart.setTitle(chart.getName());
 			lineChart.setAnimated(false);
 			lineChart.setCreateSymbols(false);
@@ -240,9 +241,14 @@ public class DetailsView extends JFXTabPane implements CenterView
 		{
 			if(isFirst.compareAndSet(false, true))
 			{
-				seriesMain_1.getNode().lookup(".chart-series-line").setStyle("-fx-stroke: white;-fx-stroke-width: 2px;");
-				seriesMain_2.getNode().lookup(".chart-series-line").setStyle("-fx-stroke: white;-fx-stroke-width: 2px;");
-				seriesLine.getNode().lookup(".chart-series-line").setStyle("-fx-stroke: aqua;-fx-stroke-width: 2px;");
+				seriesMain_1.getNode().lookup(".chart-series-area-line").setStyle("-fx-stroke: rgb(192,192,192, 0.7);-fx-stroke-width: 2px;");
+				seriesMain_2.getNode().lookup(".chart-series-area-line").setStyle("-fx-stroke: rgb(192,192,192, 0.7);-fx-stroke-width: 2px;");
+				seriesLine.getNode().lookup(".chart-series-area-line").setStyle("-fx-stroke: aqua;-fx-stroke-width: 2px;");
+				
+				seriesMain_1.getNode().lookup(".chart-series-area-fill").setStyle("-fx-fill: rgba(0,255,255,0.1);");
+				seriesMain_2.getNode().lookup(".chart-series-area-fill").setStyle("-fx-fill: rgba(0,255,255,0.1);");
+				seriesLine.getNode().lookup(".chart-series-area-fill").setStyle("-fx-fill: transparent;");
+				
 			}
 			if(MedManager.INSTANCE.data.isChartTitle && MedManager.INSTANCE.isSlowUpdate())
 			{
