@@ -122,57 +122,68 @@ public class TestSender
 	    
 	}
 	
-	private static void addParam(ByteBuffer buffer ,  int id, int type, int value)
+	private static int addParam(ByteBuffer buffer ,  int id, int type, double value)
 	{
 		buffer.putShort((short) id);
 		buffer.put((byte) type);
 		if(type == 2)
 		{
-			buffer.putInt(value);
+			buffer.putInt((int) value);
 		}
 		else
 		{
-			buffer.putFloat(value);
+			buffer.putFloat((float) value);
 		}
+		return 1;
 	}
 	
-	private static void addChart1(ByteBuffer buffer)
+	private static int addChart1(ByteBuffer buffer, int id, int stepX)
 	{
-		addParam(buffer, 1001, 2, 0);
-		addParam(buffer, 1002, 2, 10_000);
-		addParam(buffer, 1003, 2, -50);
-		addParam(buffer, 1004, 2, 50);
-		addParam(buffer, 1005, 2, 100);
-		addParam(buffer, 1006, 2, 1);
+		addParam(buffer, id + 1, 1, 0);
+		addParam(buffer, id + 2, 1, 10_000);
+		addParam(buffer, id + 3, 1, -1.0);
+		addParam(buffer, id + 4, 1, 1.0);
+		addParam(buffer, id + 5, 1, stepX);
+		addParam(buffer, id + 6, 1, 0.1);
+		return 6;
 	}
 	
-	private static void addChart2(ByteBuffer buffer)
-	{
-		addParam(buffer, 2001, 2, 0);
-		addParam(buffer, 2002, 2, 10_000);
-		addParam(buffer, 2003, 2, 0);
-		addParam(buffer, 2004, 2, 10);
-		addParam(buffer, 2005, 2, 100);
-		addParam(buffer, 2006, 2, 1);
-	}
+//	private static int addChart2(ByteBuffer buffer)
+//	{
+//		addParam(buffer, 2001, 2, 0);
+//		addParam(buffer, 2002, 2, 1000);
+//		addParam(buffer, 2003, 2, 0);
+//		addParam(buffer, 2004, 2, 100);
+//		addParam(buffer, 2005, 2, 50);
+//		addParam(buffer, 2006, 2, 1);
+//		return 6;
+//	}
+//	
+//	private static int addChart3(ByteBuffer buffer)
+//	{
+//		addParam(buffer, 3001, 2, 0);
+//		addParam(buffer, 3002, 2, 1000);
+//		addParam(buffer, 3003, 2, 0);
+//		addParam(buffer, 3004, 2, 50);
+//		addParam(buffer, 3005, 2, 50);
+//		addParam(buffer, 3006, 2, 1);
+//		return 6;
+//	}
 	
 	
-	public static void main(String[] args) throws Exception 
+	
+	public static void loop() throws Exception
 	{
-		long count = 0;
-		for (int i = 0; i < 1000; i++)
-		{
-			boolean is = count%10 == 0;
-			System.out.println("count = " + count + " " + is);
-			count++;
-		}
-		
-		
 		TestDatagram testDatagram = new TestDatagram();
 		testDatagram.open();
 		
 		ByteBuffer outBuffer = ByteBuffer.allocate(TestDatagram.CAPACITY).order(TestDatagram.BIG_ENDIAN);
 		
+		int count = 0;
+		
+		int angle = 0;
+		
+		int moudles = 10;
 		while(true)
 		{
 			try 
@@ -186,59 +197,119 @@ public class TestSender
 				outBuffer.put(serial.getBytes());
 				
 				
-				byte paramsSize = 12 + 2 + 2;
-				outBuffer.put((byte) paramsSize);
 				
-				addChart1(outBuffer);
-				addChart2(outBuffer);
+				//System.out.println(outBuffer);
 				
-				addParam(outBuffer, 1007, 2, RandomUtils.nextInt(0, 50));
-				addParam(outBuffer, 2007, 2, RandomUtils.nextInt(0, 10));
+				int paramsSize = 0;
+				outBuffer.put((byte) 0);
 				
-				addParam(outBuffer, 4, 2, RandomUtils.nextInt(1000, 2000));
-				addParam(outBuffer, 0, 2, RandomUtils.nextInt(100, 200));
+				int stepX = 70;
+				paramsSize += addChart1(outBuffer,1000,stepX);
+				paramsSize += addChart1(outBuffer,2000,stepX);
+				paramsSize += addChart1(outBuffer,3000,stepX);
+				
+				
+				double random =  Math.sin(Math.toRadians(angle+=2));
+				
+				
+				if(count%1000 == 0)
+				{
+					moudles = RandomUtils.nextInt(2, 20);
+				}
+				
+				if(count%moudles == 0)
+				{
+					paramsSize +=addParam(outBuffer, 1007, 1, random);
+				}
+				if(count%moudles == 0)
+				{
+					paramsSize +=addParam(outBuffer, 2007, 1, random);
+				}
+				if(count%moudles == 0)
+				{
+					paramsSize +=addParam(outBuffer, 3007, 1, random);
+				}
+				if(count%50 == 0)
+				{
+					paramsSize +=addParam(outBuffer, 4, 2, RandomUtils.nextInt(1000, 2000));
+					paramsSize +=addParam(outBuffer, 0, 2, RandomUtils.nextInt(100, 200));
+				}
 					
-			//	addParam(outBuffer, 1007, 2, 20);
-					
-					
-//					
-//					<wf id="1000" name="blyayayayaya"/>
-//				 	
-//				 	<wf-range id="1001" wfId="1000" isAxisX="true" isMin="true"/>
-//				 	<wf-range id="1002" wfId="1000" isAxisX="true" isMin="false"/>
-//				 	<wf-range id="1003" wfId="1000" isAxisX="false" isMin="true"/>
-//				 	<wf-range id="1004" wfId="1000" isAxisX="false" isMin="false"/>
-//				 	
-//				 	<wf-step id="1005" wfId="1000" isAxisX="true"/>
-//				 	<wf-step id="1006" wfId="1000" isAxisX="false"/>
-//				 	
-//				 	<wf-value id="1007" wfId="1000" />
-//				 	
-//				 	<!-- chart 2 -->
-//				 	
-//				 	<wf id="2000" name="tatatatatata"/>
-//				 	
-//				 	<wf-range id="1001" wfId="2000" isAxisX="true" isMin="true"/>
-//				 	<wf-range id="2002" wfId="2000" isAxisX="true" isMin="false"/>
-//				 	<wf-range id="2003" wfId="2000" isAxisX="false" isMin="true"/>
-//				 	<wf-range id="2004" wfId="2000" isAxisX="false" isMin="false"/>
-//				 	
-//				 	<wf-step id="2005" wfId="2000" isAxisX="true"/>
-//				 	<wf-step id="2006" wfId="2000" isAxisX="false"/>
+				//System.out.println("---- " + paramsSize);
 				
-				
-				
+				outBuffer.put(13, (byte) paramsSize);
 				
 				outBuffer.flip();
 				testDatagram.send(outBuffer);
 				
-				Thread.sleep(20);
+				Thread.sleep(10);
+				count++;
 			} 
 			catch (Exception e) 
 			{
 				e.printStackTrace();
 			}
 		}
+		
+	}
+	
+	public static void main(String[] args) throws Exception 
+	{
+		
+		loop();
+		
+		
+//		TestDatagram testDatagram = new TestDatagram();
+//		testDatagram.open();
+//		
+//		ByteBuffer outBuffer = ByteBuffer.allocate(TestDatagram.CAPACITY).order(TestDatagram.BIG_ENDIAN);
+//		
+//	
+//		
+//		
+//		while(true)
+//		{
+//			try 
+//			{
+//				outBuffer.clear();
+//				outBuffer.putInt(1001);
+//				outBuffer.put((byte) 2);
+//				
+//				String serial = "8888888";
+//				outBuffer.put((byte) serial.length());
+//				outBuffer.put(serial.getBytes());
+//				
+//				
+//				byte paramsSize = 6 * 3 + 2 + 2 + 1;
+//				outBuffer.put((byte) paramsSize);
+//				
+//				
+//				
+//				addChart1(outBuffer);
+//				addChart2(outBuffer);
+//				addChart3(outBuffer);
+//				
+//				addParam(outBuffer, 1007, 2, RandomUtils.nextInt(0, 50));
+//				addParam(outBuffer, 2007, 2, RandomUtils.nextInt(0, 50));
+//				addParam(outBuffer, 3007, 2, RandomUtils.nextInt(0, 50));
+//				
+//				addParam(outBuffer, 4, 2, RandomUtils.nextInt(1000, 2000));
+//				addParam(outBuffer, 0, 2, RandomUtils.nextInt(100, 200));
+//					
+//				
+//				
+//				
+//				
+//				outBuffer.flip();
+//				testDatagram.send(outBuffer);
+//				
+//				Thread.sleep(200);
+//			} 
+//			catch (Exception e) 
+//			{
+//				e.printStackTrace();
+//			}
+//		}
 		
 		
 	}

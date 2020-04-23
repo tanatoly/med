@@ -21,6 +21,8 @@ public class MedData
 	public final List<Bed> 					emergencyBeds 	= new ArrayList<>(42);
 
 	public int excelPeriodInMinutes;
+	public boolean isChartTitle;
+	public boolean isSelfTest;
 	
 	public MedData () throws Exception
 	{
@@ -35,6 +37,9 @@ public class MedData
 		
 		Element rootElement = document.getDocumentElement();
 		excelPeriodInMinutes = Integer.parseInt(rootElement.getAttribute("excelPeriodInMinutes"));
+		isChartTitle = Boolean.parseBoolean(rootElement.getAttribute("isChartTitle"));
+		isSelfTest = Boolean.parseBoolean(rootElement.getAttribute("isSelfTest"));
+		 
 		
 		NodeList devicesByTagName = rootElement.getElementsByTagName("devices");
 		if(devicesByTagName != null)

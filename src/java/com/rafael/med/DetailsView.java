@@ -96,7 +96,7 @@ public class DetailsView extends JFXTabPane implements CenterView
 			long delta = System.currentTimeMillis() - device.lastMessageTime;
 			isDeviceNotTransmit = delta > 10_000; // 10 seconds
 			
-			serial.setText("SERIAL :" + device.serial);
+			serial.setText(device.serial);
 			
 			int count = 0;
 			for (Param param : device.params.values())
@@ -177,6 +177,8 @@ public class DetailsView extends JFXTabPane implements CenterView
 		
 		private AtomicBoolean isCreated = new AtomicBoolean(false);
 		public int modulus = 1;
+		private double previous = 0;
+		private LineChart lineChart;
 		
 		public ChartFragment(Chart chart)
 		{
@@ -193,8 +195,8 @@ public class DetailsView extends JFXTabPane implements CenterView
 			xAxis.setAnimated(false);
 			yAxis.setAnimated(false);
 
-			LineChart<Number, Number> lineChart = new LineChart<>(xAxis, yAxis);
-			lineChart.setTitle(chart.name);
+			lineChart = new LineChart<>(xAxis, yAxis);
+			lineChart.setTitle(chart.getName());
 			lineChart.setAnimated(false);
 			lineChart.setCreateSymbols(false);
 			lineChart.setLegendVisible(false);
@@ -242,54 +244,73 @@ public class DetailsView extends JFXTabPane implements CenterView
 				seriesMain_2.getNode().lookup(".chart-series-line").setStyle("-fx-stroke: white;-fx-stroke-width: 2px;");
 				seriesLine.getNode().lookup(".chart-series-line").setStyle("-fx-stroke: aqua;-fx-stroke-width: 2px;");
 			}
+			if(MedManager.INSTANCE.data.isChartTitle && MedManager.INSTANCE.isSlowUpdate())
+			{
+				lineChart.setTitle(chart.getFullName());
+			}
+			
 			if(MedManager.INSTANCE.isUpdateTick(modulus))
 			{
-				while(chart.data.size() > 0)
+				//System.out.println(chart.data.size());
+				
+				double result = 0;
+				int size = chart.data.size();
+				if(size == 1)
 				{
-					double result = chart.data.remove(0);
+					result = chart.data.remove(0);
+				}
+				else if(size == 0)
+				{
+					result = previous;
+				}
+				else
+				{
+					result = chart.data.get(size - 1);
+					chart.data.clear();
+				}
+				previous = result;
+				
+				Data<Number, Number> data = fromList.remove(0);
+				data.setYValue(result);
+				toList.add(data);
 
-					Data<Number, Number> data = fromList.remove(0);
-					data.setYValue(result);
-					toList.add(data);
+				int andIncrement = pointCounter.getAndIncrement();
+				points[andIncrement].x = data.getXValue().doubleValue();
+				points[andIncrement].y = data.getYValue().doubleValue();
 
-					int andIncrement = pointCounter.getAndIncrement();
-					points[andIncrement].x = data.getXValue().doubleValue();
-					points[andIncrement].y = data.getYValue().doubleValue();
+				pointCounter.compareAndSet(points.length, 0);
 
-					pointCounter.compareAndSet(points.length, 0);
+				int cc = 0;
+				for (Data<Number, Number> currentLine : dataLine)
+				{
+					currentLine.setXValue(points[cc].x);
+					currentLine.setYValue(points[cc].y);
+					cc++;
+				}
 
-					int cc = 0;
-					for (Data<Number, Number> currentLine : dataLine)
+				nextX = nextX + chart.stepX;
+				if(nextX >= chart.maxX)
+				{
+					nextX = 0;
+
+					if(fromList == dataMain_1)
 					{
-						currentLine.setXValue(points[cc].x);
-						currentLine.setYValue(points[cc].y);
-						cc++;
-					}
-
-					nextX = nextX + chart.stepX;
-					if(nextX >= chart.maxX)
-					{
-						nextX = 0;
-
-						if(fromList == dataMain_1)
-						{
-							fromList = dataMain_2;
-							toList = dataMain_1;
-
-						}
-						else
-						{
-							fromList = dataMain_1;
-							toList = dataMain_2;
-						}
-
-						for (int i = 0; i < points.length; i++) 
-						{
-							points[i].x = 0;
-							points[i].y = 0;
-						}
+						fromList = dataMain_2;
+						toList = dataMain_1;
 
 					}
+					else
+					{
+						fromList = dataMain_1;
+						toList = dataMain_2;
+					}
+
+					for (int i = 0; i < points.length; i++) 
+					{
+						points[i].x = 0;
+						points[i].y = 0;
+					}
+
 				}
 			}
 		}

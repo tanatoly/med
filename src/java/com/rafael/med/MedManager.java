@@ -59,6 +59,27 @@ public class MedManager
 	public void init(MainView mainView) throws Exception 
 	{
 		this.data 			= new MedData();
+		if(data.isSelfTest)
+		{
+			log.warn("************************************* THIS IS WITH SELF TESTING ****************************");
+			
+			Executors.newSingleThreadExecutor().execute(new Runnable()
+			{
+				@Override
+				public void run() 
+				{
+					try 
+					{
+						TestSender.loop();
+					} catch (Exception e)
+					{
+						log.error("FAILED IN SELF TESTING LOOP -" ,e);
+					}
+				}
+			});
+		}
+		
+		
 		this.mainView 		= mainView;
 		mainView.buildView(data);
 		Timeline timeline = new Timeline(new KeyFrame(Duration.millis(VIEW_UPDATE_MINIMAL_PERIOD),ae -> 

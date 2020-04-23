@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<config excelPeriodInMinutes="1">
+<config excelPeriodInMinutes="1" isChartTitle="true" isSelfTest="true">
 	<devices>
 		<device type="2" name="PB980 ventilator">
 		
@@ -29,7 +29,7 @@
 		 	
 		 	
 		 	<!-- chart 1  -->
-		 	<wf id="1000" name="blyayayayaya" labelX="x" labelY="y"/>
+		 	<wf id="1000" name="chart 1000" labelX="x" labelY="y"/>
 		 	
 		 	<wf-range id="1001" wfId="1000" isAxisX="true" isMin="true"/>
 		 	<wf-range id="1002" wfId="1000" isAxisX="true" isMin="false"/>
@@ -43,7 +43,7 @@
 		 	
 		 	<!-- chart 2 -->
 		 	
-		 	<wf id="2000" name="tatatatatata" labelX="x" labelY="y"/>
+		 	<wf id="2000" name="chart 2000" labelX="x" labelY="y"/>
 		 	
 		 	<wf-range id="2001" wfId="2000" isAxisX="true" isMin="true"/>
 		 	<wf-range id="2002" wfId="2000" isAxisX="true" isMin="false"/>
@@ -53,6 +53,18 @@
 		 	<wf-step id="2005" wfId="2000" isAxisX="true"/>
 		 	<wf-step id="2006" wfId="2000" isAxisX="false"/>
 		 	<wf-value id="2007" wfId="2000" />
+		 	
+		 	
+		 	<wf id="3000" name="chart 3000" labelX="x" labelY="y"/>
+		 	
+		 	<wf-range id="3001" wfId="3000" isAxisX="true" isMin="true"/>
+		 	<wf-range id="3002" wfId="3000" isAxisX="true" isMin="false"/>
+		 	<wf-range id="3003" wfId="3000" isAxisX="false" isMin="true"/>
+		 	<wf-range id="3004" wfId="3000" isAxisX="false" isMin="false"/>
+		 	
+		 	<wf-step id="3005" wfId="3000" isAxisX="true"/>
+		 	<wf-step id="3006" wfId="3000" isAxisX="false"/>
+		 	<wf-value id="3007" wfId="3000" />
 		 	
 		 	
 		  

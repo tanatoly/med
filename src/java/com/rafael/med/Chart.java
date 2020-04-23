@@ -4,9 +4,13 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.LongAccumulator;
+
+import org.apache.commons.lang3.StringUtils;
 
 public class Chart extends DeviceParam
 {
+	private static final String S_S_S_STEP_S_MESSAGE_S_MS = "%s [%s : %s], step %s, message %03d ms";
 	public double maxX 	= Double.MAX_VALUE;
 	public double minX 	= Double.MAX_VALUE;
 	public double maxY 	= Double.MAX_VALUE;
@@ -15,13 +19,16 @@ public class Chart extends DeviceParam
 	public double stepY = Double.MAX_VALUE;
 	
 	
-	public final String name;
+	private String name;
 	public boolean isChartReady = false;
 	public List<Double> data = new ArrayList<>();
 	public String labelX;
 	public String labelY;
 	
 	public int modulus = 1;
+		
+	private long lastTimeUpdate = 0;
+	private long delta = 0;
 	
 	public Chart(int id, String name, String labelX, String labelY) 
 	{
@@ -35,10 +42,26 @@ public class Chart extends DeviceParam
 	{
 		if(isChartReady )
 		{
+			if(lastTimeUpdate > 0)
+			{
+				delta = System.currentTimeMillis() - lastTimeUpdate;
+			}
 			data.add(value);
+			lastTimeUpdate = System.currentTimeMillis();
 		}
 	}
 	
+	public String getFullName()
+	{
+		
+		return String.format(S_S_S_STEP_S_MESSAGE_S_MS , name, minX , maxX, stepX, delta);
+	}
+	
+	
+	public String getName()
+	{
+		return name;
+	}
 	
 	
 	@Override
@@ -91,6 +114,7 @@ public class Chart extends DeviceParam
 			{
 				chart.isChartReady = (chart.maxX < Double.MAX_VALUE && chart.minX < Double.MAX_VALUE && chart.maxX < Double.MAX_VALUE && chart.minY < Double.MAX_VALUE && chart.stepX < Double.MAX_VALUE && chart.stepX < Double.MAX_VALUE);
 			}
+			
 		}
 
 		abstract void handleValue(Chart chart, double value);
@@ -195,6 +219,8 @@ public class Chart extends DeviceParam
 			chart.setNextValue(value);
 		}
 	}
+
+	
 
 	
 }

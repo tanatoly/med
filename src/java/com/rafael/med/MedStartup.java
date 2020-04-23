@@ -5,6 +5,7 @@ import java.awt.TrayIcon;
 import java.awt.image.BufferedImage;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.net.URL;
+import java.util.concurrent.Executors;
 
 import javax.imageio.ImageIO;
 
@@ -159,6 +160,7 @@ public class MedStartup extends Application
 			}
 
 			log = LogManager.getLogger();
+			
 			launch(MedStartup.class, "med");
 		}
 		catch (Throwable e)
